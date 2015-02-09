@@ -53,18 +53,47 @@ class Personnage (pygame.sprite.Sprite):
     
     def __init__(self, numero):
         pygame.sprite.Sprite.__init__(self)
-        if numero == 1:
-            self.image, self.rect = load_png("SpriteNeo.png")
+        self.numero = numero
+        if self.numero == 1:
+            self.image, self.rect = load_png("data/sprite/SpriteNeo.png")
             self.rect.center = [SCREEN_WIDTH/2, SCREEN_HEIGHT/2]  
+            self.speed = [0,0]
+        if self.numero == 2:
+            self.image, self.rect = load_png("data/sprite/SpriteDarkVador.png")
+            self.rect.center = [SCREEN_WIDTH/2+50, SCREEN_HEIGHT/2]  
+            self.speed = [0,0]
+        if self.numero == 3:
+            self.image, self.rect = load_png("data/sprite/SpriteDeadpool.png")
+            self.rect.center = [SCREEN_WIDTH/2+100, SCREEN_HEIGHT/2]  
+            self.speed = [0,0]
+        if self.numero == 4:
+            self.image, self.rect = load_png("data/sprite/SpriteVegeta.png")
+            self.rect.center = [SCREEN_WIDTH/2-50, SCREEN_HEIGHT/2]  
             self.speed = [0,0]
         
     def sauter(self):
-        self.image = pygame.image.load("SpriteNeoSaut.png")
-        
+        if self.numero == 1:
+            self.image = pygame.image.load("data/sprite/SpriteNeoSaut.png")
+        if self.numero == 2:
+            self.image = pygame.image.load("data/sprite/SpriteDarkVadorSaut.png")
+        if self.numero == 3:
+            self.image = pygame.image.load("data/sprite/SpriteDeadpoolSaut.png")
+        if self.numero == 4:
+            self.image = pygame.image.load("data/sprite/SpriteVegetaSaut.png")
         
     def down(self):
-        self.image = pygame.image.load("SpriteNeoAccroupi.png")
-        self.rect.y = self.rect.y+10
+        if self.numero == 1:
+            self.image = pygame.image.load("data/sprite/SpriteNeoAccroupi.png")
+            self.rect.y = self.rect.y+10
+        if self.numero == 2:
+            self.image = pygame.image.load("data/sprite/SpriteDarkVadorAccroupi.png")
+            self.rect.y = self.rect.y+20
+        if self.numero == 3:
+            self.image = pygame.image.load("data/sprite/SpriteDeadpoolAccroupi.png")
+            self.rect.y = self.rect.y+35
+        if self.numero == 4:
+            self.image = pygame.image.load("data/sprite/SpriteVegetaAccroupi.png")
+            self.rect.y = self.rect.y+10
         
     def left(self):
         self.speed[0]=-5
@@ -83,7 +112,7 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), FULLSCREEN | DOUBLEBUF)
     clock = pygame.time.Clock()
     pygame.key.set_repeat(1,1)    
-    background_image, background_rect = load_png('background.png')
+    background_image, background_rect = load_png('data/sprite/background.png')
     
     while True:
         clock.tick(60)
@@ -92,9 +121,16 @@ def main():
                     return # closing the window exits the program  
         
         # Instanciation du personnage
-        personnage=Personnage(1)
-        perso_sprite = pygame.sprite.Group()
-        perso_sprite.add(personnage)
+        neo=Personnage(1)
+        darkVador=Personnage(2)
+        deadpool=Personnage(3)
+        personnage=Personnage(4)
+        team1 = pygame.sprite.Group()
+        team2 = pygame.sprite.Group()
+        team1.add(neo)
+        team1.add(darkVador)
+        team1.add(deadpool)
+        team1.add(personnage)
         
         touches=pygame.key.get_pressed()
         
@@ -112,9 +148,9 @@ def main():
         if not touches[K_LEFT] and not touches[K_RIGHT]:
             personnage.stop()
         
-        perso_sprite.update()
+        team1.update()
         screen.blit(background_image, background_rect)
-        perso_sprite.draw(screen)
+        team1.draw(screen)
         pygame.display.flip()
         
 if __name__ == '__main__':
