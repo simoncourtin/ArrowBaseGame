@@ -9,6 +9,8 @@ class Personnage (pygame.sprite.Sprite):
     def __init__(self, numero):
         pygame.sprite.Sprite.__init__(self)
         self.numero = numero
+        self.isAccroupi = False
+        self.isSautant = False
         if self.numero == 1:
             self.image, self.rect = load_png.load_png("data/sprite/SpriteNeo.png")
             self.rect.center = [SCREEN_WIDTH/2, SCREEN_HEIGHT/2]  
@@ -25,7 +27,12 @@ class Personnage (pygame.sprite.Sprite):
             self.image, self.rect = load_png.load_png("data/sprite/SpriteVegeta.png")
             self.rect.center = [SCREEN_WIDTH/2-50, SCREEN_HEIGHT/2]  
             self.speed = [0,0]
-        
+    
+    def debout(self):
+        if self.isAccroupi == True:
+            if self.numero == 1:
+                self.image = pygame.image.load("data/sprite/SpriteNeo.png")
+    
     def sauter(self):
         if self.numero == 1:
             self.image = pygame.image.load("data/sprite/SpriteNeoSaut.png")
@@ -38,8 +45,11 @@ class Personnage (pygame.sprite.Sprite):
         
     def down(self):
         if self.numero == 1:
-            self.image = pygame.image.load("data/sprite/SpriteNeoAccroupi.png")
-            self.rect.y = self.rect.y+10
+            if self.isAccroupi == False:
+                self.image = pygame.image.load("data/sprite/SpriteNeoAccroupi.png")
+                self.rect.y = self.rect.y+10
+                self.isAccroupi = True
+                self.debout()
         if self.numero == 2:
             self.image = pygame.image.load("data/sprite/SpriteDarkVadorAccroupi.png")
             self.rect.y = self.rect.y+20

@@ -8,6 +8,10 @@ import os
 import pygame
 from pygame.locals import *
 import random
+from src import Personnage
+
+SCREEN_WIDTH = 1366
+SCREEN_HEIGHT = 768
 
 class Serveur(Server):
 	channelClass = ClientChannel
@@ -17,7 +21,20 @@ class Serveur(Server):
 		self.clients = []
 		print('Server launched')
 		self.clock = pygame.time.Clock()
-	#end __init__
+		self.clock = pygame.time.Clock()
+		pygame.key.set_repeat(1,1)
+		
+	    # Instanciation du personnage
+	    self.darkVador=Personnage.Personnage(2)
+	    self.deadpool=Personnage.Personnage(3)
+	    self.vegeta=Personnage.Personnage(4)
+	    self.team1 = pygame.sprite.Group()
+	    self.team2 = pygame.sprite.Group()
+	    self.team1.add(vegeta)
+	    self.team1.add(darkVador)
+	    self.team1.add(deadpool)
+	    self.team1.add(neo)
+		#end __init__
 
 	def Connected(self, channel, addr):
 		print('New connection')
@@ -43,9 +60,19 @@ class Serveur(Server):
 
 		# Events
 		
+		
+		
 		# Updates
+		self.team1.update()
+		self.team2.update()
 		
 		# Collisions
 
 	#end Loop
+	
+if __name__ == '__main__':
+    server = Server()
+	while True:
+    	server.Loop()
+    sys.exit(0)
 #end MyServer
