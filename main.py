@@ -1,6 +1,6 @@
 import sys
-from fonctions import main
+from src import utils
         
 if __name__ == '__main__':
-    main()
+    utils.main()
     sys.exit(0)
