@@ -13,7 +13,7 @@ import Personnage
 
 class Serveur(Server):
 	channelClass = ClientChannel
-	
+
 	def __init__(self, *args, **kwargs):
 		Server.__init__(self, *args, **kwargs)
 		self.clients = []
@@ -21,7 +21,7 @@ class Serveur(Server):
 		self.clock = pygame.time.Clock()
 		self.clock = pygame.time.Clock()
 		pygame.key.set_repeat(1,1)
-		
+
 		#Instanciation des personnages
 		self.darkVador=Personnage.Personnage(2)
 		self.deadpool=Personnage.Personnage(3)
@@ -49,7 +49,7 @@ class Serveur(Server):
 			c.Send({"action":action, key:value})
 		#end for
 	#end SendMessageAll
-	
+
 	def Loop(self):
 		# Stuff
 		self.Pump()
@@ -57,20 +57,20 @@ class Serveur(Server):
 		self.compteur += 1
 
 		# Events
-		
-		
-		
+
+
+
 		# Updates
 		self.team1.update()
 		self.team2.update()
-		
+
 		# Collisions
 
 	#end Loop
-	
+
 if __name__ == '__main__':
     server = Server()
-    
+
     while True:
     	server.Loop()
     sys.exit(0)

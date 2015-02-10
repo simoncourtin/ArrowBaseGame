@@ -56,8 +56,8 @@ class Client(ConnectionListener):
 
     touches = pygame.key.get_pressed()
 
-#    if (touches[K_q]):
- #       return
+    if (touches[K_q]):
+        return
         # exit the program
     if (touches[K_DOWN]):
         connection.Send({"action": "move", "touche": "bas"})
