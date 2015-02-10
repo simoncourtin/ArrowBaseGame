@@ -8,7 +8,8 @@ import os
 import pygame
 from pygame.locals import *
 import random
-from dns.rdatatype import NULL
+#from dns.rdatatype import NULL
+import Personnage
 
 class ClientChannel(Channel):
 	def __init__(self, *args, **kwargs):
