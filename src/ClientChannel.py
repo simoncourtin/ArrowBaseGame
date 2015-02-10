@@ -29,14 +29,14 @@ class ClientChannel(Channel):
 		mouvement=data['touche']
 		if(mouvement == "bas"):
 			self.neo.down()
-        if(mouvement == "gauche"):  
-            self.neo.left()
-        if(mouvement == "droite"):  
-            self.neo.right()
-        if(mouvement == "saut"):  
-            self.neo.sauter()
-        
-        self._server.sendMessageAll("move", "center", self.neo.rect.center)
+		elif(mouvement == "gauche"):
+			self.neo.left()
+		elif(mouvement == "droite"):
+			self.neo.right()
+		elif(mouvement == "saut"):
+			self.neo.sauter()
+		
+		self._server.sendMessageAll("move", "center", self.neo.rect.center)
 	#end Network_
 
 #end ClientChannel

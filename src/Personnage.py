@@ -1,5 +1,5 @@
 import pygame
-from src import load_png
+import load_png
 
 SCREEN_WIDTH = 1366
 SCREEN_HEIGHT = 768
