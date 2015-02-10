@@ -20,7 +20,6 @@ class Serveur(Server):
 		print('Server launched')
 		self.clock = pygame.time.Clock()
 		self.clock = pygame.time.Clock()
-		pygame.key.set_repeat(1,1)
 		
 		#Instanciation des personnages
 		self.darkVador=Personnage.Personnage(2)
@@ -69,7 +68,7 @@ class Serveur(Server):
 	#end Loop
 	
 if __name__ == '__main__':
-    server = Server()
+    server = Serveur()
     
     while True:
     	server.Loop()
