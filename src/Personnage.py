@@ -1,4 +1,8 @@
 import pygame
+from src import load_png
+
+SCREEN_WIDTH = 1366
+SCREEN_HEIGHT = 768
 
 class Personnage (pygame.sprite.Sprite):
     
@@ -6,19 +10,19 @@ class Personnage (pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.numero = numero
         if self.numero == 1:
-            self.image, self.rect = load_png("data/sprite/SpriteNeo.png")
+            self.image, self.rect = load_png.load_png("data/sprite/SpriteNeo.png")
             self.rect.center = [SCREEN_WIDTH/2, SCREEN_HEIGHT/2]  
             self.speed = [0,0]
         if self.numero == 2:
-            self.image, self.rect = load_png("data/sprite/SpriteDarkVador.png")
+            self.image, self.rect = load_png.load_png("data/sprite/SpriteDarkVador.png")
             self.rect.center = [SCREEN_WIDTH/2+50, SCREEN_HEIGHT/2]  
             self.speed = [0,0]
         if self.numero == 3:
-            self.image, self.rect = load_png("data/sprite/SpriteDeadpool.png")
+            self.image, self.rect = load_png.load_png("data/sprite/SpriteDeadpool.png")
             self.rect.center = [SCREEN_WIDTH/2+100, SCREEN_HEIGHT/2]  
             self.speed = [0,0]
         if self.numero == 4:
-            self.image, self.rect = load_png("data/sprite/SpriteVegeta.png")
+            self.image, self.rect = load_png.load_png("data/sprite/SpriteVegeta.png")
             self.rect.center = [SCREEN_WIDTH/2-50, SCREEN_HEIGHT/2]  
             self.speed = [0,0]
         
