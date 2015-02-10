@@ -35,7 +35,7 @@ class ClientChannel(Channel):
 		elif(mouvement == "saut"):
 			self.neo.sauter()
 		
-		self._server.sendMessageAll("move", "center", self.neo.rect.center)
+		self._server.SendMessageAll("move", "center", self.neo.rect.center)
 	#end Network_
 
 #end ClientChannel
