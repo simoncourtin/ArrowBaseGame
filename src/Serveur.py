@@ -20,7 +20,6 @@ class Serveur(Server):
 		print('Server launched')
 		self.clock = pygame.time.Clock()
 		self.clock = pygame.time.Clock()
-		pygame.key.set_repeat(1,1)
 
 		#Instanciation des personnages
 		self.darkVador=Personnage.Personnage(2)
