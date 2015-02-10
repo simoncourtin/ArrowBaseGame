@@ -11,9 +11,6 @@ from pygame.locals import *
 import random
 import Personnage
 
-SCREEN_WIDTH = 1366
-SCREEN_HEIGHT = 768
-
 class Serveur(Server):
 	channelClass = ClientChannel
 	
@@ -31,10 +28,10 @@ class Serveur(Server):
 		self.vegeta=Personnage.Personnage(4)
 		self.team1 = pygame.sprite.Group()
 		self.team2 = pygame.sprite.Group()
-		self.team1.add(vegeta)
-		self.team1.add(darkVador)
-		self.team1.add(deadpool)
-		self.team1.add(neo)
+		self.team1.add(self.vegeta)
+		self.team1.add(self.darkVador)
+		self.team1.add(self.deadpool)
+		self.team1.add(self.neo)
 		#end __init__
 
 	def Connected(self, channel, addr):

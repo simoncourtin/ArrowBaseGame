@@ -14,6 +14,9 @@ from src import Personnage
 from src import Animable
 from src import load_png
 
+SCREEN_WIDTH = 1366
+SCREEN_HEIGHT = 768
+
 class Client(ConnectionListener):
 	def __init__(self, host, port):
 		self.run = False # Booléen déterminant si ce client est connecté au serveur ou non
@@ -71,9 +74,9 @@ class Client(ConnectionListener):
 	   	
 	   	# updates
 	   	self.team1.update()
-		screen.blit(background_image, background_rect)
+		screen.blit(self.background_image, self.background_rect)
 		# drawings
-		team1.draw(screen)
+		team1.draw(self.screen)
 		# screen refreshing
 		pygame.display.flip()
 	#end Loop
