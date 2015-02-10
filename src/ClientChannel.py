@@ -2,13 +2,10 @@
 # coding : utf-8
 
 from PodSixNet.Channel import Channel
-from PodSixNet.Server import Server
 import time,sys
 import os
 import pygame
 from pygame.locals import *
-import random
-#from dns.rdatatype import NULL
 import Personnage
 
 class ClientChannel(Channel):
@@ -20,6 +17,7 @@ class ClientChannel(Channel):
 
 	def Close(self):
 		self._server.del_client(self)
+		print 'Client parti'
 	#end Close
 
 	#def Network_(self, data):

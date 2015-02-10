@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding : utf-8
 
-from PodSixNet.Channel import Channel
 import ClientChannel
 from PodSixNet.Server import Server
 import time,sys
@@ -12,7 +11,7 @@ import random
 import Personnage
 
 class Serveur(Server):
-	channelClass = ClientChannel
+	channelClass = ClientChannel.ClientChannel
 
 	def __init__(self, *args, **kwargs):
 		Server.__init__(self, *args, **kwargs)
@@ -20,6 +19,7 @@ class Serveur(Server):
 		print('Server launched')
 		self.clock = pygame.time.Clock()
 		self.clock = pygame.time.Clock()
+		self.screen = pygame.display.set_mode((50, 50))
 
 		#Instanciation des personnages
 		self.darkVador=Personnage.Personnage(2)
@@ -30,7 +30,6 @@ class Serveur(Server):
 		self.team1.add(self.vegeta)
 		self.team1.add(self.darkVador)
 		self.team1.add(self.deadpool)
-		self.team1.add(self.neo)
 		#end __init__
 
 	def Connected(self, channel, addr):
@@ -53,7 +52,6 @@ class Serveur(Server):
 		# Stuff
 		self.Pump()
 		self.clock.tick(60) # max speed is 60 frames per second
-		self.compteur += 1
 
 		# Events
 
@@ -68,7 +66,7 @@ class Serveur(Server):
 	#end Loop
 
 if __name__ == '__main__':
-    server = Server()
+    server = Serveur(localaddr = (sys.argv[1], int(sys.argv[2])))
 
     while True:
     	server.Loop()

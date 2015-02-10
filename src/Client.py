@@ -5,9 +5,10 @@ import sys
 import pygame
 
 from PodSixNet.Connection import connection, ConnectionListener
-from src import Personnage
-from src import load_png
+import Personnage
+import load_png
 from pygame.locals import *
+import os
 
 SCREEN_WIDTH = 1366
 SCREEN_HEIGHT = 768
@@ -23,7 +24,7 @@ class Client(ConnectionListener):
         pygame.key.set_repeat(1, 1)
 
         # Chargement du background de la map
-        self.background_image, self.background_rect = load_png.load_png('data/sprite/background.png')
+        self.background_image, self.background_rect = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/background.png")
 
         # Instanciation des personnages et des groupes de sprites
         self.neo = Personnage.Personnage(1)
@@ -43,39 +44,42 @@ class Client(ConnectionListener):
     # end __init__
 
     def Loop(self):
-        connection.Pump()
-        self.Pump()
-        self.clock.tick(60)  # max speed is 60 frames per second
-
-        # Events handling
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()  # closing the window exits the program
-            # end if
-        # end for
-
-    touches = pygame.key.get_pressed()
-
-    if (touches[K_q]):
-        return
-        # exit the program
-    if (touches[K_DOWN]):
-        connection.Send({"action": "move", "touche": "bas"})
-    if (touches[K_LEFT]):
-        connection.Send({"action": "move", "touche": "gauche"})
-    if (touches[K_RIGHT]):
-        connection.Send({"action": "move", "touche": "droite"})
-    if (touches[K_SPACE]):
-        connection.Send({"action": "move", "touche": "saut"})
-
-    # if not touches[K_LEFT] and not touches[K_RIGHT]
-    # updates
-    self.team1.update()
-    screen.blit(self.background_image, self.background_rect)
-    # drawings
-    team1.draw(self.screen)
-    # screen refreshing
-    pygame.display.flip()
+        while True:
+	        connection.Pump()
+	        self.Pump()
+	        self.clock.tick(60)  # max speed is 60 frames per second
+	
+	        # Events handling
+	        for event in pygame.event.get():
+	            if event.type == pygame.QUIT:
+	                return  # closing the window exits the program
+	            # end if
+	        # end for
+	
+			self.screen.blit(background_image, background_rect)
+		
+		    touches = pygame.key.get_pressed()
+		
+		    if (touches[K_q]):
+		        sys.exit(0)
+		        # exit the program
+		    if (touches[K_DOWN]):
+		        connection.Send({"action": "move", "touche": "bas"})
+		    if (touches[K_LEFT]):
+		        connection.Send({"action": "move", "touche": "gauche"})
+		    if (touches[K_RIGHT]):
+		        connection.Send({"action": "move", "touche": "droite"})
+		    if (touches[K_SPACE]):
+		        connection.Send({"action": "move", "touche": "saut"})
+		
+		    # if not touches[K_LEFT] and not touches[K_RIGHT]
+		    # updates
+		    self.team1.update()
+		    self.screen.blit(self.background_image, self.background_rect)
+		    # drawings
+		    self.team1.draw(self.screen)
+		    # screen refreshing
+		    pygame.display.flip()
     #end Loop
 
     #def Network_(self, data):
@@ -110,7 +114,8 @@ class Client(ConnectionListener):
 # end Client
 
 if __name__ == '__main__':
-    client = Client()
-    while True:
-        client.Loop()
+    client = Client(sys.argv[1], int(sys.argv[2]))
+   
+    client.Loop()
+    
     sys.exit(0)
