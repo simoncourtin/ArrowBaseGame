@@ -49,6 +49,10 @@ class Serveur(Server):
 	#end SendMessageAll
 
 	def Loop(self):
+		for c in self.clients:
+			c.neo.stopHorizontal()
+		#end for
+		
 		# Stuff
 		self.Pump()
 		self.clock.tick(60) # max speed is 60 frames per second
