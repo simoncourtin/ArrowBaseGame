@@ -85,4 +85,5 @@ class Personnage(Animable.Animable):
 		self.rect = self.rect.move(self.speed)
 		Animable.Animable.update(self)
 
+
 #end Personnage
