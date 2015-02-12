@@ -11,10 +11,16 @@ class Personnage(Animable.Animable):
 		pygame.sprite.Sprite.__init__(self)
 		Animable.Animable.__init__(self, cooldown=6)
 		self.numero = numero
+		self.isAnimated = False
+		self.orientation = "droite"
 		if self.numero == 1:
 			self.image, self.rect = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
 			self.rect.center = [SCREEN_WIDTH/2, SCREEN_HEIGHT/2]  
 			self.speed = [0,0]
+			#self.add_frame(pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoCours1.png"))
+			#self.add_frame(pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoCours2.png"))
+			#self.add_frame(pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoCours3.png"))
+			#self.add_frame(pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoCours4.png"))
 		if self.numero == 2:
 			self.image, self.rect = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteDarkVador.png")
 			self.rect.center = [SCREEN_WIDTH/2+50, SCREEN_HEIGHT/2]  
@@ -29,9 +35,8 @@ class Personnage(Animable.Animable):
 			self.speed = [0,0]
 		
 	def debout(self):
-		if self.isAccroupi == True:
-			if self.numero == 1:
-				self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
+		if self.numero == 1:
+			self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
 	
 	def sauter(self):
 		if self.numero == 1:
@@ -45,11 +50,9 @@ class Personnage(Animable.Animable):
 	
 	def down(self):
 		if self.numero == 1:
-			if self.isAccroupi == False:
-				self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
-				self.rect.y = self.rect.y+10
-				self.isAccroupi = True
-				self.debout()
+			self.orientation="accroupi"
+			self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
+			self.rect.y = self.rect.y+10
 		if self.numero == 2:
 			self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteDarkVadorAccroupi.png")
 			self.rect.y = self.rect.y+20
@@ -62,10 +65,6 @@ class Personnage(Animable.Animable):
 		#end down
 		
 	def left(self):
-		self.add_frame(pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoCours1.png"))
-		self.add_frame(pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoCours2.png"))
-		self.add_frame(pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoCours3.png"))
-		self.add_frame(pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoCours4.png"))
 		self.speed[0]=-5
 	#end left
 	
@@ -84,6 +83,16 @@ class Personnage(Animable.Animable):
 	def update(self):
 		self.rect = self.rect.move(self.speed)
 		Animable.Animable.update(self)
+		
+	def orienter(self, direction):
+		if self.orientation != "gauche":
+			if direction == "gauche":
+				self.orientation = "gauche"
+				self.image = pygame.transform.flip(self.image, True, False)
+		if self.orientation != "droite":
+			if direction == "droite":
+				self.orientation = "droite"
+				self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
 
 
 #end Personnage

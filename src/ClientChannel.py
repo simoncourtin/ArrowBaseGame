@@ -30,12 +30,14 @@ class ClientChannel(Channel):
 			self.neo.down()
 		elif(mouvement == "gauche"):
 			self.neo.left()
+			self.neo.orienter("gauche")
 		elif(mouvement == "droite"):
 			self.neo.right()
+			self.neo.orienter("droite")
 		elif(mouvement == "saut"):
 			self.neo.sauter()
 		
-		self._server.SendMessageAll("move", "data", (self.neo.rect.center,self.neo.speed))
+		self._server.SendMessageAll("move", "data", (self.neo.rect.center,self.neo.speed, self.neo.orientation))
 	#end Network_
 
 #end ClientChannel

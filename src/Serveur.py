@@ -45,6 +45,7 @@ class Serveur(Server):
 	def SendMessageAll(self, action, key, value):
 		for c in self.clients:
 			c.Send({"action":action, key:value})
+			print ({"action":action, key:value})
 		#end for
 	#end SendMessageAll
 
@@ -58,7 +59,6 @@ class Serveur(Server):
 		self.clock.tick(60) # max speed is 60 frames per second
 
 		# Events
-
 
 
 		# Updates

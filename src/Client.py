@@ -64,7 +64,7 @@ class Client(ConnectionListener):
 			if (touches[K_DOWN]):
 				connection.Send({"action": "move", "touche": "bas"})
 			if (touches[K_LEFT]):
-				connection.Send({"action": "move", "touche": "gauche"})
+				connection.Send({"action": "move", "touche": "gauche", "orientation":"gauche"})
 			if (touches[K_RIGHT]):
 				connection.Send({"action": "move", "touche": "droite"})
 			if (touches[K_SPACE]):
@@ -109,6 +109,7 @@ class Client(ConnectionListener):
 	def Network_move(self, data):
 		self.neo.rect.center = data['data'][0]
 		self.neo.speed = data['data'][1]
+		self.neo.orienter(data['data'][2])
 
 	 #end Network_move
 
