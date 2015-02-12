@@ -42,11 +42,11 @@ class Client(ConnectionListener):
 	def Loop(self):
 		while True:
 			self.neo.stopHorizontal()
-			
+
 			connection.Pump()
 			self.Pump()
 			self.clock.tick(60)  # max speed is 60 frames per second
-	
+
 			# Events handling
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
@@ -55,7 +55,7 @@ class Client(ConnectionListener):
 			# end for
 
 
-			
+
 			# Gestion des événements de ce client
 			touches = pygame.key.get_pressed()
 			if (touches[K_q]):
@@ -69,7 +69,7 @@ class Client(ConnectionListener):
 				connection.Send({"action": "move", "touche": "droite"})
 			if (touches[K_SPACE]):
 				connection.Send({"action": "move", "touche": "saut"})
-		
+
 			# updates
 			self.team1.update()
 
@@ -117,7 +117,7 @@ class Client(ConnectionListener):
 
 if __name__ == '__main__':
 	client = Client(sys.argv[1], int(sys.argv[2]))
-   
+
 	client.Loop()
-	
+
 	sys.exit(0)
