@@ -11,68 +11,63 @@ import random
 import Personnage
 
 class Serveur(Server):
-	channelClass = ClientChannel.ClientChannel
+    channelClass = ClientChannel.ClientChannel
 
-	def __init__(self, *args, **kwargs):
-		Server.__init__(self, *args, **kwargs)
-		self.clients = []
-		print('Server launched')
-		self.clock = pygame.time.Clock()
-		self.clock = pygame.time.Clock()
-		self.screen = pygame.display.set_mode((50, 50))
+    def __init__(self, *args, **kwargs):
+        Server.__init__(self, *args, **kwargs)
+        self.clients = []
+        print('Server launched')
+        self.clock = pygame.time.Clock()
+        self.clock = pygame.time.Clock()
+        self.screen = pygame.display.set_mode((50, 50))
 
-		#Instanciation des personnages
-		self.darkVador=Personnage.Personnage(2)
-		self.deadpool=Personnage.Personnage(3)
-		self.vegeta=Personnage.Personnage(4)
-		self.team1 = pygame.sprite.Group()
-		self.team2 = pygame.sprite.Group()
-		self.team1.add(self.vegeta)
-		self.team1.add(self.darkVador)
-		self.team1.add(self.deadpool)
-		#end __init__
+        #Instanciation des personnages
+        self.team1 = pygame.sprite.Group()
+        self.team2 = pygame.sprite.Group()
 
-	def Connected(self, channel, addr):
-		print('New connection')
-		self.clients.append(channel)
-	#end Connected
+    #end __init_
 
-	def del_client(self,channel):
-		print('client deconnecte')
-		self.clients.remove(channel)
-	#end del_client
+    def Connected(self, channel, addr):
+        print('New connection')
+        self.clients.append(channel)
+    #end Connected
 
-	def SendMessageAll(self, action, key, value):
-		for c in self.clients:
-			c.Send({"action":action, key:value})
-		#end for
-	#end SendMessageAll
+    def del_client(self,channel):
+        print('client deconnecte')
+        self.clients.remove(channel)
+    #end del_client
 
-	def Loop(self):
-		for c in self.clients:
-			c.neo.stopHorizontal()
-		#end for
-		
-		# Stuff
-		self.Pump()
-		self.clock.tick(60) # max speed is 60 frames per second
+    def SendMessageAll(self, action, key, value):
+        for c in self.clients:
+            c.Send({"action":action, key:value})
+        #end for
+    #end SendMessageAll
 
-		# Events
+    def Loop(self):
+        for c in self.clients:
+            c.neo.stopHorizontal()
+        #end for
+
+        # Stuff
+        self.Pump()
+        self.clock.tick(60) # max speed is 60 frames per second
+
+        # Events
 
 
 
-		# Updates
-		self.team1.update()
-		self.team2.update()
+        # Updates
+        self.team1.update()
+        self.team2.update()
 
-		# Collisions
+    # Collisions
 
-	#end Loop
+    #end Loop
 
 if __name__ == '__main__':
     server = Serveur(localaddr = (sys.argv[1], int(sys.argv[2])))
 
     while True:
-    	server.Loop()
+        server.Loop()
     sys.exit(0)
-#end MyServer
+    #end MyServer
