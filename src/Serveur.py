@@ -16,9 +16,10 @@ class Serveur(Server):
     def __init__(self, *args, **kwargs):
         Server.__init__(self, *args, **kwargs)
         self.clients = []
+        self.joueur ={}
         print('Server launched')
         self.clock = pygame.time.Clock()
-        self.clock = pygame.time.Clock()
+        #definiriton de le la fenetre
         self.screen = pygame.display.set_mode((50, 50))
 
         #Instanciation des personnages
@@ -37,9 +38,9 @@ class Serveur(Server):
         self.clients.remove(channel)
     #end del_client
 
-    def SendMessageAll(self, action, key, value):
+    def SendMessageAll(self, message):
         for c in self.clients:
-            c.Send({"action":action, key:value})
+            c.Send(message)
         #end for
     #end SendMessageAll
 
