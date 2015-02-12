@@ -40,6 +40,7 @@ class Serveur(Server):
     def SendMessageAll(self, action, key, value):
         for c in self.clients:
             c.Send({"action":action, key:value})
+            print ({"action":action, key:value})
         #end for
     #end SendMessageAll
 

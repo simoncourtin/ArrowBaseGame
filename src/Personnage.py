@@ -12,6 +12,8 @@ class Personnage(Animable.Animable):
 		Animable.Animable.__init__(self, cooldown=6)
 		self.numero = numero
 		self.isAnimated = False
+		self.isDown = False
+		self.peutAttaquer = True
 		self.orientation = "droite"
 		if self.numero == 1:
 			self.image, self.rect = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
@@ -33,10 +35,6 @@ class Personnage(Animable.Animable):
 			self.image, self.rect = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteVegeta.png")
 			self.rect.center = [SCREEN_WIDTH/2-50, SCREEN_HEIGHT/2]  
 			self.speed = [0,0]
-		
-	def debout(self):
-		if self.numero == 1:
-			self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
 	
 	def sauter(self):
 		if self.numero == 1:
@@ -49,19 +47,21 @@ class Personnage(Animable.Animable):
 			self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteVegetaSaut.png")
 	
 	def down(self):
-		if self.numero == 1:
-			self.orientation="accroupi"
-			self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
-			self.rect.y = self.rect.y+10
-		if self.numero == 2:
-			self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteDarkVadorAccroupi.png")
-			self.rect.y = self.rect.y+20
-		if self.numero == 3:
-			self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteDeadpoolAccroupi.png")
-			self.rect.y = self.rect.y+35
-		if self.numero == 4:
-			self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteVegetaAccroupi.png")
-			self.rect.y = self.rect.y+10
+		if self.isDown == False:
+			if self.numero == 1:
+				self.isDown = True
+				self.peutAttaquer = False
+				self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
+				self.rect.y = self.rect.y+10
+			if self.numero == 2:
+				self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteDarkVadorAccroupi.png")
+				self.rect.y = self.rect.y+20
+			if self.numero == 3:
+				self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteDeadpoolAccroupi.png")
+				self.rect.y = self.rect.y+35
+			if self.numero == 4:
+				self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteVegetaAccroupi.png")
+				self.rect.y = self.rect.y+10
 		#end down
 		
 	def left(self):
@@ -92,7 +92,17 @@ class Personnage(Animable.Animable):
 		if self.orientation != "droite":
 			if direction == "droite":
 				self.orientation = "droite"
-				self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
-
+				self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")[0]
+		if self.orientation != "bas":
+			if direction == "bas":
+				self.orientation = "bas"
+				self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
+		if self.orientation != "haut":
+			if direction == "haut":
+				self.orientation = "droite"
+				self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")[0]		
+				self.rect.y = self.rect.y-10
+				self.isDown = False
+				self.peutAttaquer = True
 
 #end Personnage

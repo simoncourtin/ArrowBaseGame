@@ -27,13 +27,20 @@ class ClientChannel(Channel):
 	def Network_move(self, data):
 		mouvement=data['touche']
 		if(mouvement == "bas"):
+			if self.neo.orientation == "droite" or self.neo.orientation == "gauche":
+				self.neo.orienter("bas")
 			self.neo.down()
+		elif(mouvement == "haut"):
+			if self.neo.orientation == "bas":
+				self.neo.orienter("haut")
 		elif(mouvement == "gauche"):
+			if self.neo.orientation == "droite":
+				self.neo.orienter("gauche")
 			self.neo.left()
-			self.neo.orienter("gauche")
 		elif(mouvement == "droite"):
+			if self.neo.orientation == "gauche":
+				self.neo.orienter("droite")
 			self.neo.right()
-			self.neo.orienter("droite")
 		elif(mouvement == "saut"):
 			self.neo.sauter()
 		
