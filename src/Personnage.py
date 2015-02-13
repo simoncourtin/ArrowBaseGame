@@ -5,6 +5,8 @@ import Animable
 
 SCREEN_WIDTH = 1366
 SCREEN_HEIGHT = 768
+VITESSE_DEBUT_SAUT = 20
+ACCELERATION_GRAVITE = 1
 
 class Personnage(Animable.Animable):
     def __init__(self, numero,id):
@@ -14,6 +16,7 @@ class Personnage(Animable.Animable):
         self.numero = numero
         self.isAnimated = False
         self.isDown = False
+        self.isJumping = False
         self.peutAttaquer = True
         self.orientation = "droite"
         if self.numero == 1:
@@ -46,6 +49,12 @@ class Personnage(Animable.Animable):
             self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteDeadpoolSaut.png")
         if self.numero == 4:
             self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteVegetaSaut.png")
+
+        if not self.isJumping:
+            self.speed[1] = -VITESSE_DEBUT_SAUT
+            self.isJumping = True
+        #end if
+    #end sauter
 
     def down(self):
         if self.isDown == False:
@@ -85,6 +94,19 @@ class Personnage(Animable.Animable):
         self.rect = self.rect.move(self.speed)
         Animable.Animable.update(self)
 
+        if self.isJumping:
+            self.speed[1] = self.speed[1] + ACCELERATION_GRAVITE
+        #end if
+
+        # Arreter le saut => MODIFIER LA CONDITION (peut-etre a placer dans ClientChannel)
+        if (self.rect.center[1] > 500) and self.isJumping:
+            self.speed[1] = 0
+            self.isJumping = False
+        elif (self.rect.center[1] <= 500) and not self.isJumping:
+            self.isJumping = True
+        #end if
+    #end update
+
     def orienter(self, direction):
         if self.orientation != "gauche":
             if direction == "gauche":
@@ -105,6 +127,6 @@ class Personnage(Animable.Animable):
                 self.rect.y = self.rect.y-10
                 self.isDown = False
                 self.peutAttaquer = True
-
-
+        #end if
+    #end orienter
 #end Personnage
