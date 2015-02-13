@@ -8,7 +8,6 @@ import pygame
 from pygame.locals import *
 import Personnage
 
-
 class ClientChannel(Channel):
 
     def __init__(self, *args, **kwargs):
@@ -22,11 +21,11 @@ class ClientChannel(Channel):
     def sendMove(self):
         message = {"action":"move", "data":(self.personnage.rect.center,self.personnage.speed, self.personnage.orientation),'id':self.identifiant}
         self._server.SendMessageAll(message)
+    #end sendMove
 
     def Close(self):
         self._server.del_client(self)
         print 'Client parti'
-
     #end Close
 
     #def Network_(self, data):
@@ -38,10 +37,15 @@ class ClientChannel(Channel):
         if(mouvement == "bas"):
             if self.personnage.orientation == "droite" or self.personnage.orientation == "gauche":
                 self.personnage.orienter("bas")
+            #end if
+
             self.personnage.down()
         elif(mouvement == "haut"):
             if self.personnage.orientation == "bas":
                 self.personnage.orienter("haut")
+            #end if
+
+            self.personnage.sauter()
         elif(mouvement == "gauche"):
             if self.personnage.orientation == "droite":
                 self.personnage.orienter("gauche")

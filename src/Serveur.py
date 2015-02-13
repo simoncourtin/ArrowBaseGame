@@ -10,6 +10,8 @@ from pygame.locals import *
 import random
 import Personnage
 
+listeImages = {}
+
 class Serveur(Server):
     channelClass = ClientChannel.ClientChannel
 

@@ -2,7 +2,7 @@ import pygame
 from PodSixNet.Connection import connection, ConnectionListener
 import Personnage
 
-class GourpJoueur(pygame.sprite.Group,ConnectionListener):
+class GroupJoueur(pygame.sprite.Group,ConnectionListener):
 
     def Network_move(self, data):
         print str(data['id'])+" moves"

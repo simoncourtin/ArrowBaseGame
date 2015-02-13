@@ -1,125 +1,116 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from PodSixNet.Connection import connection, ConnectionListener
 import sys
 import pygame
-
-from PodSixNet.Connection import connection, ConnectionListener
+import GroupJoueur
 import Personnage
-import load_png
+import utils
 from pygame.locals import *
 import os
 
 SCREEN_WIDTH = 1366
 SCREEN_HEIGHT = 768
 
+listeImages = {}
+
 
 class Client(ConnectionListener):
-	def __init__(self, host, port):
-		self.run = False  # Booléen déterminant si ce client est connecté au serveur ou non
-		self.Connect((host, port))
-		pygame.init()
-		self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-		self.clock = pygame.time.Clock()
-		pygame.key.set_repeat(1, 1)
+    def __init__(self, host, port):
+        self.run = False  # Booléen déterminant si ce client est connecté au serveur ou non
+        #connexion au serveur
+        self.Connect((host, port))
+        #initialisation de pygame
+        pygame.init()
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.clock = pygame.time.Clock()
+        pygame.key.set_repeat(1, 1)
+        #numero d'id sur le serveur
+        self.idServeur = 0
 
-		# Chargement du background de la map
-		self.background_image, self.background_rect = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/background.png")
+        # Chargement du background de la map
+        self.background_image, self.background_rect = utils.load_png(os.path.dirname(__file__)+"/../data/sprite/background.png")
 
-		# Instanciation des personnages et des groupes de sprites
-		self.neo = Personnage.Personnage(1)
-		self.darkVador = Personnage.Personnage(2)
-		self.deadpool = Personnage.Personnage(3)
-		self.vegeta = Personnage.Personnage(4)
-		self.team1 = pygame.sprite.Group()
-		self.team2 = pygame.sprite.Group()
-		self.team1.add(self.vegeta)
-		self.team1.add(self.darkVador)
-		self.team1.add(self.deadpool)
-		self.team1.add(self.neo)
-	# end __init__
+        # Instanciation des personnages et des groupes de sprites
+        self.monGroup =  GroupJoueur.GroupJoueur()
+    # end __init__
 
-	def Loop(self):
-		while True:
-			self.neo.stopHorizontal()
+    def Loop(self):
+        while True:
+            connection.Pump()
+            self.monGroup.Pump()
+            self.Pump()
+            if self.run:
+                self.clock.tick(60)  # max speed is 60 frames per second
 
-			connection.Pump()
-			self.Pump()
-			self.clock.tick(60)  # max speed is 60 frames per second
+                # Vitesse horizontale du joueur à zéro
+                self.monGroup.stopHorizontal()
 
-			# Events handling
-			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
-					return  # closing the window exits the program
-				# end if
-			# end for
+                # Events handling
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        return  # closing the window exits the program
+                    # end if
+                # end for
 
 
+                # Gestion des événements de ce client
+                touches = pygame.key.get_pressed()
+                if (touches[K_DOWN]):
+                    connection.Send({"action": "move", "touche": "bas"})
+                if (touches[K_LEFT]):
+                    connection.Send({"action": "move", "touche": "gauche"})
+                if (touches[K_RIGHT]):
+                    connection.Send({"action": "move", "touche": "droite"})
+                if (touches[K_SPACE]):
+                    connection.Send({"action": "move", "touche": "saut"})
 
-			# Gestion des événements de ce client
-			touches = pygame.key.get_pressed()
-			if (touches[K_q]):
-				sys.exit(0)
-				# exit the program
-			if (touches[K_UP]):
-				connection.Send({"action": "move", "touche": "haut", "orientation":"haut"})
-			if (touches[K_DOWN]):
-				connection.Send({"action": "move", "touche": "bas", "orientation":"bas"})
-			if (touches[K_LEFT]):
-				connection.Send({"action": "move", "touche": "gauche", "orientation":"gauche"})
-			if (touches[K_RIGHT]):
-				connection.Send({"action": "move", "touche": "droite", "orientation":"droite"})
-			if (touches[K_SPACE]):
-				connection.Send({"action": "move", "touche": "saut"})
+                # updates
+                self.monGroup.update()
 
-			# updates
-			self.team1.update()
+                # drawings
+                self.screen.blit(self.background_image, self.background_rect)
+                self.monGroup.draw(self.screen)
 
-			# drawings
-			self.screen.blit(self.background_image, self.background_rect)
-			self.team1.draw(self.screen)
+                # screen refreshing
+                pygame.display.flip()
+            #end if
+        #end while
+    #end Loop
 
-			# screen refreshing
-			pygame.display.flip()
-		#end while
-	#end Loop
+    ### Network event/message callbacks ###
+    def Network_connected(self, data):
+        print('Connexion au serveur !')
+        print('En attente de l''identifcation ......')
+    #end Network_connected
 
-	#def Network_(self, data):
-	# Blabla
-	#end Network_
+    def Network_identification(self,data):
+        print 'attribution id sur le serveur. Id : '+ str(data['id'])
+        self.monGroup.add(Personnage.Personnage(1,data['id']))
+        print 'creation du personnage'
+        self.run = True
+    #end Network_identifiaction
 
-	### Network event/message callbacks ###
-	def Network_connected(self, data):
-		self.run = True
-		print('Connexion au serveur !')
+    def Network_error(self, data):
+        print 'error:', data['error'][1]
+        connection.Close()
+        sys.exit()
 
-	#end Network_connected
+    #end Network_error
 
-	def Network_error(self, data):
-		print 'error:', data['error'][1]
-		connection.Close()
-		sys.exit()
+    def Network_disconnected(self, data):
+        print 'Server disconnected'
+        sys.exit()
 
-	#end Network_error
+    #end Network_disconnected
 
-	def Network_disconnected(self, data):
-		print 'Server disconnected'
-		sys.exit()
-
-	#end Network_disconnected
-
-	def Network_move(self, data):
-		self.neo.rect.center = data['data'][0]
-		self.neo.speed = data['data'][1]
-		self.neo.orienter(data['data'][2])
-
-	 #end Network_move
-
-# end Client
+#end Client
 
 if __name__ == '__main__':
-	client = Client(sys.argv[1], int(sys.argv[2]))
+    client = Client(sys.argv[1], int(sys.argv[2]))
 
-	client.Loop()
+    client.Loop()
 
-	sys.exit(0)
+    sys.exit(0)
+#end if
