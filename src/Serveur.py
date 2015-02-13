@@ -24,9 +24,6 @@ class Serveur(Server):
         #definiriton de le la fenetre
         self.screen = pygame.display.set_mode((50, 50))
 
-        #Instanciation des personnages
-        self.team1 = pygame.sprite.Group()
-        self.team2 = pygame.sprite.Group()
 
     #end __init_
 
@@ -41,6 +38,7 @@ class Serveur(Server):
         self.clients.append(channel)
         channel.Send({'action':'identification','id':self.nb_joueur})
         self.SendMessageAll({'action':'players','ids':self.ids})
+        #on envoie les position de tous les personnage a tous le monde
         for c in self.clients:
             c.sendMove()
     #end Connected
