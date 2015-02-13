@@ -36,11 +36,13 @@ class Serveur(Server):
         self.nb_joueur += 1
         print 'Client avec id : ' + str(self.nb_joueur)
         channel.identifiant = self.nb_joueur
+        print channel.identifiant
         self.ids.append(self.nb_joueur)
         self.clients.append(channel)
         channel.Send({'action':'identification','id':self.nb_joueur})
-        channel.Send({'action':'players','ids':self.ids})
         self.SendMessageAll({'action':'players','ids':self.ids})
+        for c in self.clients:
+            c.sendMove()
     #end Connected
 
     def del_client(self,channel):

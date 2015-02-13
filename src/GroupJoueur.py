@@ -5,7 +5,7 @@ import Personnage
 class GourpJoueur(pygame.sprite.Group,ConnectionListener):
 
     def Network_move(self, data):
-        print data['id']
+        print str(data['id'])+" moves"
         for s in self:
             if s.idJoueur == data['id']:
                 s.rect.center = data['data'][0]

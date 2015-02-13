@@ -14,9 +14,14 @@ class ClientChannel(Channel):
     def __init__(self, *args, **kwargs):
         Channel.__init__(self, *args, **kwargs)
         self.identifiant = 0
-        self.personnage = Personnage.Personnage(1,0)
+        self.personnage = Personnage.Personnage(1,self.identifiant)
         self._server.joueur.add(self.personnage)
     # end __init__
+
+
+    def sendMove(self):
+        message = {"action":"move", "data":(self.personnage.rect.center,self.personnage.speed, self.personnage.orientation),'id':self.identifiant}
+        self._server.SendMessageAll(message)
 
     def Close(self):
         self._server.del_client(self)
@@ -30,26 +35,25 @@ class ClientChannel(Channel):
 
     def Network_move(self, data):
         mouvement=data['touche']
-		if(mouvement == "bas"):
-			if self.neo.orientation == "droite" or self.neo.orientation == "gauche":
-				self.neo.orienter("bas")
-			self.neo.down()
-		elif(mouvement == "haut"):
-			if self.neo.orientation == "bas":
-				self.neo.orienter("haut")
-		elif(mouvement == "gauche"):
-			if self.neo.orientation == "droite":
-				self.neo.orienter("gauche")
-			self.neo.left()
-		elif(mouvement == "droite"):
-			if self.neo.orientation == "gauche":
-				self.neo.orienter("droite")
-			self.neo.right()
-		elif(mouvement == "saut"):
-			self.neo.sauter()
+        if(mouvement == "bas"):
+            if self.personnage.orientation == "droite" or self.personnage.orientation == "gauche":
+                self.personnage.orienter("bas")
+            self.personnage.down()
+        elif(mouvement == "haut"):
+            if self.personnage.orientation == "bas":
+                self.personnage.orienter("haut")
+        elif(mouvement == "gauche"):
+            if self.personnage.orientation == "droite":
+                self.personnage.orienter("gauche")
+            self.personnage.left()
+        elif(mouvement == "droite"):
+            if self.personnage.orientation == "gauche":
+                self.personnage.orienter("droite")
+            self.personnage.right()
+        elif(mouvement == "saut"):
+            self.personnage.sauter()
 
-		message = {"action":"move", "data":(self.neo.rect.center,self.neo.speed, self.neo.orientation)}
-		self._server.SendMessageAll(message)
+        self.sendMove()
 
         #end ClientChannel
 
