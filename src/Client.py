@@ -61,12 +61,14 @@ class Client(ConnectionListener):
 			if (touches[K_q]):
 				sys.exit(0)
 				# exit the program
+			if (touches[K_UP]):
+				connection.Send({"action": "move", "touche": "haut", "orientation":"haut"})
 			if (touches[K_DOWN]):
-				connection.Send({"action": "move", "touche": "bas"})
+				connection.Send({"action": "move", "touche": "bas", "orientation":"bas"})
 			if (touches[K_LEFT]):
 				connection.Send({"action": "move", "touche": "gauche", "orientation":"gauche"})
 			if (touches[K_RIGHT]):
-				connection.Send({"action": "move", "touche": "droite"})
+				connection.Send({"action": "move", "touche": "droite", "orientation":"droite"})
 			if (touches[K_SPACE]):
 				connection.Send({"action": "move", "touche": "saut"})
 

@@ -10,6 +10,7 @@ import Personnage
 
 
 class ClientChannel(Channel):
+
     def __init__(self, *args, **kwargs):
         Channel.__init__(self, *args, **kwargs)
         self.identifiant = 0
@@ -28,20 +29,27 @@ class ClientChannel(Channel):
     #end Network_
 
     def Network_move(self, data):
-        mouvement = data['touche']
-        if (mouvement == "bas"):
-            self.personnage.down()
-        elif (mouvement == "gauche"):
-            self.personnage.left()
-            self.personnage.orienter("gauche")
-        elif (mouvement == "droite"):
-            self.personnage.right()
-            self.personnage.orienter("droite")
-        elif (mouvement == "saut"):
-            self.personnage.sauter()
+        mouvement=data['touche']
+		if(mouvement == "bas"):
+			if self.neo.orientation == "droite" or self.neo.orientation == "gauche":
+				self.neo.orienter("bas")
+			self.neo.down()
+		elif(mouvement == "haut"):
+			if self.neo.orientation == "bas":
+				self.neo.orienter("haut")
+		elif(mouvement == "gauche"):
+			if self.neo.orientation == "droite":
+				self.neo.orienter("gauche")
+			self.neo.left()
+		elif(mouvement == "droite"):
+			if self.neo.orientation == "gauche":
+				self.neo.orienter("droite")
+			self.neo.right()
+		elif(mouvement == "saut"):
+			self.neo.sauter()
 
-        message = {"action": "move", "data": (self.personnage.rect.center, self.personnage.speed, self.personnage.orientation),"id":self.identifiant}
-        self._server.SendMessageAll(message)
-        #end Network_move
+		message = {"action":"move", "data":(self.neo.rect.center,self.neo.speed, self.neo.orientation)}
+		self._server.SendMessageAll(message)
 
         #end ClientChannel
+
