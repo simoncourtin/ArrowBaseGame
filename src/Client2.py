@@ -3,7 +3,7 @@
 
 import sys
 import pygame
-
+import GroupJoueur
 from PodSixNet.Connection import connection, ConnectionListener
 import Personnage
 import utils
@@ -26,23 +26,24 @@ class Client(ConnectionListener):
         pygame.key.set_repeat(1, 1)
         #numero d'id sur le serveur
         self.idServeur = 0
+
         # Chargement du background de la map
-        self.background_image, self.background_rect = utils.load_png("/../data/sprite/background.png")
+        self.background_image, self.background_rect = utils.load_png(os.path.dirname(__file__)+"/../data/sprite/background.png")
 
         # Instanciation des personnages et des groupes de sprites
-        self.joueur = None
-        self.autreJoueur = pygame.sprite.Group()
+        self.monGroup =  GroupJoueur.GourpJoueur()
 # end __init__
 
     def Loop(self):
         while True:
-            if(self.run):
-                connection.Pump()
-                self.Pump()
+            connection.Pump()
+            self.monGroup.Pump()
+            self.Pump()
+            if self.run:
                 self.clock.tick(60)  # max speed is 60 frames per second
 
                 #vitesse du joueur à zéro
-                self.joueur.stopHorizontal()
+                self.monGroup.stopHorizontal()
 
                 # Events handling
                 for event in pygame.event.get():
@@ -64,13 +65,11 @@ class Client(ConnectionListener):
                     connection.Send({"action": "move", "touche": "saut"})
 
                 # updates
-                self.joueur.update()
-                self.autreJoueur.update()
+
 
                 # drawings
                 self.screen.blit(self.background_image, self.background_rect)
-                self.joueur.update()
-                self.autreJoueur.draw(self.screen)
+                self.monGroup.draw(self.screen)
 
                 # screen refreshing
                 pygame.display.flip()
@@ -81,13 +80,15 @@ class Client(ConnectionListener):
     ### Network event/message callbacks ###
     def Network_connected(self, data):
         print('Connexion au serveur !')
-        print('attribution de l''id sur le serveur. Id : '+data['id'])
-        self.joueur = Personnage.Personnage(1)
+        print('En attente de l''identifcation ......')
+    #end Network_connected
+
+    def Network_identification(self,data):
+        print 'attribution id sur le serveur. Id : '+ str(data['id'])
+        self.monGroup.add(Personnage.Personnage(1,data['id']))
         print 'creation du personnage'
         self.run = True
-
-
-    #end Network_connected
+    #end Network_identifiaction
 
     def Network_error(self, data):
         print 'error:', data['error'][1]
@@ -102,11 +103,6 @@ class Client(ConnectionListener):
 
     #end Network_disconnected
 
-    def Network_move(self, data):
-        self.neo.rect.center = data['data'][0]
-        self.neo.speed = data['data'][1]
-
-    #end Network_move
 #end Client
 
 if __name__ == '__main__':

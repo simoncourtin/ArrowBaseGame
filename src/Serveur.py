@@ -15,8 +15,10 @@ class Serveur(Server):
 
     def __init__(self, *args, **kwargs):
         Server.__init__(self, *args, **kwargs)
+        self.nb_joueur = 0
+        self.ids=[]
         self.clients = []
-        self.joueur ={}
+        self.joueur = pygame.sprite.Group()
         print('Server launched')
         self.clock = pygame.time.Clock()
         #definiriton de le la fenetre
@@ -29,8 +31,16 @@ class Serveur(Server):
     #end __init_
 
     def Connected(self, channel, addr):
-        print('New connection')
+        print 'New connection'
+        print 'Nouveau client'
+        self.nb_joueur += 1
+        print 'Client avec id : ' + str(self.nb_joueur)
+        channel.identifiant = self.nb_joueur
+        self.ids.append(self.nb_joueur)
         self.clients.append(channel)
+        channel.Send({'action':'identification','id':self.nb_joueur})
+        channel.Send({'action':'players','ids':self.ids})
+        self.SendMessageAll({'action':'players','ids':self.ids})
     #end Connected
 
     def del_client(self,channel):
@@ -46,20 +56,15 @@ class Serveur(Server):
 
     def Loop(self):
         for c in self.clients:
-            c.neo.stopHorizontal()
+            c.personnage.stopHorizontal()
         #end for
 
         # Stuff
         self.Pump()
         self.clock.tick(60) # max speed is 60 frames per second
-
         # Events
-
-
-
         # Updates
-        self.team1.update()
-        self.team2.update()
+        self.joueur.update()
 
     # Collisions
 
