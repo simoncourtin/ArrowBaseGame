@@ -83,6 +83,9 @@ class Serveur(Server):
         self.Pump()
         self.clock.tick(60) # max speed is 60 frames per second
         # Events
+        collisions = pygame.sprite.groupcollide(self.joueur,self.carte.getCalqueIndice(1).getGroupeTuiles(),False,False)
+        if collisions:
+            print "collide"
         # Updates
         self.carte.afficherCarte()
         self.joueur.update()
