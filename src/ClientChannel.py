@@ -6,6 +6,7 @@ import time, sys
 import os
 import pygame
 from pygame.locals import *
+
 import Personnage
 
 class ClientChannel(Channel):
@@ -23,6 +24,8 @@ class ClientChannel(Channel):
         self._server.SendMessageAll(message)
     #end sendMove
 
+
+
     def Close(self):
         self._server.del_client(self)
         print 'Client parti'
@@ -31,6 +34,7 @@ class ClientChannel(Channel):
     #def Network_(self, data):
 
     #end Network_
+
 
     def Network_move(self, data):
         mouvement=data['touche']

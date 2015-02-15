@@ -9,6 +9,7 @@ import Personnage
 import utils
 from pygame.locals import *
 import os
+from  module_map import Map
 
 SCREEN_WIDTH = 1366
 SCREEN_HEIGHT = 768
@@ -28,6 +29,7 @@ class Client(ConnectionListener):
         pygame.key.set_repeat(1, 1)
         #numero d'id sur le serveur
         self.idServeur = 0
+        self.carte = None
 
         # Chargement du background de la map
         self.background_image, self.background_rect = utils.load_png(os.path.dirname(__file__)+"/../data/sprite/background.png")
@@ -70,7 +72,7 @@ class Client(ConnectionListener):
                 self.monGroup.update()
 
                 # drawings
-                self.screen.blit(self.background_image, self.background_rect)
+                self.carte.afficherCarte()
                 self.monGroup.draw(self.screen)
 
                 # screen refreshing
@@ -87,10 +89,17 @@ class Client(ConnectionListener):
 
     def Network_identification(self,data):
         print 'attribution id sur le serveur. Id : '+ str(data['id'])
-        self.monGroup.add(Personnage.Personnage(1,data['id']))
+        #self.monGroup.add(Personnage.Personnage(1,data['id']))
         print 'creation du personnage'
-        self.run = True
+
     #end Network_identifiaction
+
+    def Network_carteJeu(self,data):
+        print 'distirbution de la carte '
+        self.carte= Map.Map(self.screen,data['carte'])
+        print 'la carte à bien été recu '
+        self.run = True
+    #end Network_carteJeu
 
     def Network_error(self, data):
         print 'error:', data['error'][1]
