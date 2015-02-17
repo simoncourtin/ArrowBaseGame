@@ -11,8 +11,8 @@ from pygame.locals import *
 import os
 from  module_map import Map
 
-SCREEN_WIDTH = 1366
-SCREEN_HEIGHT = 768
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 
 listeImages = {}
 

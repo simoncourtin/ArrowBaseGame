@@ -51,7 +51,7 @@ class Calque():
         for element in self.calque:
             if element != '\n':
                 self.largeur_map += 1
-                if element!='0':
+                if element!="0":
                     X ,Y = self.calcul_position_tuile_tilset(element)
                     tile = self.tilset.subsurface(X,Y,hauteur,largeur)
                     tuile = _tuile.Tuile(tile,element,x,y)

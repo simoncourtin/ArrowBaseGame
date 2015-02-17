@@ -99,6 +99,7 @@ class Personnage(Animable.Animable):
         #end if
 
         # Arreter le saut => MODIFIER LA CONDITION (peut-etre a placer dans ClientChannel)
+
         if (self.rect.center[1] > 500) and self.isJumping:
             self.speed[1] = 0
             self.isJumping = False

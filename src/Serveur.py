@@ -12,6 +12,8 @@ import Personnage
 from  module_map import Map
 
 listeImages = {}
+TAB_MAP = [("Image","../data/map/map02/background.png",True),
+            ("","../data/map/map02/plateforme.txt",'../data/map/map02/terre.png',32,32)]
 
 class Serveur(Server):
     channelClass = ClientChannel.ClientChannel
@@ -41,8 +43,7 @@ class Serveur(Server):
         self.clients.append(channel)
         channel.Send({'action':'identification','id':self.nb_joueur})
         #envoi de la map generer par le serveur
-        channel.Send({'action':'carteJeu','carte':[("Image","../data/map/map01/background.png",True),
-            ("","../data/map/map01/plateforme.txt",'../data/map/map01/terre.png',32,32)]})
+        channel.Send({'action':'carteJeu','carte':TAB_MAP})
         #on envoie les position de tous les personnage a tous le monde
         self.SendMessageAll({'action':'players','ids':self.ids})
 
@@ -68,8 +69,7 @@ class Serveur(Server):
         #fichiers de tileset
         tileset = '../data/map/map01/terre.png'
         #creation de la carte
-        carte = Map.Map(self.screen,[("Image","../data/map/map01/background.png",True),
-            ("","../data/map/map01/plateforme.txt",tileset,32,32)])
+        carte = Map.Map(self.screen,TAB_MAP)
         self.carte=carte
         return carte
     #end generationMap
@@ -82,13 +82,17 @@ class Serveur(Server):
         # Stuff
         self.Pump()
         self.clock.tick(60) # max speed is 60 frames per second
-        # Events
-        collisions = pygame.sprite.groupcollide(self.joueur,self.carte.getCalqueIndice(1).getGroupeTuiles(),False,False)
-        if collisions:
-            print "collide"
+
         # Updates
         self.carte.afficherCarte()
         self.joueur.update()
+        # Events
+        wall = pygame.sprite.groupcollide(self.joueur,self.carte.getCalqueIndice(1).getGroupeTuiles(),False,False)
+        for j in wall:
+            print "collision"
+
+
+
 
     # Collisions
 
