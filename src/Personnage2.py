@@ -36,13 +36,6 @@ class Personnage(Animable.Animable):
         self.speed[0]=5
     #end right
 
-	def stopHorizontal(self):
-		self.speed[0]=0
-	#end stopHorizontal
-
-	def stopVertical(self):
-		self.speed[1]=0
-	#end stopHorizontal
 
 	def update(self):
 		self.rect = self.rect.move(self.speed)

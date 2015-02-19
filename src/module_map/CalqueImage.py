@@ -1,10 +1,11 @@
 __author__ = 'Simon Courtin'
 import pygame
+import os
 
 class CalqueImage:
 
     def  __init__(self,screen,image,fixe=True):
-        self.image = pygame.image.load(image).convert_alpha()
+        self.image = pygame.image.load(os.path.dirname(__file__)+"/"+image).convert_alpha()
         self.screen = screen
         self.fixe = fixe
 

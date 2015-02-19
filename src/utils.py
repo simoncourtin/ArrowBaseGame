@@ -1,6 +1,7 @@
 import os
 import pygame
 
+### Chargement d'un fichier image ###
 def load_png(name):
     """Load image and return image object"""
     fullname=os.path.join('.',name)
@@ -14,3 +15,4 @@ def load_png(name):
         print 'Cannot load image:', fullname
         raise SystemExit, message
     return image,image.get_rect()
+#end load_png
