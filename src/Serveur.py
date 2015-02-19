@@ -23,7 +23,7 @@ class Serveur(Server):
         self.nb_joueur = 0
         self.ids=[]
         self.clients = []
-        self.joueur = pygame.sprite.Group()
+        self.joueurs = pygame.sprite.Group()
         print('Server launched')
         self.clock = pygame.time.Clock()
         #definiriton de le la fenetre
@@ -54,7 +54,7 @@ class Serveur(Server):
     def del_client(self,channel):
         print('client deconnecte')
         self.ids.remove(channel.identifiant)
-        self.joueur.remove(channel.personnage)
+        self.joueurs.remove(channel.personnage)
         self.SendMessageAll({'action':'playerQuit','id':channel.identifiant})
         self.clients.remove(channel)
     #end del_client
@@ -85,18 +85,15 @@ class Serveur(Server):
 
         # Updates
         self.carte.afficherCarte()
-        self.joueur.update()
+        self.joueurs.update()
         # Events
-        wall = pygame.sprite.groupcollide(self.joueur,self.carte.getCalqueIndice(1).getGroupeTuiles(),False,False)
+        # Collisions
+        wall = pygame.sprite.groupcollide(self.joueurs,self.carte.getCalqueIndice(1).getGroupeTuiles(),False,False)
         for j in wall:
             print "collision"
-
-
-
-
-    # Collisions
-
+        #end for
     #end Loop
+#end Serveur
 
 if __name__ == '__main__':
     server = Serveur(localaddr = (sys.argv[1], int(sys.argv[2])))
