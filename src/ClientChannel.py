@@ -26,6 +26,8 @@ class ClientChannel(Channel):
 	
 	def Network_move(self, data):
 		mouvement=data['touche']
+		
+		# Orientation du sprite en fonction de la direction du personnage
 		if(mouvement == "bas"):
 			if self.neo.orientation == "droite" or self.neo.orientation == "gauche":
 				self.neo.orienter("bas")

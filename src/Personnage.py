@@ -84,6 +84,7 @@ class Personnage(Animable.Animable):
 		self.rect = self.rect.move(self.speed)
 		Animable.Animable.update(self)
 		
+	# fonction permettant de changer le sprite du personnage en fonction de son orientation et de sa direction
 	def orienter(self, direction):
 		if self.orientation != "gauche":
 			if direction == "gauche":
