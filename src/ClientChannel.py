@@ -14,7 +14,7 @@ class ClientChannel(Channel):
         Channel.__init__(self, *args, **kwargs)
         self.identifiant = 0
         self.personnage = Personnage.Personnage(1,self.identifiant)
-        self._server.joueur.add(self.personnage)
+        self._server.joueurs.add(self.personnage)
     # end __init__
 
 
