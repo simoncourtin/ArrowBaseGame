@@ -12,8 +12,8 @@ import Personnage
 from  module_map import Map
 
 listeImages = {}
-TAB_MAP = [("Image","../data/map/map02/background.png",True),
-            ("","../data/map/map02/plateforme.txt",'../data/map/map02/terre.png',32,32)]
+TAB_MAP = [("Image","../../data/map/map02/background.png",True),
+            ("","../../data/map/map02/plateforme.txt",'../../data/map/map02/terre.png',32,32)]
 
 class Serveur(Server):
     channelClass = ClientChannel.ClientChannel

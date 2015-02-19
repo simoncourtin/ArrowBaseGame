@@ -1,6 +1,7 @@
 __author__ = 'Simon Courtin'
 import pygame
 import Tuile as _tuile
+import os
 
 class Calque():
 
@@ -9,7 +10,7 @@ class Calque():
         self.screen = screen
 
         #tilset de l'image du calque
-        self.tilset = pygame.image.load(image).convert_alpha()
+        self.tilset = pygame.image.load(os.path.dirname(__file__)+"/"+image).convert_alpha()
 
         #hauteur et largeur des tuile dans le tilset
         self.x_tile=x_tile
@@ -23,7 +24,7 @@ class Calque():
         self.hauteur_map = 0
 
         #le fichier ou se situe le schema de la map
-        self.fichier = fichier
+        self.fichier = os.path.dirname(__file__)+"/"+fichier
 
         #le groupe de tuiles
         self.group_tuiles = pygame.sprite.Group()
