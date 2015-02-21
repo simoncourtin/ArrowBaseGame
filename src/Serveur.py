@@ -88,9 +88,26 @@ class Serveur(Server):
         self.joueurs.update()
         # Events
         # Collisions
-        wall = pygame.sprite.groupcollide(self.joueurs,self.carte.getCalqueIndice(1).getGroupeTuiles(),False,False)
-        for j in wall:
-            print "collision"
+        listeCollisions = pygame.sprite.groupcollide(self.joueurs,self.carte.getCalqueIndice(1).getGroupeTuiles(),False,False)
+        for joueur in listeCollisions.keys():
+            for tile in listeCollisions[joueur]:
+                if joueur.rect.centerx < tile.rect.centerx and joueur.rect.right > tile.rect.left:
+                    #rajouter test pas de tile à gauche de celle-ci
+                    print "collision gauche du mur"
+                #end if
+                if joueur.rect.centerx > tile.rect.centerx and joueur.rect.left < tile.rect.right:
+                    #rajouter test pas de tile à droite de celle-ci
+                    print "collision droite du mur"
+                #end if
+                if joueur.rect.centery < tile.rect.centery and joueur.rect.bottom > tile.rect.top:
+                    #rajouter test pas de tile au dessus de celle-ci
+                    print "collision haut du mur"
+                #end if
+                if joueur.rect.centery > tile.rect.centery and joueur.rect.top < tile.rect.bottom:
+                    #rajouter test pas de tile en dessous de celle-ci
+                    print "collision bas du mur"
+                #end if
+            #end for
         #end for
     #end Loop
 #end Serveur
