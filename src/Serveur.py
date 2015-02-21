@@ -92,11 +92,11 @@ class Serveur(Server):
         for joueur in listeCollisions.keys():
             for tile in listeCollisions[joueur]:
                 if joueur.rect.centerx < tile.rect.centerx and joueur.rect.right > tile.rect.left:
-                    #rajouter test pas de tile à gauche de celle-ci
+                    #rajouter test pas de tile a gauche de celle-ci
                     print "collision gauche du mur"
                 #end if
                 if joueur.rect.centerx > tile.rect.centerx and joueur.rect.left < tile.rect.right:
-                    #rajouter test pas de tile à droite de celle-ci
+                    #rajouter test pas de tile a droite de celle-ci
                     print "collision droite du mur"
                 #end if
                 if joueur.rect.centery < tile.rect.centery and joueur.rect.bottom > tile.rect.top:
