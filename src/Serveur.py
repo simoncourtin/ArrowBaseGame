@@ -46,7 +46,6 @@ class Serveur(Server):
         channel.Send({'action':'carteJeu','carte':TAB_MAP})
         #on envoie les position de tous les personnage a tous le monde
         self.SendMessageAll({'action':'players','ids':self.ids})
-
         for c in self.clients:
             c.sendMove()
     #end Connected
@@ -109,6 +108,11 @@ class Serveur(Server):
                 #end if
             #end for
         #end for
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit(0)  # closing the window exits the program
+            # end if
+        # end for
     #end Loop
 #end Serveur
 

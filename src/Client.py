@@ -14,6 +14,7 @@ from  module_map import Map
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 
+
 listeImages = {}
 
 
@@ -30,6 +31,8 @@ class Client(ConnectionListener):
         #numero d'id sur le serveur
         self.idServeur = 0
         self.carte = None
+        self.font_pixel_32 = pygame.font.Font("../data/font/pixelmix.ttf", 32)
+        self.font_pixel_20 = pygame.font.Font("../data/font/pixelmix.ttf", 20)
 
         # Chargement du background de la map
         self.background_image, self.background_rect = utils.load_png(os.path.dirname(__file__)+"/../data/sprite/background.png")
@@ -43,19 +46,16 @@ class Client(ConnectionListener):
             connection.Pump()
             self.monGroup.Pump()
             self.Pump()
+            self.clock.tick(60)  # max speed is 60 frames per second
+            # Events handling
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return  # closing the window exits the program
+                # end if
+            # end for
             if self.run:
-                self.clock.tick(60)  # max speed is 60 frames per second
-
                 # Vitesse horizontale du joueur à zéro
                 self.monGroup.stopHorizontal()
-
-                # Events handling
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        return  # closing the window exits the program
-                    # end if
-                # end for
-
 
                 # Gestion des événements de ce client
                 touches = pygame.key.get_pressed()
@@ -75,9 +75,22 @@ class Client(ConnectionListener):
                 self.carte.afficherCarte()
                 self.monGroup.draw(self.screen)
 
-                # screen refreshing
-                pygame.display.flip()
+
             #end if
+            else:
+                #ecran d'attente
+                self.screen.fill(0)
+                self.screen.blit(self.font_pixel_32.render("Veuillez patienter...", False, (255, 255, 255)),
+                         (SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 - 100))
+                i=0
+                for p in self.monGroup:
+                    texte =self.font_pixel_20.render("Player " + str(p.idJoueur) , False, (255, 255, 255))
+                    self.screen.blit(texte,(SCREEN_WIDTH / 2 - 100 , SCREEN_HEIGHT / 2 + i))
+                    i+=50
+
+            #end else
+            # screen refreshing
+            pygame.display.flip()
         #end while
     #end Loop
 
@@ -95,11 +108,14 @@ class Client(ConnectionListener):
     #end Network_identifiaction
 
     def Network_carteJeu(self,data):
-        print 'distirbution de la carte '
+        print 'En Attente de la carte '
         self.carte= Map.Map(self.screen,data['carte'])
         print 'la carte à bien été recu '
-        self.run = True
     #end Network_carteJeu
+
+    def Network_startGame(self,data):
+        self.run = True
+    #end Network_startGame
 
     def Network_error(self, data):
         print 'error:', data['error'][1]
