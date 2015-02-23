@@ -9,6 +9,7 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
             if s.idJoueur == data['id']:
                 s.rect.center = data['data'][0]
                 s.speed = data['data'][1]
+                s.orientation = data['data'][2]
 
     def Network_playerQuit(self, data):
         print str(data['id'])+" left the game"
