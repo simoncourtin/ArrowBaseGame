@@ -2,7 +2,7 @@ __author__ = 'Simon Courtin'
 
 import Calque, CalqueImage
 class Map():
-
+    # Constructeur
     def __init__(self,screen,information_claque):
         self.spawn = []
         self.calques = []
@@ -12,6 +12,7 @@ class Map():
 
         self.buildLayerOnMap()
 
+    # Creation des differents calques
     def buildLayerOnMap(self):
         for calque_elem in self.futureCalques:
             if calque_elem[0]=='':
