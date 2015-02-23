@@ -52,6 +52,7 @@ class Serveur(Server):
                 c.sendMove()
         else:
             print "Nombre de joueurs max Atteint"
+            channel.Send({'action':'refused','message':"Nombre de joueur max Atteind"})
         #end if
         if len(self.clients)==2:
             self.SendMessageAll({'action':'game','statut':'start'})
@@ -60,10 +61,12 @@ class Serveur(Server):
 
     def del_client(self,channel):
         print('client deconnecte')
-        self.ids.remove(channel.identifiant)
-        self.joueurs.remove(channel.personnage)
-        self.SendMessageAll({'action':'playerQuit','id':channel.identifiant})
-        self.clients.remove(channel)
+        if channel.identifiant !=0:
+            #le client a ete identifie
+            self.ids.remove(channel.identifiant)
+            self.joueurs.remove(channel.personnage)
+            self.SendMessageAll({'action':'playerQuit','id':channel.identifiant})
+            self.clients.remove(channel)
     #end del_client
 
     def SendMessageAll(self, message):

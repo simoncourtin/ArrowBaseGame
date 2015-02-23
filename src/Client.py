@@ -97,7 +97,7 @@ class Client(ConnectionListener):
     ### Network event/message callbacks ###
     def Network_connected(self, data):
         print('Connexion au serveur !')
-        print('En attente de l''identifcation ......')
+        print('En attente de l identifcation ......')
     #end Network_connected
 
     def Network_identification(self,data):
@@ -118,6 +118,11 @@ class Client(ConnectionListener):
             self.screen.fill(0)
             self.run = True
     #end Network_startGame
+
+    def Network_refused(self,data):
+        print data['message']
+        sys.exit()
+    #end network_refused
 
     def Network_error(self, data):
         print 'error:', data['error'][1]
