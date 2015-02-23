@@ -113,8 +113,10 @@ class Client(ConnectionListener):
         print 'la carte à bien été recu '
     #end Network_carteJeu
 
-    def Network_startGame(self,data):
-        self.run = True
+    def Network_game(self,data):
+        if data['statut'] == 'start':
+            self.screen.fill(0)
+            self.run = True
     #end Network_startGame
 
     def Network_error(self, data):

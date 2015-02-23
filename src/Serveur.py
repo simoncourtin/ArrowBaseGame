@@ -14,6 +14,7 @@ from  module_map import Map
 listeImages = {}
 TAB_MAP = [("Image","../../data/map/map02/background.png",True),
             ("","../../data/map/map02/plateforme.txt",'../../data/map/map02/terre.png',32,32)]
+MAX_JOUEUR = 2
 
 class Serveur(Server):
     channelClass = ClientChannel.ClientChannel
@@ -36,18 +37,25 @@ class Serveur(Server):
     def Connected(self, channel, addr):
         print 'New connection'
         print 'Nouveau client'
-        self.nb_joueur += 1
-        print 'Client avec id : ' + str(self.nb_joueur)
-        channel.identifiant = self.nb_joueur
-        self.ids.append(self.nb_joueur)
-        self.clients.append(channel)
-        channel.Send({'action':'identification','id':self.nb_joueur})
-        #envoi de la map generer par le serveur
-        channel.Send({'action':'carteJeu','carte':TAB_MAP})
-        #on envoie les position de tous les personnage a tous le monde
-        self.SendMessageAll({'action':'players','ids':self.ids})
-        for c in self.clients:
-            c.sendMove()
+        if len(self.clients)<MAX_JOUEUR:
+            self.nb_joueur += 1
+            print 'Client avec id : ' + str(self.nb_joueur)
+            channel.identifiant = self.nb_joueur
+            self.ids.append(self.nb_joueur)
+            self.clients.append(channel)
+            channel.Send({'action':'identification','id':self.nb_joueur})
+            #envoi de la map generer par le serveur
+            channel.Send({'action':'carteJeu','carte':TAB_MAP})
+            #on envoie les position de tous les personnage a tous le monde
+            self.SendMessageAll({'action':'players','ids':self.ids})
+            for c in self.clients:
+                c.sendMove()
+        else:
+            print "Nombre de joueurs max Atteint"
+        #end if
+        if len(self.clients)==2:
+            self.SendMessageAll({'action':'game','statut':'start'})
+        #end if
     #end Connected
 
     def del_client(self,channel):
