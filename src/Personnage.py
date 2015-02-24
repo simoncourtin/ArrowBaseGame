@@ -5,6 +5,7 @@ import Animable
 
 SCREEN_WIDTH = 1366
 SCREEN_HEIGHT = 768
+VITESSE_DEPLACEMENT = 10
 VITESSE_DEBUT_SAUT = 20
 ACCELERATION_GRAVITE = 1
 
@@ -19,6 +20,12 @@ class Personnage(Animable.Animable):
         self.isJumping = False
         self.peutAttaquer = True
         self.orientation = "droite"
+
+        self.collisionGauche = False
+        self.collisionDroite = False
+        self.collisionHaut = False
+        self.collisionBas = False
+
         if self.numero == 1:
             self.image, self.rect = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
             self.rect.center = [SCREEN_WIDTH/2, SCREEN_HEIGHT/2]
@@ -75,11 +82,11 @@ class Personnage(Animable.Animable):
     #end down
 
     def left(self):
-        self.speed[0]=-5
+        self.speed[0]=-VITESSE_DEPLACEMENT
     #end left
 
     def right(self):
-        self.speed[0]=5
+        self.speed[0]=VITESSE_DEPLACEMENT
     #end right
 
     def stopHorizontal(self):
@@ -91,6 +98,21 @@ class Personnage(Animable.Animable):
     #end stopHorizontal
 
     def update(self):
+        # Collisions
+        if      self.collisionGauche    and self.speed[0]<0:
+            self.stopHorizontal()
+        elif    self.collisionDroite    and self.speed[0]>0:
+            self.stopHorizontal()
+        elif    self.collisionHaut      and self.speed[1]<0:
+            self.stopVertical()
+        elif    self.collisionBas       and self.speed[1]>0:
+            self.stopVertical()
+        #end if
+
+        self.isJumping = True
+        if self.collisionBas:
+            self.isJumping = False
+
         self.rect = self.rect.move(self.speed)
         Animable.Animable.update(self)
 
@@ -98,14 +120,13 @@ class Personnage(Animable.Animable):
             self.speed[1] = self.speed[1] + ACCELERATION_GRAVITE
         #end if
 
-        # Arreter le saut => MODIFIER LA CONDITION (peut-etre a placer dans ClientChannel)
 
-        if (self.rect.center[1] > 500) and self.isJumping:
-            self.speed[1] = 0
-            self.isJumping = False
-        elif (self.rect.center[1] <= 500) and not self.isJumping:
-            self.isJumping = True
-        #end if
+
+        self.collisionGauche = False
+        self.collisionDroite = False
+        self.collisionHaut = False
+        self.collisionBas = False
+
     #end update
 
     def orienter(self, direction):
@@ -130,4 +151,22 @@ class Personnage(Animable.Animable):
                 self.peutAttaquer = True
         #end if
     #end orienter
+
+    def collision(self, cote):
+        if      cote == "gauche":
+            self.collisionGauche=True;
+        elif    cote == "droite":
+            self.collisionDroite = True;
+        elif    cote == "haut"  :
+            self.collisionHaut = True;
+        elif    cote == "bas"   :
+            self.collisionBas = True;
+        #end if
+
+        #if cote=='bas':
+        #    self.isJumping = False
+        #else:
+        #    self.isJumping = True
+        #end if
+    #end collision
 #end Personnage

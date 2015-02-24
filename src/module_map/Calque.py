@@ -112,3 +112,13 @@ class Calque():
     # Renvoie un objet de type pygame.sprite.Group contenant les tuiles de ce calque
     def getGroupeTuiles(self):
         return self.group_tuiles
+
+    # Renvoie vrai si une tuile se trouve aux coordonnees (x,y) (centre de la tuile)
+    def hasTuileAt(self, x, y):
+        for tuile in self.group_tuiles:
+            if tuile.rect.centerx == x and tuile.rect.centery == y:
+                return True
+            #end if
+        #end for
+        return False
+    #end hasTuileAt

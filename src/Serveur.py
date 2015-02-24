@@ -96,26 +96,40 @@ class Serveur(Server):
         # Updates
         self.carte.afficherCarte()
         self.joueurs.update()
+
         # Events
+
+
         # Collisions
         listeCollisions = pygame.sprite.groupcollide(self.joueurs,self.carte.getCalqueIndice(1).getGroupeTuiles(),False,False)
         for joueur in listeCollisions.keys():
+            # On recupere le channel du joueur
+            channel = None
+            for c in self.clients:
+                if c.personnage == joueur:
+                    channel = c
+
+            # On parcourt tous les tuiles en collisions et on cherche de quel cote elle se fait
             for tile in listeCollisions[joueur]:
                 if joueur.rect.centerx < tile.rect.centerx and joueur.rect.right > tile.rect.left:
-                    #rajouter test pas de tile a gauche de celle-ci
-                    print "collision gauche du mur"
+                    if not self.carte.getCalqueIndice(1).hasTuileAt(tile.rect.centerx-tile.rect.w, tile.rect.centery):
+                        self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'droite'})
+                        joueur.collision('droite')
                 #end if
                 if joueur.rect.centerx > tile.rect.centerx and joueur.rect.left < tile.rect.right:
-                    #rajouter test pas de tile a droite de celle-ci
-                    print "collision droite du mur"
+                    if not self.carte.getCalqueIndice(1).hasTuileAt(tile.rect.centerx+tile.rect.w, tile.rect.centery):
+                        self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'gauche'})
+                        joueur.collision('gauche')
                 #end if
                 if joueur.rect.centery < tile.rect.centery and joueur.rect.bottom > tile.rect.top:
-                    #rajouter test pas de tile au dessus de celle-ci
-                    print "collision haut du mur"
+                    if not self.carte.getCalqueIndice(1).hasTuileAt(tile.rect.centerx, tile.rect.centery-tile.rect.h):
+                        self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'bas'})
+                        joueur.collision('bas')
                 #end if
                 if joueur.rect.centery > tile.rect.centery and joueur.rect.top < tile.rect.bottom:
-                    #rajouter test pas de tile en dessous de celle-ci
-                    print "collision bas du mur"
+                    if not self.carte.getCalqueIndice(1).hasTuileAt(tile.rect.centerx, tile.rect.centery+tile.rect.h):
+                        self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'haut'})
+                        joueur.collision('haut')
                 #end if
             #end for
         #end for
