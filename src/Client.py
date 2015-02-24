@@ -6,6 +6,8 @@ import sys
 import pygame
 import GroupJoueur
 import Personnage
+import GroupTir
+import Tir
 import utils
 from pygame.locals import *
 import os
@@ -39,18 +41,26 @@ class Client(ConnectionListener):
 
         # Instanciation des personnages et des groupes de sprites
         self.monGroup =  GroupJoueur.GroupJoueur()
+
+        # Instanciation des tirs et des sprites
+        self.groupTir = GroupTir.GroupTir()
     # end __init__
 
     def Loop(self):
         while True:
             connection.Pump()
             self.monGroup.Pump()
+            self.groupTir.Pump()
             self.Pump()
             self.clock.tick(60)  # max speed is 60 frames per second
             # Events handling
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return  # closing the window exits the program
+                # end if
+                if (event.type == pygame.MOUSEBUTTONUP):
+                    print 'Tir'
+                    connection.Send({"action": "tir"})
                 # end if
             # end for
             if self.run:
@@ -70,10 +80,12 @@ class Client(ConnectionListener):
 
                 # updates
                 self.monGroup.update()
+                self.groupTir.update()
 
                 # drawings
                 self.carte.afficherCarte()
                 self.monGroup.draw(self.screen)
+                self.groupTir.draw(self.screen)
 
 
             #end if

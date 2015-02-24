@@ -8,6 +8,7 @@ import pygame
 from pygame.locals import *
 
 import Personnage
+import Tir
 
 class ClientChannel(Channel):
     def __init__(self, *args, **kwargs):
@@ -22,6 +23,12 @@ class ClientChannel(Channel):
         message = {"action":"move", "data":(self.personnage.rect.center,self.personnage.speed, self.personnage.orientation),'id':self.identifiant}
         self._server.SendMessageAll(message)
     #end sendMove
+
+    def sendTir(self):
+        print "Tir sent (depuis sendTir)"
+        message = {"action":"tir", "data":(self.personnage.rect.center, self.personnage.orientation)}
+        self._server.SendMessageAll(message)
+    #end sendTir
 
 
 
@@ -62,4 +69,10 @@ class ClientChannel(Channel):
 
         self.sendMove()
 
-        #end ClientChannel
+
+
+    def Network_tir(self, data):
+        print "Network tir (depuis Network_tir)"
+        self.sendTir()
+
+#end ClientChannel

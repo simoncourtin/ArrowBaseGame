@@ -9,6 +9,7 @@ import pygame
 from pygame.locals import *
 import random
 import Personnage
+import Tir
 from  module_map import Map
 
 listeImages = {}
