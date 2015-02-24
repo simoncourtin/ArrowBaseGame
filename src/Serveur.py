@@ -113,26 +113,44 @@ class Serveur(Server):
             # On parcourt tous les tuiles en collisions et on cherche de quel cote elle se fait
             for tile in listeCollisions[joueur]:
                 if joueur.rect.centerx < tile.rect.centerx and joueur.rect.right > tile.rect.left:
+                    # S'il n'y a pas de tuile a gauche de la tuile intersectee
                     if not self.carte.getCalqueIndice(1).hasTuileAt(tile.rect.centerx-tile.rect.w, tile.rect.centery):
                         self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'droite'})
+                        joueur.rect.right = tile.rect.left
                         joueur.collision('droite')
+                    #end if
                 #end if
+
                 if joueur.rect.centerx > tile.rect.centerx and joueur.rect.left < tile.rect.right:
+                    # S'il n'y a pas de tuile a droite de la tuile intersectee
                     if not self.carte.getCalqueIndice(1).hasTuileAt(tile.rect.centerx+tile.rect.w, tile.rect.centery):
                         self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'gauche'})
+                        joueur.rect.left = tile.rect.right
                         joueur.collision('gauche')
+                    #end if
                 #end if
+
                 if joueur.rect.centery < tile.rect.centery and joueur.rect.bottom > tile.rect.top:
+                    # S'il n'y a pas de tuile en haut de la tuile intersectee
                     if not self.carte.getCalqueIndice(1).hasTuileAt(tile.rect.centerx, tile.rect.centery-tile.rect.h):
                         self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'bas'})
+                        joueur.rect.bottom = tile.rect.top
                         joueur.collision('bas')
+                    #end if
                 #end if
+
                 if joueur.rect.centery > tile.rect.centery and joueur.rect.top < tile.rect.bottom:
+                    # S'il n'y a pas de tuile en bas de la tuile intersectee
                     if not self.carte.getCalqueIndice(1).hasTuileAt(tile.rect.centerx, tile.rect.centery+tile.rect.h):
                         self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'haut'})
+                        joueur.rect.top = tile.rect.bottom
                         joueur.collision('haut')
+                    #end if
                 #end if
             #end for
+
+            # Envoi des nouvelles coordonnees de ce joueur
+            channel.sendMove();
         #end for
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
