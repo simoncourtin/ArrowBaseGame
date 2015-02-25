@@ -65,7 +65,7 @@ class Client(ConnectionListener):
             # end for
             if self.run:
                 # Vitesse horizontale du joueur à zéro
-                self.monGroup.stopHorizontal()
+                #self.monGroup.stopHorizontal()
 
                 # Gestion des événements de ce client
                 touches = pygame.key.get_pressed()
