@@ -6,6 +6,8 @@ import sys
 import pygame
 import GroupJoueur
 import Personnage
+import GroupTir
+import Tir
 import utils
 from pygame.locals import *
 import os
@@ -31,21 +33,27 @@ class Client(ConnectionListener):
         #numero d'id sur le serveur
         self.idServeur = 0
         self.carte = None
+
         self.font_pixel_32 = pygame.font.Font("../data/font/pixelmix.ttf", 32)
         self.font_pixel_20 = pygame.font.Font("../data/font/pixelmix.ttf", 20)
         self.point_vert = utils.load_png(os.path.dirname(__file__)+"/../data/image/point_vert.png")
+
 
         # Chargement du background de la map
         self.background_image, self.background_rect = utils.load_png(os.path.dirname(__file__)+"/../data/sprite/background.png")
 
         # Instanciation des personnages et des groupes de sprites
         self.monGroup =  GroupJoueur.GroupJoueur()
+
+        # Instanciation des tirs et des sprites
+        self.groupTir = GroupTir.GroupTir()
     # end __init__
 
     def Loop(self):
         while True:
             connection.Pump()
             self.monGroup.Pump()
+            self.groupTir.Pump()
             self.Pump()
             self.clock.tick(60)  # max speed is 60 frames per second
             # Events handling
@@ -53,10 +61,14 @@ class Client(ConnectionListener):
                 if event.type == pygame.QUIT:
                     return  # closing the window exits the program
                 # end if
+                if (event.type == pygame.MOUSEBUTTONUP):
+                    print 'Tir'
+                    connection.Send({"action": "tir"})
+                # end if
             # end for
             if self.run:
                 # Vitesse horizontale du joueur à zéro
-                self.monGroup.stopHorizontal()
+                #self.monGroup.stopHorizontal()
 
                 # Gestion des événements de ce client
                 touches = pygame.key.get_pressed()
@@ -71,13 +83,17 @@ class Client(ConnectionListener):
 
                 # updates
                 self.monGroup.update()
+                self.groupTir.update()
 
                 # drawings
                 self.carte.afficherCarte()
                 self.monGroup.draw(self.screen)
 
+                self.groupTir.draw(self.screen)
+
 
             #end if
+
             else:
                 #ecran d'attente
                 self.screen.fill(0)
@@ -88,8 +104,8 @@ class Client(ConnectionListener):
                     texte =self.font_pixel_20.render("Player " + str(p.idJoueur) , False, (255, 255, 255))
                     self.screen.blit(texte,(SCREEN_WIDTH / 2 - 100 , SCREEN_HEIGHT / 2 + i))
                     i+=50
+            #end if
 
-            #end else
             # screen refreshing
             pygame.display.flip()
         #end while
@@ -135,8 +151,15 @@ class Client(ConnectionListener):
     def Network_disconnected(self, data):
         print 'Server disconnected'
         sys.exit()
+    #end Network_disconnected*
 
-    #end Network_disconnected
+    def Network_collision(self, data):
+        for joueur in self.monGroup:
+            if joueur.idJoueur == data['id']:
+                joueur.collision(data['cote'])
+            #end if
+        #end for
+    #end Network_collision
 
 #end Client
 
