@@ -33,6 +33,7 @@ class Client(ConnectionListener):
         self.carte = None
         self.font_pixel_32 = pygame.font.Font("../data/font/pixelmix.ttf", 32)
         self.font_pixel_20 = pygame.font.Font("../data/font/pixelmix.ttf", 20)
+        self.point_vert = utils.load_png(os.path.dirname(__file__)+"/../data/image/point_vert.png")
 
         # Chargement du background de la map
         self.background_image, self.background_rect = utils.load_png(os.path.dirname(__file__)+"/../data/sprite/background.png")
@@ -141,7 +142,6 @@ class Client(ConnectionListener):
 
 if __name__ == '__main__':
     client = Client(sys.argv[1], int(sys.argv[2]))
-
     client.Loop()
 
     sys.exit(0)
