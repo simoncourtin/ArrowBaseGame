@@ -2,6 +2,7 @@ __author__ = 'Simon Courtin'
 import pygame
 import os
 
+# Calque contenant l'image de fond
 class CalqueImage:
 
     def  __init__(self,screen,image,fixe=True):

@@ -5,9 +5,14 @@ import Animable
 
 SCREEN_WIDTH = 1366
 SCREEN_HEIGHT = 768
-VITESSE_DEBUT_SAUT = 20
-ACCELERATION_GRAVITE = 1
-COOLDOWN_ATTAQUE = 3000
+
+VITESSE_DEPLACEMENT = 5
+VITESSE_DEBUT_SAUT = 30
+ACCELERATION_GRAVITE = 2
+COEFF_FROTTEMENT = 0.1
+VITESSE_MAX_X = 20
+VITESSE_MAX_Y = 30
+
 
 class Personnage(Animable.Animable):
     def __init__(self, numero,id):
@@ -20,10 +25,18 @@ class Personnage(Animable.Animable):
         self.isJumping = False
         self.isAttacking = False
         self.orientation = "droite"
+
+        self.collisionGauche = False
+        self.collisionDroite = False
+        self.collisionHaut = False
+        self.collisionBas = False
+
+        self.speed = [0,0]
+        self.acceleration = [0,0]
+
         if self.numero == 1:
             self.image, self.rect = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
             self.rect.center = [SCREEN_WIDTH/2, SCREEN_HEIGHT/2]
-            self.speed = [0,0]
         #self.add_frame(pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoCours1.png"))
         #self.add_frame(pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoCours2.png"))
         #self.add_frame(pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoCours3.png"))
@@ -31,15 +44,12 @@ class Personnage(Animable.Animable):
         if self.numero == 2:
             self.image, self.rect = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteDarkVador.png")
             self.rect.center = [SCREEN_WIDTH/2+50, SCREEN_HEIGHT/2]
-            self.speed = [0,0]
         if self.numero == 3:
             self.image, self.rect = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteDeadpool.png")
             self.rect.center = [SCREEN_WIDTH/2+100, SCREEN_HEIGHT/2]
-            self.speed = [0,0]
         if self.numero == 4:
             self.image, self.rect = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteVegeta.png")
             self.rect.center = [SCREEN_WIDTH/2-50, SCREEN_HEIGHT/2]
-            self.speed = [0,0]
 
     def sauter(self):
         if self.numero == 1:
@@ -52,8 +62,14 @@ class Personnage(Animable.Animable):
             self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteVegetaSaut.png")
 
         if not self.isJumping:
-            self.speed[1] = -VITESSE_DEBUT_SAUT
+            self.acceleration[1] += -VITESSE_DEBUT_SAUT
             self.isJumping = True
+        elif self.collisionGauche: # wall jump
+            self.acceleration[0] += VITESSE_DEBUT_SAUT
+            self.acceleration[1] += -VITESSE_DEBUT_SAUT
+        elif self.collisionDroite: # wall jump
+            self.acceleration[0] += -VITESSE_DEBUT_SAUT
+            self.acceleration[1] += -VITESSE_DEBUT_SAUT
         #end if
     #end sauter
 
@@ -76,11 +92,11 @@ class Personnage(Animable.Animable):
     #end down
 
     def left(self):
-        self.speed[0]=-5
+        self.acceleration[0]=-VITESSE_DEPLACEMENT
     #end left
 
     def right(self):
-        self.speed[0]=5
+        self.acceleration[0]=VITESSE_DEPLACEMENT
     #end right
 
     def stopHorizontal(self):
@@ -92,14 +108,48 @@ class Personnage(Animable.Animable):
     #end stopHorizontal
 
     def update(self):
+        # Collisions
+        if      self.collisionGauche    and self.speed[0]<0:
+            self.stopHorizontal()
+        elif    self.collisionDroite    and self.speed[0]>0:
+            self.stopHorizontal()
+        elif    self.collisionHaut      and self.speed[1]<0:
+            self.stopVertical()
+        elif    self.collisionBas       and self.speed[1]>0:
+            self.stopVertical()
+        #end if
+
+        self.isJumping = True
+        if self.collisionBas:
+            self.isJumping = False
+
         self.rect = self.rect.move(self.speed)
         Animable.Animable.update(self)
 
         if self.isJumping:
-            self.speed[1] = self.speed[1] + ACCELERATION_GRAVITE
+            self.acceleration[1] = self.acceleration[1] + ACCELERATION_GRAVITE
         #end if
 
-        # Arreter le saut => MODIFIER LA CONDITION (peut-etre a placer dans ClientChannel)
+        self.speed[0] -= self.speed[0]*COEFF_FROTTEMENT
+        self.speed[1] -= self.speed[1]*COEFF_FROTTEMENT
+
+        self.speed[0] += self.acceleration[0]
+        self.speed[1] += self.acceleration[1]
+
+        if self.speed[0]>VITESSE_MAX_X:
+            self.speed[0] = VITESSE_MAX_X
+        if self.speed[0]<-VITESSE_MAX_X:
+            self.speed[0] = -VITESSE_MAX_X
+        if self.speed[1]>VITESSE_MAX_Y:
+            self.speed[1] = VITESSE_MAX_Y
+        if self.speed[1]<-VITESSE_MAX_Y:
+            self.speed[1] = -VITESSE_MAX_Y
+
+        self.acceleration = [0,0]
+        self.collisionGauche = False
+        self.collisionDroite = False
+        self.collisionHaut = False
+        self.collisionBas = False
 
         if (self.rect.center[1] > 500) and self.isJumping:
             self.speed[1] = 0
@@ -112,6 +162,7 @@ class Personnage(Animable.Animable):
         	self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoHit.png")[0]
         else:
         	self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")[0]
+
     #end update
 
     def orienter(self, direction):
@@ -139,5 +190,17 @@ class Personnage(Animable.Animable):
     def attaquer(self):
     	if self.isAttacking == False:
 	    	self.isAttacking = True
-		    	 
+
+    def collision(self, cote):
+        if      cote == "gauche":
+            self.collisionGauche=True;
+        elif    cote == "droite":
+            self.collisionDroite = True;
+        elif    cote == "haut"  :
+            self.collisionHaut = True;
+        elif    cote == "bas"   :
+            self.collisionBas = True;
+        #end if
+    #end collision
+
 #end Personnage
