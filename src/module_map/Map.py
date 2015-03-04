@@ -3,13 +3,18 @@ __author__ = 'Simon Courtin'
 import Calque, CalqueImage
 class Map():
     # Constructeur
-    def __init__(self,screen,information_claque):
+    def __init__(self,screen,config_file,information_claque):
         self.spawn = []
         self.calques = []
         #tableau sous forme [(schema sur la map, tilset ,calque de collision, calque d'objet, taille x des tiles ,taille y des tiles),(...)]
         self.futureCalques = information_claque
         self.screen =screen
-
+        self.largeur_map = 0
+        self.hauteur_map =0
+        self.tile_width = 0
+        #recuperation des configs
+        self.mapConfiguration(config_file)
+        #construction de la carte
         self.buildLayerOnMap()
 
     # Creation des differents calques
@@ -23,6 +28,23 @@ class Map():
                 calque = CalqueImage.CalqueImage(self.screen,calque_elem[1],calque_elem[2])
             self.calques.append(calque)
 
+
+    def mapConfiguration(self,config_file):
+        #fichier de config de la carte
+        s= open(config_file,"r")
+        #on parcours le fichier
+        with open (config_file, "r") as file:
+            #lecture ligne par ligne
+            line=file.readline()
+            if line.strip("=")[0]=="width":
+                #largeur de la map
+                self.largeur_map = line.split('=')[1]
+            elif line.strip("=")[0]=="height":
+                #hauteur de la map
+                self.hauteur_map = line.split('=')[1]
+            elif line.strip("=")[0]=="tileheight":
+                #hauteur de la map
+                self.tile_width = line.split('=')[1]
 
     #avec une camera
     def afficherCarteCamera(self, camera):
@@ -54,14 +76,6 @@ class Map():
     def getCalqueIndice(self,indice):
         return self.calques[indice]
 
-
-"""
-carte = Map(screen,[("../maps/cobblestone2/background.txt",'../maps/cobblestone2/cobblestone.png',False,False,32,32),
-            ("../maps/cobblestone2/collision.txt",'../maps/cobblestone2/cobblestone.png',True,False,32,32),
-            ("../maps/cobblestone2/spawn.txt",'../maps/cobblestone2/cobblestone.png',False,False,32,32),
-            ("../maps/cobblestone2/piece.txt",'../maps/cobblestone2/piece_tile.png',False,True,32,32)])
-print carte.spawn
-"""
 
 
 

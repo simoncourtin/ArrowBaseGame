@@ -19,7 +19,6 @@ class Calque():
 
         #tableau des spawn et des objets interactifs
         self.spawn = []
-
         #largeur de la map
         self.largeur_map = 0
         self.hauteur_map = 0
@@ -102,7 +101,7 @@ class Calque():
     # Affiche ce calque partiellement ou non suivant la camera
     def afficher_calque_camera(self, cam):
         for tuile in self.group_tuiles:
-            self.screen.blit(tuile.image, cam.apply(tuile))
+            self.screen.blit(tuile.image,cam.apply(tuile))
 
     # Affiche ce calque en entier(pas de camera)
     def afficher_calque(self):

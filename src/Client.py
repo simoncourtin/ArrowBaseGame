@@ -5,7 +5,7 @@ from PodSixNet.Connection import connection, ConnectionListener
 import sys
 import pygame
 import GroupJoueur
-import Personnage
+import Camera
 import GroupTir
 import Tir
 import utils
@@ -13,9 +13,8 @@ from pygame.locals import *
 import os
 from  module_map import Map
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 600
 
 listeImages = {}
 
@@ -33,6 +32,8 @@ class Client(ConnectionListener):
         #numero d'id sur le serveur
         self.idServeur = 0
         self.carte = None
+        self.contolable = None
+
 
         self.font_pixel_32 = pygame.font.Font("../data/font/pixelmix.ttf", 32)
         self.font_pixel_20 = pygame.font.Font("../data/font/pixelmix.ttf", 20)
@@ -78,17 +79,16 @@ class Client(ConnectionListener):
                     connection.Send({"action": "move", "touche": "gauche"})
                 if (touches[K_RIGHT]):
                     connection.Send({"action": "move", "touche": "droite"})
-                if (touches[K_SPACE]):
+                if (touches[K_SPACE] or touches[K_UP]):
                     connection.Send({"action": "move", "touche": "saut"})
 
                 # updates
-                self.monGroup.update()
                 self.groupTir.update()
-
+                self.cam.update(self.contolable,self.screen)
                 # drawings
-                self.carte.afficherCarte()
-                self.monGroup.draw(self.screen)
-
+                self.screen.fill(0)
+                self.carte.afficherCarteCamera(self.cam)
+                self.monGroup.draw(self.screen,self.cam)
                 self.groupTir.draw(self.screen)
 
 
@@ -119,20 +119,22 @@ class Client(ConnectionListener):
 
     def Network_identification(self,data):
         print 'attribution id sur le serveur. Id : '+ str(data['id'])
-        #self.monGroup.add(Personnage.Personnage(1,data['id']))
-        print 'creation du personnage'
+        self.idServeur = data['id']
 
     #end Network_identifiaction
 
     def Network_carteJeu(self,data):
         print 'En Attente de la carte '
-        self.carte= Map.Map(self.screen,data['carte'])
+        self.carte= Map.Map(self.screen,data['config'],data['carte'])
         print 'la carte à bien été recu '
+        #la camera
+        self.cam = Camera.Camera(Camera.complex_camera, (self.carte.largeur_map * self.carte.tile_width), (self.carte.hauteur_map * self.carte.tile_width))
     #end Network_carteJeu
 
     def Network_game(self,data):
         if data['statut'] == 'start':
             self.screen.fill(0)
+            self.contolable = self.monGroup.getPlayerId(self.idServeur)
             self.run = True
     #end Network_startGame
 

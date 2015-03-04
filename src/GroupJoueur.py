@@ -23,6 +23,11 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
                 self.add(Personnage.Personnage(1,i))
         print len(self)
 
+    def getPlayerId(self,id):
+        for s in self:
+            if(s.idJoueur == id):
+                return s
+        return False
 
     def existPlayer(self,id):
         for s in self:
@@ -33,3 +38,7 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
     def stopHorizontal(self):
         for s in self:
             s.stopHorizontal()
+
+    def draw(self,screen,camera):
+        for s in self:
+            s.afficher(screen, camera)

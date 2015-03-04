@@ -175,6 +175,10 @@ class Personnage(Animable.Animable):
         #end if
     #end orienter
 
+    def afficher(self, screen, camera):
+        screen.blit(self.image, camera.apply(self))
+
+    #end afficher
     def collision(self, cote):
         if      cote == "gauche":
             self.collisionGauche=True;

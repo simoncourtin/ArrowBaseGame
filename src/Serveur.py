@@ -14,7 +14,8 @@ from  module_map import Map
 
 listeImages = {}
 TAB_MAP = [("Image","../../data/map/map02/background.png",True),
-            ("","../../data/map/map02/plateforme.txt",'../../data/map/map02/terre.png',32,32)]
+            ("","../../data/map/map02/plateforme.map",'../../data/map/map02/terre.png',32,32)]
+CONFIG_FILE = "../data/map/map02/config.map"
 MAX_JOUEUR = 2
 
 class Serveur(Server):
@@ -46,7 +47,7 @@ class Serveur(Server):
             self.clients.append(channel)
             channel.Send({'action':'identification','id':self.nb_joueur})
             #envoi de la map generer par le serveur
-            channel.Send({'action':'carteJeu','carte':TAB_MAP})
+            channel.Send({'action':'carteJeu','carte':TAB_MAP,'config':CONFIG_FILE})
             #on envoie les position de tous les personnage a tous le monde
             self.SendMessageAll({'action':'players','ids':self.ids})
             for c in self.clients:
@@ -80,7 +81,7 @@ class Serveur(Server):
         #fichiers de tileset
         tileset = '../data/map/map01/terre.png'
         #creation de la carte
-        carte = Map.Map(self.screen,TAB_MAP)
+        carte = Map.Map(self.screen,CONFIG_FILE,TAB_MAP)
         self.carte=carte
         return carte
     #end generationMap
