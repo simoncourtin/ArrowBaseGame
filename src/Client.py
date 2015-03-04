@@ -81,6 +81,8 @@ class Client(ConnectionListener):
                     connection.Send({"action": "move", "touche": "droite"})
                 if (touches[K_SPACE] or touches[K_UP]):
                     connection.Send({"action": "move", "touche": "saut"})
+                if (touches[K_a]):
+                    connection.Send({"action": "move", "touche": "a"})
 
                 # updates
                 self.groupTir.update()

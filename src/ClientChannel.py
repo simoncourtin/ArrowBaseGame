@@ -8,6 +8,7 @@ import pygame
 from pygame.locals import *
 
 import Personnage
+from posix import wait
 import Tir
 
 class ClientChannel(Channel):
@@ -20,7 +21,8 @@ class ClientChannel(Channel):
 
 
     def sendMove(self):
-        message = {"action":"move", "data":(self.personnage.rect.center,self.personnage.speed, self.personnage.orientation),'id':self.identifiant}
+        message = {"action":"move", "data":(self.personnage.rect.center,self.personnage.speed, self.personnage.orientation, self.personnage.isAttacking),'id':self.identifiant}
+        print message
         self._server.SendMessageAll(message)
     #end sendMove
 
@@ -57,15 +59,17 @@ class ClientChannel(Channel):
 
             self.personnage.sauter()
         elif(mouvement == "gauche"):
-            if self.personnage.orientation == "droite":
+            if self.personnage.orientation == "droite" or self.personnage.orientation == "bas" :
                 self.personnage.orienter("gauche")
             self.personnage.left()
         elif(mouvement == "droite"):
-            if self.personnage.orientation == "gauche":
+            if self.personnage.orientation == "gauche" or self.personnage.orientation == "bas":
                 self.personnage.orienter("droite")
             self.personnage.right()
         elif(mouvement == "saut"):
             self.personnage.sauter()
+        elif(mouvement=="a"):
+        	self.personnage.attaquer()
 
         self.sendMove()
 

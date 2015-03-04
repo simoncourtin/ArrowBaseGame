@@ -13,6 +13,7 @@ COEFF_FROTTEMENT = 0.1
 VITESSE_MAX_X = 20
 VITESSE_MAX_Y = 30
 
+
 class Personnage(Animable.Animable):
     def __init__(self, numero,id):
         pygame.sprite.Sprite.__init__(self)
@@ -22,7 +23,7 @@ class Personnage(Animable.Animable):
         self.isAnimated = False
         self.isDown = False
         self.isJumping = False
-        self.peutAttaquer = True
+        self.isAttacking = False
         self.orientation = "droite"
 
         self.collisionGauche = False
@@ -150,6 +151,18 @@ class Personnage(Animable.Animable):
         self.collisionHaut = False
         self.collisionBas = False
 
+        if (self.rect.center[1] > 500) and self.isJumping:
+            self.speed[1] = 0
+            self.isJumping = False
+        elif (self.rect.center[1] <= 500) and not self.isJumping:
+            self.isJumping = True
+        #end if
+        
+        if self.isAttacking:
+        	self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoHit.png")[0]
+        else:
+        	self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")[0]
+
     #end update
 
     def orienter(self, direction):
@@ -171,9 +184,12 @@ class Personnage(Animable.Animable):
                 self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")[0]
                 self.rect.y = self.rect.y-10
                 self.isDown = False
-                self.peutAttaquer = True
         #end if
     #end orienter
+    
+    def attaquer(self):
+    	if self.isAttacking == False:
+	    	self.isAttacking = True
 
     def afficher(self, screen, camera):
         screen.blit(self.image, camera.apply(self))
@@ -190,4 +206,5 @@ class Personnage(Animable.Animable):
             self.collisionBas = True;
         #end if
     #end collision
+
 #end Personnage

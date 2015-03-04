@@ -164,6 +164,7 @@ class Serveur(Server):
 if __name__ == '__main__':
     server = Serveur(localaddr = (sys.argv[1], int(sys.argv[2])))
     carte = server.generationMap()
+    cooldown_attack = 30
     while True:
         server.Loop()
 
