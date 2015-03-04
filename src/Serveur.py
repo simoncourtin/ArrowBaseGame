@@ -13,9 +13,9 @@ import Tir
 from  module_map import Map
 
 listeImages = {}
-TAB_MAP = [("Image","../../data/map/map02/background.png",True),
-            ("","../../data/map/map02/plateforme.map",'../../data/map/map02/terre.png',32,32)]
-CONFIG_FILE = "../data/map/map02/config.map"
+TAB_MAP = [("Image","/../../data/map/map02/background.png",True),
+            ("","/../../data/map/map02/plateforme.map",'/../../data/map/map02/terre.png',32,32)]
+CONFIG_FILE = "/../../data/map/map02/config.map"
 MAX_JOUEUR = 2
 
 class Serveur(Server):

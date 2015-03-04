@@ -150,14 +150,7 @@ class Personnage(Animable.Animable):
         self.collisionDroite = False
         self.collisionHaut = False
         self.collisionBas = False
-
-        if (self.rect.center[1] > 500) and self.isJumping:
-            self.speed[1] = 0
-            self.isJumping = False
-        elif (self.rect.center[1] <= 500) and not self.isJumping:
-            self.isJumping = True
-        #end if
-        
+   
         if self.isAttacking:
         	self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoHit.png")[0]
         else:

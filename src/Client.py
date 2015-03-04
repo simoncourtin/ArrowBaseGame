@@ -35,8 +35,8 @@ class Client(ConnectionListener):
         self.contolable = None
 
 
-        self.font_pixel_32 = pygame.font.Font("../data/font/pixelmix.ttf", 32)
-        self.font_pixel_20 = pygame.font.Font("../data/font/pixelmix.ttf", 20)
+        self.font_pixel_32 = pygame.font.Font(os.path.dirname(__file__)+"/../data/font/pixelmix.ttf", 32)
+        self.font_pixel_20 = pygame.font.Font(os.path.dirname(__file__)+"/../data/font/pixelmix.ttf", 20)
         self.point_vert = utils.load_png(os.path.dirname(__file__)+"/../data/image/point_vert.png")
 
 

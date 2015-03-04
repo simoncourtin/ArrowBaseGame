@@ -8,7 +8,7 @@ import pygame
 from pygame.locals import *
 
 import Personnage
-from posix import wait
+#from posix import wait
 import Tir
 
 class ClientChannel(Channel):

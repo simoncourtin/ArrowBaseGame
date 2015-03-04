@@ -1,6 +1,8 @@
 __author__ = 'Simon Courtin'
 
 import Calque, CalqueImage
+import os
+
 class Map():
     # Constructeur
     def __init__(self,screen,config_file,information_claque):
@@ -31,9 +33,9 @@ class Map():
 
     def mapConfiguration(self,config_file):
         #fichier de config de la carte
-        s= open(config_file,"r")
+        s= open(os.path.dirname(__file__)+config_file,"r")
         #on parcours le fichier
-        with open (config_file, "r") as file:
+        with open (os.path.dirname(__file__)+config_file, "r") as file:
             #lecture ligne par ligne
             line=file.readline()
             if line.strip("=")[0]=="width":
