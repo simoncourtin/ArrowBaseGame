@@ -7,6 +7,7 @@ SCREEN_WIDTH = 1366
 SCREEN_HEIGHT = 768
 VITESSE_DEBUT_SAUT = 20
 ACCELERATION_GRAVITE = 1
+COOLDOWN_ATTAQUE = 3000
 
 class Personnage(Animable.Animable):
     def __init__(self, numero,id):
@@ -17,7 +18,7 @@ class Personnage(Animable.Animable):
         self.isAnimated = False
         self.isDown = False
         self.isJumping = False
-        self.peutAttaquer = True
+        self.isAttacking = False
         self.orientation = "droite"
         if self.numero == 1:
             self.image, self.rect = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
@@ -106,6 +107,11 @@ class Personnage(Animable.Animable):
         elif (self.rect.center[1] <= 500) and not self.isJumping:
             self.isJumping = True
         #end if
+        
+        if self.isAttacking:
+        	self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoHit.png")[0]
+        else:
+        	self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")[0]
     #end update
 
     def orienter(self, direction):
@@ -127,7 +133,11 @@ class Personnage(Animable.Animable):
                 self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")[0]
                 self.rect.y = self.rect.y-10
                 self.isDown = False
-                self.peutAttaquer = True
         #end if
     #end orienter
+    
+    def attaquer(self):
+    	if self.isAttacking == False:
+	    	self.isAttacking = True
+		    	 
 #end Personnage

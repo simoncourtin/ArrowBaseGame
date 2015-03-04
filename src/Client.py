@@ -67,6 +67,8 @@ class Client(ConnectionListener):
                     connection.Send({"action": "move", "touche": "droite"})
                 if (touches[K_SPACE]):
                     connection.Send({"action": "move", "touche": "saut"})
+                if (touches[K_a]):
+                    connection.Send({"action": "move", "touche": "a"})
 
                 # updates
                 self.monGroup.update()
