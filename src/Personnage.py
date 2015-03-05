@@ -128,6 +128,7 @@ class Personnage(Animable.Animable):
 
         if self.isJumping:
             self.acceleration[1] = self.acceleration[1] + ACCELERATION_GRAVITE
+            print "Pas de saut"
         #end if
 
         self.speed[0] -= self.speed[0]*COEFF_FROTTEMENT

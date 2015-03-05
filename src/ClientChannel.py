@@ -22,7 +22,7 @@ class ClientChannel(Channel):
 
     def sendMove(self):
         message = {"action":"move", "data":(self.personnage.rect.center,self.personnage.speed, self.personnage.orientation, self.personnage.isAttacking),'id':self.identifiant}
-        print message
+        #print message
         self._server.SendMessageAll(message)
     #end sendMove
 

@@ -130,7 +130,8 @@ class Client(ConnectionListener):
         self.carte= Map.Map(self.screen,data['config'],data['carte'])
         print 'la carte à bien été recu '
         #la camera
-        self.cam = Camera.Camera(Camera.complex_camera, (self.carte.largeur_map * self.carte.tile_width), (self.carte.hauteur_map * self.carte.tile_width))
+        #self.cam = Camera.Camera(Camera.complex_camera, (self.carte.largeur_map * self.carte.tile_width), (self.carte.hauteur_map * self.carte.tile_width))
+        self.cam = Camera.Camera(Camera.complex_camera, SCREEN_WIDTH, SCREEN_HEIGHT, self.carte.largeur_map*self.carte.tile_width, self.carte.hauteur_map*self.carte.tile_height)
     #end Network_carteJeu
 
     def Network_game(self,data):

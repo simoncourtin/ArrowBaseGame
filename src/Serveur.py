@@ -113,40 +113,83 @@ class Serveur(Server):
 
             # On parcourt tous les tuiles en collisions et on cherche de quel cote elle se fait
             for tile in listeCollisions[joueur]:
+                # Initialisation des variables
+                rightCol = False 
+                leftCol = False 
+                topCol = False 
+                bottomCol = False 
+                horizontalOffset = 0
+                verticalOffset = 0
+
+                # Collision par la droite du joueur
                 if joueur.rect.centerx < tile.rect.centerx and joueur.rect.right > tile.rect.left:
                     # S'il n'y a pas de tuile a gauche de la tuile intersectee
                     if not self.carte.getCalqueIndice(1).hasTuileAt(tile.rect.centerx-tile.rect.w, tile.rect.centery):
-                        self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'droite'})
-                        joueur.rect.right = tile.rect.left+5
-                        joueur.collision('droite')
+                        rightCol = True
+                        horizontalOffset = joueur.rect.right - tile.rect.left
                     #end if
                 #end if
 
+                # Collision par la gauche du joueur
                 if joueur.rect.centerx > tile.rect.centerx and joueur.rect.left < tile.rect.right:
                     # S'il n'y a pas de tuile a droite de la tuile intersectee
                     if not self.carte.getCalqueIndice(1).hasTuileAt(tile.rect.centerx+tile.rect.w, tile.rect.centery):
-                        self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'gauche'})
-                        joueur.rect.left = tile.rect.right-5
-                        joueur.collision('gauche')
+                        leftCol = True
+                        horizontalOffset =  tile.rect.right - joueur.rect.left
                     #end if
                 #end if
 
+                # Collision par le bas du joueur
                 if joueur.rect.centery < tile.rect.centery and joueur.rect.bottom > tile.rect.top:
                     # S'il n'y a pas de tuile en haut de la tuile intersectee
                     if not self.carte.getCalqueIndice(1).hasTuileAt(tile.rect.centerx, tile.rect.centery-tile.rect.h):
-                        self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'bas'})
-                        joueur.rect.bottom = tile.rect.top+5
-                        joueur.collision('bas')
+                        bottomCol = True
+                        verticalOffset = joueur.rect.bottom - tile.rect.top
                     #end if
                 #end if
 
+                # Collision par le haut du joueur
                 if joueur.rect.centery > tile.rect.centery and joueur.rect.top < tile.rect.bottom:
                     # S'il n'y a pas de tuile en bas de la tuile intersectee
                     if not self.carte.getCalqueIndice(1).hasTuileAt(tile.rect.centerx, tile.rect.centery+tile.rect.h):
-                        self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'haut'})
-                        joueur.rect.top = tile.rect.bottom-5
-                        joueur.collision('haut')
+                        topCol = True
+                        verticalOffset = tile.rect.bottom - joueur.rect.top
                     #end if
+                #end if
+
+                # Si collision verticale et horizontale
+                if verticalOffset>0 and horizontalOffset>0:
+                    if verticalOffset > horizontalOffset:
+                        topCol = False
+                        bottomCol = False
+                    else:
+                        leftCol = False
+                        rightCol = False
+                    #end fi
+                #end if
+
+                if rightCol:
+                    self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'droite'})
+                    joueur.rect.right = tile.rect.left+5
+                    joueur.collision('droite')
+                #end if
+
+                if leftCol:
+                    self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'gauche'})
+                    joueur.rect.left = tile.rect.right-5
+                    joueur.collision('gauche')
+                #end if
+
+                if topCol:
+                    self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'haut'})
+                    joueur.rect.top = tile.rect.bottom-5
+                    joueur.collision('haut')
+                #end if
+
+                if bottomCol:
+                    self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'bas'})
+                    joueur.rect.bottom = tile.rect.top+5
+                    joueur.collision('bas')
                 #end if
             #end for
 

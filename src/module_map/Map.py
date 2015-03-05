@@ -33,20 +33,22 @@ class Map():
 
     def mapConfiguration(self,config_file):
         #fichier de config de la carte
-        s= open(os.path.dirname(__file__)+config_file,"r")
+        file= open(os.path.dirname(__file__)+config_file,"r")
         #on parcours le fichier
-        with open (os.path.dirname(__file__)+config_file, "r") as file:
+        for line in file:
             #lecture ligne par ligne
-            line=file.readline()
-            if line.strip("=")[0]=="width":
+            if line.split("=")[0]=="width":
                 #largeur de la map
-                self.largeur_map = line.split('=')[1]
-            elif line.strip("=")[0]=="height":
+                self.largeur_map = int(line.split('=')[1])
+            elif line.split("=")[0]=="height":
                 #hauteur de la map
-                self.hauteur_map = line.split('=')[1]
-            elif line.strip("=")[0]=="tileheight":
+                self.hauteur_map = int(line.split('=')[1])
+            elif line.split("=")[0]=="tileheight":
                 #hauteur de la map
-                self.tile_width = line.split('=')[1]
+                self.tile_height = int(line.split('=')[1])
+            elif line.split("=")[0]=="tilewidth":
+                #hauteur de la map
+                self.tile_width = int(line.split('=')[1])
 
     #avec une camera
     def afficherCarteCamera(self, camera):
