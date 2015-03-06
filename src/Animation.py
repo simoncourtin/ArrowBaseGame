@@ -4,8 +4,8 @@ DUREE_ANIMATION = 30
 ANIME_PAR_DEFAUT = True
 
 ### Classe gerant une animation
-Class Animation:
-	### Constructeur : prend en parametre la liste d'image liee a cette animation
+class Animation:
+    ### Constructeur : prend en parametre la liste d'image liee a cette animation
 	def __init__(self, listeImages):
 		self.images = listeImages
 		self.nbImages = len(listeImages)
@@ -22,7 +22,7 @@ Class Animation:
 			self.derniereValeurCompteur = clock
 
 			# Arret de l'animation 
-			self.stopped = true
+			self.stopped = True
 		#end if
 	#end stopAnimation
 
@@ -30,7 +30,7 @@ Class Animation:
 	def startAnimation(self, clock):
 		if self.stopped:
 			self.derniereValeurCompteur = clock		
-			self.stopped = false
+			self.stopped = False
 		#end if
 	#end startAnimation	
 
@@ -43,7 +43,7 @@ Class Animation:
 		#end if
 
 		# Récupération de l'image
-		index = compteur%DUREE_ANIMATION
+		index = self.compteur%DUREE_ANIMATION
 		index = index/(DUREE_ANIMATION/self.nbImages)
 
 		return self.listeImages[index]
