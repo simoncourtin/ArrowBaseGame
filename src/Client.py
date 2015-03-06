@@ -68,9 +68,6 @@ class Client(ConnectionListener):
                 # end if
             # end for
             if self.run:
-                # Vitesse horizontale du joueur à zéro
-                #self.monGroup.stopHorizontal()
-
                 # Gestion des événements de ce client
                 touches = pygame.key.get_pressed()
                 if (touches[K_DOWN]):
@@ -87,14 +84,13 @@ class Client(ConnectionListener):
                 # updates
                 self.groupTir.update()
                 self.cam.update(self.contolable,self.screen)
+                self.monGroup.update()
+
                 # drawings
                 self.screen.fill(0)
                 self.carte.afficherCarteCamera(self.cam)
                 self.monGroup.draw(self.screen,self.cam)
                 self.groupTir.draw(self.screen)
-
-
-            #end if
 
             else:
                 #ecran d'attente
