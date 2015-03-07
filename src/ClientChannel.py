@@ -33,7 +33,6 @@ class ClientChannel(Channel):
     #end sendTir
 
 
-
     def Close(self):
         self._server.del_client(self)
         print 'Client parti'

@@ -180,7 +180,8 @@ class Personnage(Animable.Animable):
         self.image_accroupi = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
         self.image_attaque = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoHit.png")
         self.image_droite = self.image_normale[0]
-        self.image_gauche= pygame.transform.flip(self.image_droite, True, True)
+        self.image_gauche= pygame.transform.flip(self.image_droite, True, False)
         self.image_bas = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
         self.image_haut = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
+    #end chargement image
 #end Personnage
