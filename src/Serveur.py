@@ -78,8 +78,6 @@ class Serveur(Server):
     #end SendMessageAll
 
     def generationMap(self):
-        #fichiers de tileset
-        tileset = '../data/map/map01/terre.png'
         #creation de la carte
         carte = Map.Map(self.screen,CONFIG_FILE,TAB_MAP)
         self.carte=carte

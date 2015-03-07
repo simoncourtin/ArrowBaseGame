@@ -1,7 +1,8 @@
+import os
 import pygame
 import load_png
-import os
 import Animable
+
 
 SCREEN_WIDTH = 1366
 SCREEN_HEIGHT = 768
@@ -18,13 +19,15 @@ class Personnage(Animable.Animable):
     def __init__(self, numero,id):
         pygame.sprite.Sprite.__init__(self)
         Animable.Animable.__init__(self, cooldown=6)
+        #chargement des images pour le joueur
+        self.chargement_image(1)
         self.idJoueur=id
         self.numero = numero
         self.isAnimated = False
         self.isDown = False
         self.isJumping = False
         self.isAttacking = False
-        self.orientation = "droite"
+        self.orientation = "gauche"
 
         self.collisionGauche = False
         self.collisionDroite = False
@@ -34,33 +37,14 @@ class Personnage(Animable.Animable):
         self.speed = [0,0]
         self.acceleration = [0,0]
 
-        if self.numero == 1:
-            self.image, self.rect = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
-            self.rect.center = [SCREEN_WIDTH/2, SCREEN_HEIGHT/2]
-        #self.add_frame(pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoCours1.png"))
-        #self.add_frame(pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoCours2.png"))
-        #self.add_frame(pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoCours3.png"))
-        #self.add_frame(pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoCours4.png"))
-        if self.numero == 2:
-            self.image, self.rect = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteDarkVador.png")
-            self.rect.center = [SCREEN_WIDTH/2+50, SCREEN_HEIGHT/2]
-        if self.numero == 3:
-            self.image, self.rect = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteDeadpool.png")
-            self.rect.center = [SCREEN_WIDTH/2+100, SCREEN_HEIGHT/2]
-        if self.numero == 4:
-            self.image, self.rect = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteVegeta.png")
-            self.rect.center = [SCREEN_WIDTH/2-50, SCREEN_HEIGHT/2]
+        self.image, self.rect = self.image_normale
+        self.rect.center = [SCREEN_WIDTH/2, SCREEN_HEIGHT/2]
+
 
     def sauter(self):
-        if self.numero == 1:
-            self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoSaut.png")
-        if self.numero == 2:
-            self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteDarkVadorSaut.png")
-        if self.numero == 3:
-            self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteDeadpoolSaut.png")
-        if self.numero == 4:
-            self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteVegetaSaut.png")
-
+        #changement de l'image sauter
+        self.image = self.image_sauter
+        #le saut
         if not self.isJumping:
             self.acceleration[1] += -VITESSE_DEBUT_SAUT
             self.isJumping = True
@@ -75,20 +59,10 @@ class Personnage(Animable.Animable):
 
     def down(self):
         if self.isDown == False:
-            if self.numero == 1:
-                self.isDown = True
-                self.peutAttaquer = False
-                self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
-                self.rect.y = self.rect.y+10
-            if self.numero == 2:
-                self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteDarkVadorAccroupi.png")
-                self.rect.y = self.rect.y+20
-            if self.numero == 3:
-                self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteDeadpoolAccroupi.png")
-                self.rect.y = self.rect.y+35
-            if self.numero == 4:
-                self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteVegetaAccroupi.png")
-                self.rect.y = self.rect.y+10
+            self.isDown = True
+            self.peutAttaquer = False
+            self.image = self.image_accroupi
+            self.rect.y = self.rect.y+10
     #end down
 
     def left(self):
@@ -152,9 +126,9 @@ class Personnage(Animable.Animable):
         self.collisionBas = False
    
         if self.isAttacking:
-        	self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoHit.png")[0]
+            self.image = self.image_attaque
         else:
-        	self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")[0]
+            self.image = self.image_normale[0]
 
     #end update
 
@@ -162,27 +136,27 @@ class Personnage(Animable.Animable):
         if self.orientation != "gauche":
             if direction == "gauche":
                 self.orientation = "gauche"
-                self.image = pygame.transform.flip(self.image, True, False)
+                self.image = self.image_gauche
         if self.orientation != "droite":
             if direction == "droite":
                 self.orientation = "droite"
-                self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")[0]
+                self.image = self.image_droite
         if self.orientation != "bas":
             if direction == "bas":
                 self.orientation = "bas"
-                self.image = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
+                self.image = self.image_bas
         if self.orientation != "haut":
             if direction == "haut":
-                self.orientation = "droite"
-                self.image = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")[0]
+                self.orientation = "haut"
+                self.image = self.image_haut
                 self.rect.y = self.rect.y-10
                 self.isDown = False
         #end if
     #end orienter
     
     def attaquer(self):
-    	if self.isAttacking == False:
-	    	self.isAttacking = True
+        if self.isAttacking == False:
+            self.isAttacking = True
 
     def afficher(self, screen, camera):
         screen.blit(self.image, camera.apply(self))
@@ -200,4 +174,13 @@ class Personnage(Animable.Animable):
         #end if
     #end collision
 
+    def chargement_image(self,numero_sprite):
+        self.image_normale = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
+        self.image_sauter = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoSaut.png")
+        self.image_accroupi = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
+        self.image_attaque = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoHit.png")
+        self.image_droite = self.image_normale[0]
+        self.image_gauche= pygame.transform.flip(self.image_droite, True, True)
+        self.image_bas = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
+        self.image_haut = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
 #end Personnage
