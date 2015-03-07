@@ -11,8 +11,12 @@ class GroupTir(pygame.sprite.Group, ConnectionListener):
                 s.speed = data['data'][1]
 
     def Network_tirs(self, data):
-        print 'Tir recu '+ str(data['data'][0])
-        self.add(Tir.Tir(0,0,data['data'][0],data['data'][1]))
+        self.add(Tir.Tir(0,data['data'][2],data['data'][0],data['data'][1]))
+
+    def Network_kill_tir(self,data):
+        for t in self:
+            if t.idFleche == data['idTir']:
+                t.kill()
 
     def draw(self,screen,camera):
         for t in self:

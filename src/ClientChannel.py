@@ -26,9 +26,8 @@ class ClientChannel(Channel):
         self._server.SendMessageAll(message)
     #end sendMove
 
-    def sendTir(self):
-        print "Tir sent (depuis sendTir)"
-        message = {"action":"tirs", "data":(self.personnage.rect.center, self.personnage.orientation)}
+    def sendTir(self,id):
+        message = {"action":"tirs", "data":(self.personnage.rect.center, self.personnage.orientation,id)}
         self._server.SendMessageAll(message)
     #end sendTir
 
@@ -70,7 +69,8 @@ class ClientChannel(Channel):
         self.sendMove()
 
     def Network_tir(self, data):
-        self._server.tirs.add(Tir.Tir(data['idJoueur'],0,self.personnage.rect.center,self.personnage.orientation))
-        self.sendTir()
+        id_tir= len(self._server.tirs)
+        self._server.tirs.add(Tir.Tir(data['idJoueur'],id_tir,self.personnage.rect.center,self.personnage.orientation))
+        self.sendTir(id_tir)
 
 #end ClientChannel

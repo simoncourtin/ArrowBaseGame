@@ -103,6 +103,12 @@ class Serveur(Server):
 
 
         # Collisions
+        #fleche et carte
+        collisionsTirsMur = pygame.sprite.groupcollide(self.tirs,self.carte.getCalqueIndice(1).getGroupeTuiles(),True,False)
+        for tir in collisionsTirsMur.keys():
+            # On envoie au client le tir a detruire
+            self.SendMessageAll({"action":"kill_tir","idTir":tir.idFleche})
+        #joueurs et carte
         listeCollisions = pygame.sprite.groupcollide(self.joueurs,self.carte.getCalqueIndice(1).getGroupeTuiles(),False,False)
         for joueur in listeCollisions.keys():
             # On recupere le channel du joueur
