@@ -6,7 +6,7 @@ import time, sys
 import os
 import pygame
 from pygame.locals import *
-
+import Tir
 import Personnage
 #from posix import wait
 import Tir
@@ -28,7 +28,7 @@ class ClientChannel(Channel):
 
     def sendTir(self):
         print "Tir sent (depuis sendTir)"
-        message = {"action":"tir", "data":(self.personnage.rect.center, self.personnage.orientation)}
+        message = {"action":"tirs", "data":(self.personnage.rect.center, self.personnage.orientation)}
         self._server.SendMessageAll(message)
     #end sendTir
 
@@ -38,9 +38,6 @@ class ClientChannel(Channel):
         print 'Client parti'
     #end Close
 
-    #def Network_(self, data):
-
-    #end Network_
 
 
     def Network_move(self, data):
@@ -68,14 +65,12 @@ class ClientChannel(Channel):
         elif(mouvement == "saut"):
             self.personnage.sauter()
         elif(mouvement=="a"):
-        	self.personnage.attaquer()
+            self.personnage.attaquer()
 
         self.sendMove()
 
-
-
     def Network_tir(self, data):
-        print "Network tir (depuis Network_tir)"
+        self._server.tirs.add(Tir.Tir(data['idJoueur'],0,self.personnage.rect.center,self.personnage.orientation))
         self.sendTir()
 
 #end ClientChannel

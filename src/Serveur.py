@@ -27,6 +27,7 @@ class Serveur(Server):
         self.ids=[]
         self.clients = []
         self.joueurs = pygame.sprite.Group()
+        self.tirs = pygame.sprite.Group()
         print('Server launched')
         self.clock = pygame.time.Clock()
         #definiriton de le la fenetre
@@ -96,6 +97,7 @@ class Serveur(Server):
         # Updates
         self.carte.afficherCarte()
         self.joueurs.update()
+        self.tirs.update()
 
         # Events
 

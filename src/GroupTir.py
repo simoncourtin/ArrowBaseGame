@@ -11,4 +11,9 @@ class GroupTir(pygame.sprite.Group, ConnectionListener):
                 s.speed = data['data'][1]
 
     def Network_tirs(self, data):
-        print "Network tirs"
+        print 'Tir recu '+ str(data['data'][0])
+        self.add(Tir.Tir(0,0,data['data'][0],data['data'][1]))
+
+    def draw(self,screen,camera):
+        for t in self:
+            t.afficher(screen, camera)

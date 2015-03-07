@@ -127,8 +127,6 @@ class Personnage(Animable.Animable):
    
         if self.isAttacking:
             self.image = self.image_attaque
-        else:
-            self.image = self.image_normale[0]
 
     #end update
 

@@ -64,7 +64,7 @@ class Client(ConnectionListener):
                 # end if
                 if (event.type == pygame.MOUSEBUTTONUP):
                     print str(pygame.mouse.get_pos())+" origine :"+str(self.contolable.rect.x)+","+str(self.contolable.rect.y)
-                    connection.Send({"action": "tir","idJoueur":self.contolable.idJoueur})
+                    connection.Send({"action": "tir","idJoueur":self.contolable.idJoueur,'origine':(self.contolable.rect.x,self.contolable.rect.y)})
                 # end if
             # end for
             if self.run:
@@ -82,15 +82,16 @@ class Client(ConnectionListener):
                     connection.Send({"action": "move", "touche": "a"})
 
                 # updates
-                self.groupTir.update()
                 self.cam.update(self.contolable,self.screen)
+                #print len(self.groupTir)
+                self.groupTir.update()
                 self.monGroup.update()
 
                 # drawings
                 self.screen.fill(0)
                 self.carte.afficherCarteCamera(self.cam)
                 self.monGroup.draw(self.screen,self.cam)
-                self.groupTir.draw(self.screen)
+                self.groupTir.draw(self.screen,self.cam)
 
             else:
                 #ecran d'attente
