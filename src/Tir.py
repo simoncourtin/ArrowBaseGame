@@ -24,16 +24,15 @@ class Tir(Animable.Animable):
         self.isActive = True
         self.orientation = "droite"
         self.image, self.rect = load_png.load_png(os.path.dirname(__file__) + "/../data/sprite/arrow.png")
-
-        if direction == "gauche":
-            self.image = pygame.transform.flip(self.image, True, False)
-
+        self.origine = origine
         self.rect.center = origine
         self.speed = [20, 0]
         self.acceleration = [0, 0]
 
         if direction == "gauche":
+            self.image = pygame.transform.flip(self.image, True, False)
             self.speed[0] *= -1
+
 
     def afficher(self, screen, camera):
         screen.blit(self.image, camera.apply(self))

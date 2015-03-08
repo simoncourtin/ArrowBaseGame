@@ -68,17 +68,17 @@ class Client(ConnectionListener):
                 # end if
             # end for
             if self.run:
-                # Gestion des événements de ce client
+                # Gestion des événements de ce client (les touches sont celles d'un clavier anglais)
                 touches = pygame.key.get_pressed()
                 if (touches[K_DOWN] or touches[K_s]):
                     connection.Send({"action": "move", "touche": "bas"})
-                if (touches[K_LEFT] or touches[K_q]):
+                if (touches[K_LEFT] or touches[K_a]):
                     connection.Send({"action": "move", "touche": "gauche"})
                 if (touches[K_RIGHT] or touches[K_d]):
                     connection.Send({"action": "move", "touche": "droite"})
-                if (touches[K_SPACE] or touches[K_UP]):
+                if (touches[K_SPACE] or touches[K_UP] or touches[K_w]):
                     connection.Send({"action": "move", "touche": "saut"})
-                if (touches[K_a]):
+                if (touches[K_q]):
                     connection.Send({"action": "move", "touche": "a"})
 
                 # updates
