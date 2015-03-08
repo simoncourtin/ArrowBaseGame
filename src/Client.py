@@ -63,7 +63,6 @@ class Client(ConnectionListener):
                     return  # closing the window exits the program
                 # end if
                 if (event.type == pygame.MOUSEBUTTONUP):
-                    print str(pygame.mouse.get_pos())+" origine :"+str(self.contolable.rect.x)+","+str(self.contolable.rect.y)
                     connection.Send({"action": "tir","idJoueur":self.contolable.idJoueur,'origine':(self.contolable.rect.x,self.contolable.rect.y)})
                 # end if
             # end for
