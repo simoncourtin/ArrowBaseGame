@@ -62,22 +62,30 @@ class Client(ConnectionListener):
                 if event.type == pygame.QUIT:
                     return  # closing the window exits the program
                 # end if
+                if (event.type == pygame.MOUSEBUTTONDOWN):
+                    shootStart = pygame.time.get_ticks()
+                    print shootStart
                 if (event.type == pygame.MOUSEBUTTONUP):
-                    connection.Send({"action": "tir","idJoueur":self.contolable.idJoueur,'origine':(self.contolable.rect.x,self.contolable.rect.y)})
+                    shootEnd = pygame.time.get_ticks()
+                    puissance = shootEnd - shootStart
+                    print "Puissance du tir : " + str(puissance)
+                    #print str(pygame.mouse.get_pos())+" origine :"+str(self.contolable.rect.x)+","+str(self.contolable.rect.y)
+                    connection.Send({"action": "tir","idJoueur":self.contolable.idJoueur,"origine":(self.contolable.rect.x,self.contolable.rect.y), "puissance": puissance})
+
                 # end if
             # end for
             if self.run:
-                # Gestion des événements de ce client
+                # Gestion des événements de ce client (les touches sont celles d'un clavier anglais)
                 touches = pygame.key.get_pressed()
-                if (touches[K_DOWN]):
+                if (touches[K_DOWN] or touches[K_s]):
                     connection.Send({"action": "move", "touche": "bas"})
-                if (touches[K_LEFT]):
+                if (touches[K_LEFT] or touches[K_a]):
                     connection.Send({"action": "move", "touche": "gauche"})
-                if (touches[K_RIGHT]):
+                if (touches[K_RIGHT] or touches[K_d]):
                     connection.Send({"action": "move", "touche": "droite"})
-                if (touches[K_SPACE] or touches[K_UP]):
+                if (touches[K_SPACE] or touches[K_UP] or touches[K_w]):
                     connection.Send({"action": "move", "touche": "saut"})
-                if (touches[K_a]):
+                if (touches[K_q]):
                     connection.Send({"action": "move", "touche": "a"})
 
                 # updates
