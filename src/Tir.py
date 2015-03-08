@@ -12,10 +12,12 @@ SCREEN_HEIGHT = 600
 ACCELERATION_GRAVITE = 1
 VITESSE_DEBUT_LANCER = 20
 COEFF_FROTTEMENT = 0.003
+PUISSANCE_MIN = 20
+PUISSANCE_MAX = 60
 
 
 class Tir(Animable.Animable):
-    def __init__(self, idJoueur, idFleche, origine, direction):
+    def __init__(self, idJoueur, idFleche, origine, direction, puissance):
         pygame.sprite.Sprite.__init__(self)
         Animable.Animable.__init__(self, cooldown=6)
 
@@ -26,7 +28,14 @@ class Tir(Animable.Animable):
         self.image, self.rect = load_png.load_png(os.path.dirname(__file__) + "/../data/sprite/arrow.png")
         self.origine = origine
         self.rect.center = origine
-        self.speed = [20, 0]
+        self.puissance = puissance / 10
+
+        if self.puissance > PUISSANCE_MAX:
+            self.puissance = PUISSANCE_MAX
+        elif self.puissance < PUISSANCE_MIN:
+            self.puissance = PUISSANCE_MIN
+
+        self.speed = [self.puissance, 0]
         self.acceleration = [0, 0]
 
         if direction == "gauche":

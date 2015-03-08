@@ -62,9 +62,15 @@ class Client(ConnectionListener):
                 if event.type == pygame.QUIT:
                     return  # closing the window exits the program
                 # end if
+                if (event.type == pygame.MOUSEBUTTONDOWN):
+                    shootStart = pygame.time.get_ticks()
+                    print shootStart
                 if (event.type == pygame.MOUSEBUTTONUP):
-                    print str(pygame.mouse.get_pos())+" origine :"+str(self.contolable.rect.x)+","+str(self.contolable.rect.y)
-                    connection.Send({"action": "tir","idJoueur":self.contolable.idJoueur,'origine':(self.contolable.rect.x,self.contolable.rect.y)})
+                    shootEnd = pygame.time.get_ticks()
+                    puissance = shootEnd - shootStart
+                    print "Puissance du tir : " + str(puissance)
+                    #print str(pygame.mouse.get_pos())+" origine :"+str(self.contolable.rect.x)+","+str(self.contolable.rect.y)
+                    connection.Send({"action": "tir","idJoueur":self.contolable.idJoueur,"origine":(self.contolable.rect.x,self.contolable.rect.y), "puissance": puissance})
                 # end if
             # end for
             if self.run:
