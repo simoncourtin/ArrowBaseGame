@@ -43,7 +43,7 @@ class Serveur(Server):
         if len(self.clients)<MAX_JOUEUR:
             self.nb_joueur += 1
             print 'Client avec id : ' + str(self.nb_joueur)
-            channel.identifiant = self.nb_joueur
+            channel.set_identifiant(self.nb_joueur)
             self.ids.append(self.nb_joueur)
             self.clients.append(channel)
             channel.Send({'action':'identification','id':self.nb_joueur})
@@ -108,6 +108,18 @@ class Serveur(Server):
         for tir in collisionsTirsMur.keys():
             # On envoie au client le tir a detruire
             self.SendMessageAll({"action":"kill_tir","idTir":tir.idFleche})
+
+        #joueur et fleches
+         #fleche et carte
+        collisionsTirsJoueur = pygame.sprite.groupcollide(self.tirs,self.joueurs,True,False)
+        for tir in collisionsTirsJoueur.keys():
+            for joueur in collisionsTirsJoueur[tir] :
+                print "le joueur "+ str(tir.idJoueur)+ " a tue le joueur "+ str(joueur.idJoueur)
+                #on envoie le message aux clients pour savoir qui est le tueur et qui est le tue
+                self.SendMessageAll({"action":"kill_pers","methode":"fleche","id_tuer":joueur.idJoueur,"id_tueur":tir.idJoueur})
+                #on envoie aux clients la fleche a detruire
+                self.SendMessageAll({"action":"kill_tir","idTir":tir.idFleche})
+
         #joueurs et carte
         listeCollisions = pygame.sprite.groupcollide(self.joueurs,self.carte.getCalqueIndice(1).getGroupeTuiles(),False,False)
         for joueur in listeCollisions.keys():
