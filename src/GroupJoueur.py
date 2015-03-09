@@ -27,6 +27,14 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
                 self.add(Personnage.Personnage(1,i))
         print len(self)
 
+    def Network_collisionJoueur(self, data):
+        for joueur in self:
+            if joueur.idJoueur == data['id']:
+                joueur.collision(data['cote'])
+            #end if
+        #end for
+    #end Network_collision
+
     def getPlayerId(self,id):
         for s in self:
             if(s.idJoueur == id):
@@ -46,3 +54,5 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
     def draw(self,screen,camera):
         for s in self:
             s.afficher(screen, camera)
+
+

@@ -27,6 +27,7 @@ class Client(ConnectionListener):
         #initialisation de pygame
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        #self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT),pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
         pygame.key.set_repeat(1, 1)
         #numero d'id sur le serveur
@@ -166,13 +167,7 @@ class Client(ConnectionListener):
         sys.exit()
     #end Network_disconnected*
 
-    def Network_collision(self, data):
-        for joueur in self.monGroup:
-            if joueur.idJoueur == data['id']:
-                joueur.collision(data['cote'])
-            #end if
-        #end for
-    #end Network_collision
+
 
 #end Client
 
