@@ -171,6 +171,10 @@ class Personnage(Animable.Animable):
             self.collisionBas = True;
         #end if
     #end collision
+    
+    def mourir(self):
+        self.image, self.rect = self.image_normale
+        self.rect.center = [SCREEN_WIDTH/2, SCREEN_HEIGHT/2]
 
     def chargement_image(self,numero_sprite):
         self.image_normale = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")

@@ -198,7 +198,33 @@ class Serveur(Server):
                     joueur.collision('bas')
                 #end if
             #end for
-
+            
+            # Check des collisions entre joueurs
+            listeCollisionsJoueurs = pygame.sprite.groupcollide(self.joueurs,self.joueurs,False,False)
+            for joueur in listeCollisionsJoueurs.keys():
+                listeCollisionsJoueur = listeCollisionsJoueurs[joueur]
+                if len(listeCollisionsJoueur)>1:
+                    for collision in listeCollisionsJoueur:
+                        if joueur.isAttacking:
+                            collision.mourir()
+                        else:
+                            if joueur.rect.centerx > collision.rect.centerx:
+                                self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'gauche'})
+                                joueur.rect.left = collision.rect.right-5
+                                joueur.collision('gauche')
+                            if joueur.rect.centerx < collision.rect.centerx:
+                                self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'droite'})
+                                joueur.rect.right = collision.rect.left+5
+                                joueur.collision('droite')
+                            if joueur.rect.centery < collision.rect.centery:
+                                self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'bas'})
+                                joueur.rect.top = collision.rect.bottom-5
+                                joueur.collision('bas')
+                            if joueur.rect.centery > collision.rect.centery:
+                                self.SendMessageAll({'action':'collision','id':channel.identifiant, 'cote':'haut'})
+                                joueur.rect.bottom = collision.rect.top+5
+                                joueur.collision('haut')
+            
             # Envoi des nouvelles coordonnees de ce joueur
             channel.sendMove();
         #end for
