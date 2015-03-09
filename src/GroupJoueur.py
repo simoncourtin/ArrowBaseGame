@@ -35,6 +35,17 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
         #end for
     #end Network_collision
 
+    def Network_kill_pers(self, data):
+        for joueur in self:
+            if joueur.idJoueur == data["id_tuer"]:
+                print "joueur "+ str(data["id_tuer"]) +" tue"
+            #end if
+            if joueur.idJoueur == data["id_tueur"]:
+                print "joueur "+str(data["id_tueur"])+" tueur"
+            #end if
+        #end for
+    #end Network_kill_pers
+
     def getPlayerId(self,id):
         for s in self:
             if(s.idJoueur == id):
