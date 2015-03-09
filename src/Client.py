@@ -166,13 +166,7 @@ class Client(ConnectionListener):
         sys.exit()
     #end Network_disconnected*
 
-    def Network_collision(self, data):
-        for joueur in self.monGroup:
-            if joueur.idJoueur == data['id']:
-                joueur.collision(data['cote'])
-            #end if
-        #end for
-    #end Network_collision
+
 
 #end Client
 
