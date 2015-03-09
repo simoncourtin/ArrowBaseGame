@@ -10,6 +10,10 @@ import Tir
 import Personnage
 #from posix import wait
 import Tir
+import math
+
+VITESSE_DEBUT_LANCER = 20
+
 
 class ClientChannel(Channel):
     def __init__(self, *args, **kwargs):
@@ -26,8 +30,8 @@ class ClientChannel(Channel):
         self._server.SendMessageAll(message)
     #end sendMove
 
-    def sendTir(self,id, puissance):
-        message = {"action":"tirs", "data":(self.personnage.rect.center, self.personnage.orientation,id, puissance)}
+    def sendTir(self,id, puissance, vitesse):
+        message = {"action":"tirs", "data":(self.personnage.rect.center, vitesse,id, puissance)}
         self._server.SendMessageAll(message)
     #end sendTir
 
@@ -68,8 +72,15 @@ class ClientChannel(Channel):
 
     def Network_tir(self, data):
         id_tir= len(self._server.tirs)
-        self._server.tirs.add(Tir.Tir(data['idJoueur'],id_tir,self.personnage.rect.center,self.personnage.orientation, data['puissance']))
-        self.sendTir(id_tir, data['puissance'])
+
+        #Calcul de la vitesse du projectile
+        vitesseTir = [data["clic"][0]-self.personnage.rect.centerx, data["clic"][1]-self.personnage.rect.centery]
+        normeVitesse = math.sqrt(vitesseTir[0]*vitesseTir[0] + vitesseTir[1]*vitesseTir[1])
+        vitesseTir[0] = int( float(vitesseTir[0]) * VITESSE_DEBUT_LANCER / normeVitesse )
+        vitesseTir[1] = int( float(vitesseTir[1]) * VITESSE_DEBUT_LANCER / normeVitesse )
+
+        self._server.tirs.add(Tir.Tir(data['idJoueur'],id_tir,self.personnage.rect.center,vitesseTir, data['puissance']))
+        self.sendTir(id_tir, data['puissance'], vitesseTir)
         
     def Network_attack(self, data):
         self.personnage.attaquer()

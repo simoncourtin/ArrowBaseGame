@@ -10,14 +10,14 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
 
 ACCELERATION_GRAVITE = 1
-VITESSE_DEBUT_LANCER = 20
 COEFF_FROTTEMENT = 0.003
 PUISSANCE_MIN = 20
-PUISSANCE_MAX = 60
+PUISSANCE_MAX = 100
+FACTEUR_PUISSANCE = 0.05
 
 
 class Tir(Animable.Animable):
-    def __init__(self, idJoueur, idFleche, origine, direction, puissance):
+    def __init__(self, idJoueur, idFleche, origine, vitesse, puissance):
         pygame.sprite.Sprite.__init__(self)
         Animable.Animable.__init__(self, cooldown=6)
 
@@ -35,12 +35,10 @@ class Tir(Animable.Animable):
         elif self.puissance < PUISSANCE_MIN:
             self.puissance = PUISSANCE_MIN
 
-        self.speed = [self.puissance, 0]
+        #self.speed = [self.puissance, 0]
         self.acceleration = [0, 0]
 
-        if direction == "gauche":
-            self.image = pygame.transform.flip(self.image, True, False)
-            self.speed[0] *= -1
+        self.speed = [FACTEUR_PUISSANCE*self.puissance*vitesse[0], FACTEUR_PUISSANCE*self.puissance*vitesse[1]]
 
 
     def afficher(self, screen, camera):
@@ -50,9 +48,9 @@ class Tir(Animable.Animable):
         self.rect = self.rect.move(self.speed)
         Animable.Animable.update(self)
 
-        self.acceleration[1] += -VITESSE_DEBUT_LANCER
+        #self.acceleration[1] += -VITESSE_DEBUT_LANCER
 
-        self.acceleration[1] = self.acceleration[0] + ACCELERATION_GRAVITE
+        self.acceleration[1] = ACCELERATION_GRAVITE
 
         self.speed[0] -= self.speed[0] * COEFF_FROTTEMENT
         self.speed[1] -= self.speed[1] * COEFF_FROTTEMENT

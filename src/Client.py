@@ -72,7 +72,11 @@ class Client(ConnectionListener):
                     puissance = shootEnd - shootStart
                     print "Puissance du tir : " + str(puissance)
                     #print str(pygame.mouse.get_pos())+" origine :"+str(self.contolable.rect.x)+","+str(self.contolable.rect.y)
-                    connection.Send({"action": "tir","idJoueur":self.contolable.idJoueur,"origine":(self.contolable.rect.x,self.contolable.rect.y), "puissance": puissance})
+                    mousex, mousey = pygame.mouse.get_pos()
+                    mousex += self.cam.state.x
+                    mousey += self.cam.state.y
+
+                    connection.Send({"action": "tir","idJoueur":self.contolable.idJoueur,"origine":(self.contolable.rect.x,self.contolable.rect.y), "puissance": puissance, "clic":[mousex, mousey]})
 
                 # end if
             # end for
