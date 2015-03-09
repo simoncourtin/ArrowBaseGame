@@ -52,6 +52,7 @@ class Client(ConnectionListener):
     # end __init__
 
     def Loop(self):
+        spaceBarPressed = False
         while True:
             connection.Pump()
             self.monGroup.Pump()
@@ -85,7 +86,12 @@ class Client(ConnectionListener):
                 if (touches[K_RIGHT] or touches[K_d]):
                     connection.Send({"action": "move", "touche": "droite"})
                 if (touches[K_SPACE] or touches[K_UP] or touches[K_w]):
-                    connection.Send({"action": "move", "touche": "saut"})
+                    if not spaceBarPressed:
+                        connection.Send({"action": "move", "touche": "saut"})
+                        spaceBarPressed = True
+                    #end if
+                else:
+                    spaceBarPressed = False
                 if (touches[K_q]):
                     connection.Send({"action": "attack", "touche": "a"})
                 else:

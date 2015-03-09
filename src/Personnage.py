@@ -7,12 +7,12 @@ import Animable
 SCREEN_WIDTH = 1366
 SCREEN_HEIGHT = 768
 
-VITESSE_DEPLACEMENT = 1
-VITESSE_DEBUT_SAUT = 30
+ACCELERATION_DEPLACEMENT = 1
+VITESSE_DEBUT_SAUT = 40
 ACCELERATION_GRAVITE = 2
 COEFF_FROTTEMENT = 0.1
-VITESSE_MAX_X = 20
-VITESSE_MAX_Y = 30
+VITESSE_MAX_X = 10
+VITESSE_MAX_Y = 40
 
 
 class Personnage(Animable.Animable):
@@ -66,11 +66,11 @@ class Personnage(Animable.Animable):
     #end down
 
     def left(self):
-        self.acceleration[0]=-VITESSE_DEPLACEMENT
+        self.acceleration[0]=-ACCELERATION_DEPLACEMENT
     #end left
 
     def right(self):
-        self.acceleration[0]=VITESSE_DEPLACEMENT
+        self.acceleration[0]=ACCELERATION_DEPLACEMENT
     #end right
 
     def stopHorizontal(self):
