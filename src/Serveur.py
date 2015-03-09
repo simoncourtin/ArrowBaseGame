@@ -204,6 +204,7 @@ class Serveur(Server):
             for joueur in listeCollisionsJoueurs.keys():
                 listeCollisionsJoueur = listeCollisionsJoueurs[joueur]
                 if len(listeCollisionsJoueur)>1:
+                    listeCollisionsJoueur = [x for x in listeCollisionsJoueur if x != joueur]
                     for collision in listeCollisionsJoueur:
                         if joueur.isAttacking:
                             collision.mourir()

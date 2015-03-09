@@ -63,8 +63,6 @@ class ClientChannel(Channel):
             self.personnage.right()
         elif(mouvement == "saut"):
             self.personnage.sauter()
-        elif(mouvement=="a"):
-            self.personnage.attaquer()
 
         self.sendMove()
 
@@ -72,5 +70,13 @@ class ClientChannel(Channel):
         id_tir= len(self._server.tirs)
         self._server.tirs.add(Tir.Tir(data['idJoueur'],id_tir,self.personnage.rect.center,self.personnage.orientation, data['puissance']))
         self.sendTir(id_tir, data['puissance'])
+        
+    def Network_attack(self, data):
+        self.personnage.attaquer()
+        self.sendMove()
+        
+    def Network_stopAttack(self, data):
+        self.personnage.isAttacking = False
+        self.sendMove()
 
 #end ClientChannel

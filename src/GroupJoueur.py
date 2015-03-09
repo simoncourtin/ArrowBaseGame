@@ -12,6 +12,8 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
                 s.orienter(data['data'][2])
                 if data['data'][3]:
                     s.attaquer()
+                else:
+                    s.isAttacking = False
 
     def Network_playerQuit(self, data):
         print str(data['id'])+" left the game"

@@ -86,7 +86,11 @@ class Client(ConnectionListener):
                 if (touches[K_SPACE] or touches[K_UP] or touches[K_w]):
                     connection.Send({"action": "move", "touche": "saut"})
                 if (touches[K_q]):
-                    connection.Send({"action": "move", "touche": "a"})
+                    connection.Send({"action": "attack", "touche": "a"})
+                else:
+                    if self.contolable.isAttacking:
+                        self.contolable.isAttacking = False
+                        connection.Send({"action": "stopAttack"})
 
                 # updates
                 self.cam.update(self.contolable,self.screen)
