@@ -27,6 +27,7 @@ class Client(ConnectionListener):
         #initialisation de pygame
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        #self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT),pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
         pygame.key.set_repeat(1, 1)
         #numero d'id sur le serveur
