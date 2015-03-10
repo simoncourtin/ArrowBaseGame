@@ -247,14 +247,14 @@ class Serveur(Server):
                                 self.SendMessageAll({'action':'collisionJoueur','id':channel.identifiant, 'cote':'droite'})
                                 joueur.rect.right = collision.rect.left+5
                                 joueur.collision('droite')
-                            if joueur.rect.centery < collision.rect.centery:
-                                self.SendMessageAll({'action':'collisionJoueur','id':channel.identifiant, 'cote':'bas'})
-                                joueur.rect.top = collision.rect.bottom-5
-                                joueur.collision('bas')
-                            if joueur.rect.centery > collision.rect.centery:
-                                self.SendMessageAll({'action':'collisionJoueur','id':channel.identifiant, 'cote':'haut'})
-                                joueur.rect.bottom = collision.rect.top+20
-                                joueur.collision('haut')
+                            #if joueur.rect.centery < collision.rect.centery:
+                             #   self.SendMessageAll({'action':'collisionJoueur','id':channel.identifiant, 'cote':'bas'})
+                              #  joueur.rect.top = collision.rect.bottom-5
+                               # joueur.collision('bas')
+                            #if joueur.rect.centery > collision.rect.centery:
+                             #   self.SendMessageAll({'action':'collisionJoueur','id':channel.identifiant, 'cote':'haut'})
+                              #  joueur.rect.bottom = collision.rect.top+20
+                               # joueur.collision('haut')
             
             # Envoi des nouvelles coordonnees de ce joueur
             channel.sendMove();
