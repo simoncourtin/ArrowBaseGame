@@ -114,7 +114,6 @@ class Serveur(Server):
             self.SendMessageAll({"action":"kill_tir","idTir":tir.idFleche})
 
         #joueur et fleches
-         #fleche et carte
         collisionsTirsJoueur = pygame.sprite.groupcollide(self.tirs,self.joueurs,True,False)
         for tir in collisionsTirsJoueur.keys():
             for joueur in collisionsTirsJoueur[tir] :
@@ -123,6 +122,24 @@ class Serveur(Server):
                 self.SendMessageAll({"action":"kill_pers","methode":"fleche","id_tuer":joueur.idJoueur,"id_tueur":tir.idJoueur})
                 #on envoie aux clients la fleche a detruire
                 self.SendMessageAll({"action":"kill_tir","idTir":tir.idFleche})
+                #on recherche le tireur pour lui attribuer un point
+                for tireur in self.joueurs:
+                    if tireur.idJoueur == tir.idJoueur:
+                        #si le tir vient de lui meme alors on enleve un tir
+                        if tireur.idJoueur == joueur.idJoueur:
+                            ajout_score = -1
+                        else:
+                            ajout_score = 1
+                        #end if
+                        #On ajoute ou enleve le score au tireur
+                        tireur.score += ajout_score
+                        #on envoie le nouveau score aux client
+                        self.SendMessageAll({"action" : "ajout_score","joueur" : tireur.idJoueur,"score" : tireur.score})
+                    #end if
+                #end for
+            #end for
+        #end for
+
 
         #joueurs et carte
         listeCollisions = pygame.sprite.groupcollide(self.joueurs,self.carte.getCalqueIndice(1).getGroupeTuiles(),False,False)
@@ -234,14 +251,14 @@ class Serveur(Server):
                                 self.SendMessageAll({'action':'collisionJoueur','id':channel.identifiant, 'cote':'droite'})
                                 joueur.rect.right = collision.rect.left+5
                                 joueur.collision('droite')
-                            if joueur.rect.centery < collision.rect.centery:
-                                self.SendMessageAll({'action':'collisionJoueur','id':channel.identifiant, 'cote':'bas'})
-                                joueur.rect.top = collision.rect.bottom-5
-                                joueur.collision('bas')
-                            if joueur.rect.centery > collision.rect.centery:
-                                self.SendMessageAll({'action':'collisionJoueur','id':channel.identifiant, 'cote':'haut'})
-                                joueur.rect.bottom = collision.rect.top+20
-                                joueur.collision('haut')
+                            #if joueur.rect.centery < collision.rect.centery:
+                             #   self.SendMessageAll({'action':'collisionJoueur','id':channel.identifiant, 'cote':'bas'})
+                              #  joueur.rect.top = collision.rect.bottom-5
+                               # joueur.collision('bas')
+                            #if joueur.rect.centery > collision.rect.centery:
+                             #   self.SendMessageAll({'action':'collisionJoueur','id':channel.identifiant, 'cote':'haut'})
+                              #  joueur.rect.bottom = collision.rect.top+20
+                               # joueur.collision('haut')
             
             # Envoi des nouvelles coordonnees de ce joueur
             channel.sendMove();
