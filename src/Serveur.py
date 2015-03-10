@@ -11,11 +11,15 @@ import random
 import Personnage
 import Tir
 from  module_map import Map
+import random
+
+for x in range(20):
+  map = random.randint(1,4)
 
 listeImages = {}
-TAB_MAP = [("Image","/../../data/map/map03/background.png",True),
-            ("","/../../data/map/map03/plateforme.map",'/../../data/map/map03/terre.png',32,32)]
-CONFIG_FILE = "/../../data/map/map03/config.map"
+TAB_MAP = [("Image","/../../data/map/map0" + str(map) + "/background.png",True),
+            ("","/../../data/map/map0" + str(map) + "/plateforme.map","/../../data/map/map0" + str(map) + "/terre.png",32,32)]
+CONFIG_FILE = "/../../data/map/map0" + str(map) + "/config.map"
 MAX_JOUEUR = 2
 
 class Serveur(Server):
