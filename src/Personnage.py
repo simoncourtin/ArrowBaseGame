@@ -29,7 +29,8 @@ class Personnage(Animable.Animable):
         self.isAttacking = False
         self.orientation = "gauche"
         self.score = 0
-
+        self.mort = False
+        self.capture_frame_actuel = 0
         self.collisionGauche = False
         self.collisionDroite = False
         self.collisionHaut = False
@@ -174,8 +175,9 @@ class Personnage(Animable.Animable):
     #end collision
     
     def mourir(self):
-        self.image, self.rect = self.image_normale
-        self.rect.center = [SCREEN_WIDTH-300, SCREEN_HEIGHT-300]
+        self.mort = True
+        self.image = self.image_accroupi
+        #self.rect.center = [SCREEN_WIDTH-300, SCREEN_HEIGHT-300]
 
     def chargement_image(self,numero_sprite):
         self.image_normale = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")

@@ -37,6 +37,7 @@ class Serveur(Server):
         #definiriton de le la fenetre
         self.screen = pygame.display.set_mode((50, 50))
         self.carte = None
+        self.temp_jeu = 0
 
 
     #end __init_
@@ -63,6 +64,8 @@ class Serveur(Server):
         #end if
         if len(self.clients)==MAX_JOUEUR:
             self.SendMessageAll({'action':'game','statut':'start'})
+            #on remet le temp de jeu a 0
+            self.temp_jeu = 0
         #end if
     #end Connected
 
@@ -117,26 +120,31 @@ class Serveur(Server):
         collisionsTirsJoueur = pygame.sprite.groupcollide(self.tirs,self.joueurs,True,False)
         for tir in collisionsTirsJoueur.keys():
             for joueur in collisionsTirsJoueur[tir] :
-                print "le joueur "+ str(tir.idJoueur)+ " a tue le joueur "+ str(joueur.idJoueur)
-                #on envoie le message aux clients pour savoir qui est le tueur et qui est le tue
-                self.SendMessageAll({"action":"kill_pers","methode":"fleche","id_tuer":joueur.idJoueur,"id_tueur":tir.idJoueur})
-                #on envoie aux clients la fleche a detruire
-                self.SendMessageAll({"action":"kill_tir","idTir":tir.idFleche})
-                #on recherche le tireur pour lui attribuer un point
-                for tireur in self.joueurs:
-                    if tireur.idJoueur == tir.idJoueur:
-                        #si le tir vient de lui meme alors on enleve un tir
-                        if tireur.idJoueur == joueur.idJoueur:
-                            ajout_score = -1
-                        else:
-                            ajout_score = 1
+                #si le joueur touhe est deja mort
+                if joueur.mort == False :
+                    #On tue le personnage
+                    joueur.mort=True
+                    joueur.capture_frame_actuel = self.temp_jeu
+                    #on envoie le message aux clients pour savoir qui est le tueur et qui est le tue
+                    self.SendMessageAll({"action":"kill_pers","methode":"fleche","id_tuer":joueur.idJoueur,"id_tueur":tir.idJoueur})
+                    #on envoie aux clients la fleche a detruire
+                    self.SendMessageAll({"action":"kill_tir","idTir":tir.idFleche})
+                    #on recherche le tireur pour lui attribuer un point
+                    for tireur in self.joueurs:
+                        if tireur.idJoueur == tir.idJoueur:
+                            #si le tir vient de lui meme alors on enleve un tir
+                            if tireur.idJoueur == joueur.idJoueur:
+                                ajout_score = -1
+                            else:
+                                ajout_score = 1
+                            #end if
+                            #On ajoute ou enleve le score au tireur
+                            tireur.score += ajout_score
+                            #on envoie le nouveau score aux client
+                            self.SendMessageAll({"action" : "ajout_score","joueur" : tireur.idJoueur,"score" : tireur.score})
                         #end if
-                        #On ajoute ou enleve le score au tireur
-                        tireur.score += ajout_score
-                        #on envoie le nouveau score aux client
-                        self.SendMessageAll({"action" : "ajout_score","joueur" : tireur.idJoueur,"score" : tireur.score})
-                    #end if
-                #end for
+                    #end for
+                #end if
             #end for
         #end for
 
@@ -241,13 +249,17 @@ class Serveur(Server):
                     for joueurTouche in listeCollisionsJoueur:
                         #si le joueur est en phase d'attaque
                         if joueur.isAttacking:
-                            #on envoie le message aux clients pour savoir qui est le tueur et qui est le tue
-                            self.SendMessageAll({"action":"kill_pers","methode":"melee","id_tuer":joueurTouche.idJoueur,"id_tueur":joueur.idJoueur})
-                            #On ajoute le score au killer
-                            joueur.score += 1
-                            #on envoie le nouveau score aux client
-                            self.SendMessageAll({"action" : "ajout_score","joueur" : joueur.idJoueur,"score" : joueur.score})
-                            joueurTouche.mourir()
+                            #on regarde si le joueur est deja mot ou pas
+                            if joueurTouche.mort == False :
+                                #On tue le personnage
+                                joueurTouche.mort = True
+                                joueurTouche.capture_frame_actuel = self.temp_jeu
+                                #on envoie le message aux clients pour savoir qui est le tueur et qui est le tue
+                                self.SendMessageAll({"action":"kill_pers","methode":"melee","id_tuer":joueurTouche.idJoueur,"id_tueur":joueur.idJoueur})
+                                #On ajoute le score au killer
+                                joueur.score += 1
+                                #on envoie le nouveau score aux client
+                                self.SendMessageAll({"action" : "ajout_score","joueur" : joueur.idJoueur,"score" : joueur.score})
                         else:
                             if joueur.rect.centerx > joueurTouche.rect.centerx:
                                 self.SendMessageAll({'action':'collisionJoueur','id':channel.identifiant, 'cote':'gauche'})
@@ -263,6 +275,11 @@ class Serveur(Server):
                     #end for
                 #end if
             #end for
+            for j in self.joueurs:
+                if j.mort == True:
+                    if j.capture_frame_actuel + (4*60) <= self.temp_jeu:
+                        print "joueur " + str(j.idJoueur) + " ressucite"
+                        j.mort = False
             
             # Envoi des nouvelles coordonnees de ce joueur
             channel.sendMove();
@@ -272,6 +289,7 @@ class Serveur(Server):
                 sys.exit(0)  # closing the window exits the program
             # end if
         # end for
+        self.temp_jeu +=1
     #end Loop
 #end Serveur
 
@@ -281,6 +299,5 @@ if __name__ == '__main__':
     cooldown_attack = 30
     while True:
         server.Loop()
-
     sys.exit(0)
     #end MyServer

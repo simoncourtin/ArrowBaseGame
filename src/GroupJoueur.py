@@ -39,9 +39,7 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
         for joueur in self:
             if joueur.idJoueur == data["id_tuer"]:
                 print "joueur "+ str(data["id_tuer"]) +" tue"
-            #end if
-            if joueur.idJoueur == data["id_tueur"]:
-                print "joueur "+str(data["id_tueur"])+" tueur"
+                joueur.mourir()
             #end if
         #end for
     #end Network_kill_pers
@@ -49,7 +47,6 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
     def Network_ajout_score(self,data):
         player_killer = self.getPlayerId(data['joueur'])
         player_killer.score = data['score']
-        print "score : " + str(data['score']) + " joueur :" + str(data['joueur'])
     #end Network_ajout_score
 
     def getPlayerId(self,id):
