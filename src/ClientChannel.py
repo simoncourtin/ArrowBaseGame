@@ -86,6 +86,7 @@ class ClientChannel(Channel):
             normeVitesse = math.sqrt(vitesseTir[0]*vitesseTir[0] + vitesseTir[1]*vitesseTir[1])
             vitesseTir[0] = int( float(vitesseTir[0]) * VITESSE_DEBUT_LANCER / normeVitesse )
             vitesseTir[1] = int( float(vitesseTir[1]) * VITESSE_DEBUT_LANCER / normeVitesse )
+            #calcul avec vitesse du personnage
             vitesseFlechex =self.personnage.rect.centerx+vitesseTir[0]+self.personnage.speed[0]
             vitesseFlechey =self.personnage.rect.centery+vitesseTir[1]+self.personnage.speed[1]
             self._server.tirs.add(Tir.Tir(data['idJoueur'],id_tir,[vitesseFlechex,vitesseFlechey],vitesseTir, data['puissance']))
