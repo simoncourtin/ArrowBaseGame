@@ -177,6 +177,12 @@ class Personnage(Animable.Animable):
         self.mort = True
         self.image, self.rect = self.image_mort
 
+    def resurrection(self,pos):
+
+        self.mort = False
+        self.image, self.rect = self.image_normale
+
+
     def chargement_image(self,numero_sprite):
         self.image_normale = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
         self.image_sauter = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoSaut.png")

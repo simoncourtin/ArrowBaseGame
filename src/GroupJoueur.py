@@ -44,6 +44,11 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
         #end for
     #end Network_kill_pers
 
+    def Network_resurrection(self,data):
+        joueur = self.getPlayerId(data['id_joueur'])
+        joueur.resurrection(data["position"])
+    #end Network_ajout_score
+
     def Network_ajout_score(self,data):
         player_killer = self.getPlayerId(data['joueur'])
         player_killer.score = data['score']

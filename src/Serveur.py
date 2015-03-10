@@ -275,15 +275,22 @@ class Serveur(Server):
                     #end for
                 #end if
             #end for
-            for j in self.joueurs:
-                if j.mort == True:
-                    if j.capture_frame_actuel + (4*60) <= self.temp_jeu:
-                        print "joueur " + str(j.idJoueur) + " ressucite"
-                        j.mort = False
-            
             # Envoi des nouvelles coordonnees de ce joueur
             channel.sendMove();
         #end for
+        for j in self.joueurs:
+                if j.mort == True:
+                    if j.capture_frame_actuel + (4*60) <= self.temp_jeu:
+                        print "joueur " + str(j.idJoueur) + " ressucite"
+                        position = [random.randint(carte.tile_width,(carte.largeur_map*carte.tile_width)-carte.tile_width),random.randint(carte.tile_height,(carte.hauteur_map*carte.tile_height)-carte.tile_height)]
+                        print str(position)
+                        self.SendMessageAll({"action":"resurrection","id_joueur":j.idJoueur,"position":position})
+                        j.mort = False
+                        j.rect.center=position
+                        for c in self.clients:
+                            if c.personnage == j:
+                                c.sendMove()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit(0)  # closing the window exits the program
