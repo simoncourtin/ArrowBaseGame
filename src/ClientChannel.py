@@ -83,7 +83,7 @@ class ClientChannel(Channel):
         vitesseTir[0] = int( float(vitesseTir[0]) * VITESSE_DEBUT_LANCER / normeVitesse )
         vitesseTir[1] = int( float(vitesseTir[1]) * VITESSE_DEBUT_LANCER / normeVitesse )
 
-        self._server.tirs.add(Tir.Tir(data['idJoueur'],id_tir,self.personnage.rect.center,vitesseTir, data['puissance']))
+        self._server.tirs.add(Tir.Tir(data['idJoueur'],id_tir,[self.personnage.rect.centerx+vitesseTir[0],self.personnage.rect.centery+vitesseTir[1]],vitesseTir, data['puissance']))
         self.sendTir(id_tir, data['puissance'], vitesseTir)
         # if self.personnage.orientation=="gauche":
         #     xtir= self.personnage.rect.left
