@@ -64,7 +64,8 @@ class Client(ConnectionListener):
                 if event.type == pygame.QUIT:
                     return  # closing the window exits the program
                 # end if
-                if self.run:
+                #on regarde si le jeu est démarer ou si le personnage n'est pas en état mort pour activer le tir
+                if self.run and self.contolable.mort == False:
                     if (event.type == pygame.MOUSEBUTTONDOWN):
                         shootStart = pygame.time.get_ticks()
                         print shootStart
@@ -81,28 +82,31 @@ class Client(ConnectionListener):
 
                 # end if
             # end for
-            if self.run:
-                # Gestion des événements de ce client (les touches sont celles d'un clavier anglais)
-                touches = pygame.key.get_pressed()
-                if (touches[K_DOWN] or touches[K_s]):
-                    connection.Send({"action": "move", "touche": "bas"})
-                if (touches[K_LEFT] or touches[K_a]):
-                    connection.Send({"action": "move", "touche": "gauche"})
-                if (touches[K_RIGHT] or touches[K_d]):
-                    connection.Send({"action": "move", "touche": "droite"})
-                if (touches[K_SPACE] or touches[K_UP] or touches[K_w]):
-                    if not spaceBarPressed:
-                        connection.Send({"action": "move", "touche": "saut"})
-                        spaceBarPressed = True
-                    #end if
-                else:
-                    spaceBarPressed = False
-                if (touches[K_q]):
-                    connection.Send({"action": "attack", "touche": "a"})
-                else:
-                    if self.contolable.isAttacking:
-                        self.contolable.isAttacking = False
-                        connection.Send({"action": "stopAttack"})
+
+            if self.run :
+                #on regarde si le personnage n'est pas en état mort pour activer les controles
+                if self.contolable.mort == False:
+                    # Gestion des événements de ce client (les touches sont celles d'un clavier anglais)
+                    touches = pygame.key.get_pressed()
+                    if (touches[K_DOWN] or touches[K_s]):
+                        connection.Send({"action": "move", "touche": "bas"})
+                    if (touches[K_LEFT] or touches[K_a]):
+                        connection.Send({"action": "move", "touche": "gauche"})
+                    if (touches[K_RIGHT] or touches[K_d]):
+                        connection.Send({"action": "move", "touche": "droite"})
+                    if (touches[K_SPACE] or touches[K_UP] or touches[K_w]):
+                        if not spaceBarPressed:
+                            connection.Send({"action": "move", "touche": "saut"})
+                            spaceBarPressed = True
+                        #end if
+                    else:
+                        spaceBarPressed = False
+                    if (touches[K_q]):
+                        connection.Send({"action": "attack", "touche": "a"})
+                    else:
+                        if self.contolable.isAttacking:
+                            self.contolable.isAttacking = False
+                            connection.Send({"action": "stopAttack"})
 
                 # updates
                 self.cam.update(self.contolable,self.screen)

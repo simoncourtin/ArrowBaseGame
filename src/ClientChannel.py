@@ -48,47 +48,54 @@ class ClientChannel(Channel):
 
 
     def Network_move(self, data):
-        mouvement=data['touche']
-        if(mouvement == "bas"):
-            if self.personnage.orientation == "droite" or self.personnage.orientation == "gauche":
-                self.personnage.orienter("bas")
-            #end if
+        if self.personnage.mort == False:
+            mouvement=data['touche']
+            if(mouvement == "bas"):
+                if self.personnage.orientation == "droite" or self.personnage.orientation == "gauche":
+                    self.personnage.orienter("bas")
+                #end if
 
-            self.personnage.down()
-        elif(mouvement == "haut"):
-            if self.personnage.orientation == "bas":
-                self.personnage.orienter("haut")
-            #end if
+                self.personnage.down()
+            elif(mouvement == "haut"):
+                if self.personnage.orientation == "bas":
+                    self.personnage.orienter("haut")
+                #end if
 
-            self.personnage.sauter()
-        elif(mouvement == "gauche"):
-            if self.personnage.orientation == "droite" or self.personnage.orientation == "bas" :
-                self.personnage.orienter("gauche")
-            self.personnage.left()
-        elif(mouvement == "droite"):
-            if self.personnage.orientation == "gauche" or self.personnage.orientation == "bas":
-                self.personnage.orienter("droite")
-            self.personnage.right()
-        elif(mouvement == "saut"):
-            self.personnage.sauter()
+                self.personnage.sauter()
+            elif(mouvement == "gauche"):
+                if self.personnage.orientation == "droite" or self.personnage.orientation == "bas" :
+                    self.personnage.orienter("gauche")
+                self.personnage.left()
+            elif(mouvement == "droite"):
+                if self.personnage.orientation == "gauche" or self.personnage.orientation == "bas":
+                    self.personnage.orienter("droite")
+                self.personnage.right()
+            elif(mouvement == "saut"):
+                self.personnage.sauter()
 
-        self.sendMove()
+            self.sendMove()
+        #end if
 
     def Network_tir(self, data):
-        id_tir= len(self._server.tirs)
+        #si le personnage est mort il n'a pas le droit de tirer
+        if self.personnage.mort == False:
+            id_tir= len(self._server.tirs)
 
-        #Calcul de la vitesse du projectile
-        vitesseTir = [data["clic"][0]-self.personnage.rect.centerx, data["clic"][1]-self.personnage.rect.centery]
-        normeVitesse = math.sqrt(vitesseTir[0]*vitesseTir[0] + vitesseTir[1]*vitesseTir[1])
-        vitesseTir[0] = int( float(vitesseTir[0]) * VITESSE_DEBUT_LANCER / normeVitesse )
-        vitesseTir[1] = int( float(vitesseTir[1]) * VITESSE_DEBUT_LANCER / normeVitesse )
+            #Calcul de la vitesse du projectile
+            vitesseTir = [data["clic"][0]-self.personnage.rect.centerx, data["clic"][1]-self.personnage.rect.centery]
+            normeVitesse = math.sqrt(vitesseTir[0]*vitesseTir[0] + vitesseTir[1]*vitesseTir[1])
+            vitesseTir[0] = int( float(vitesseTir[0]) * VITESSE_DEBUT_LANCER / normeVitesse )
+            vitesseTir[1] = int( float(vitesseTir[1]) * VITESSE_DEBUT_LANCER / normeVitesse )
 
-        self._server.tirs.add(Tir.Tir(data['idJoueur'],id_tir,[self.personnage.rect.centerx+vitesseTir[0],self.personnage.rect.centery+vitesseTir[1]],vitesseTir, data['puissance']))
-        self.sendTir(id_tir, data['puissance'], vitesseTir)
+            self._server.tirs.add(Tir.Tir(data['idJoueur'],id_tir,[self.personnage.rect.centerx+vitesseTir[0],self.personnage.rect.centery+vitesseTir[1]],vitesseTir, data['puissance']))
+            self.sendTir(id_tir, data['puissance'], vitesseTir)
+        #end if
         
     def Network_attack(self, data):
-        self.personnage.attaquer()
-        self.sendMove()
+        #si le personnage est mort il n'a pas le droit d'attaquer
+        if self.personnage.mort == False:
+            self.personnage.attaquer()
+            self.sendMove()
         
     def Network_stopAttack(self, data):
         self.personnage.isAttacking = False

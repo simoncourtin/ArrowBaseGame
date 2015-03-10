@@ -64,7 +64,6 @@ class Personnage(Animable.Animable):
             self.isDown = True
             self.peutAttaquer = False
             self.image = self.image_accroupi
-            self.rect.y = self.rect.y+10
     #end down
 
     def left(self):
@@ -149,7 +148,7 @@ class Personnage(Animable.Animable):
             if direction == "haut":
                 self.orientation = "haut"
                 self.image = self.image_haut
-                self.rect.y = self.rect.y-10
+                self.image, self.rect = self.image_accroupi
                 self.isDown = False
         #end if
     #end orienter
@@ -164,29 +163,29 @@ class Personnage(Animable.Animable):
     #end afficher
     def collision(self, cote):
         if      cote == "gauche":
-            self.collisionGauche=True;
+            self.collisionGauche=True
         elif    cote == "droite":
-            self.collisionDroite = True;
+            self.collisionDroite = True
         elif    cote == "haut"  :
-            self.collisionHaut = True;
+            self.collisionHaut = True
         elif    cote == "bas"   :
-            self.collisionBas = True;
+            self.collisionBas = True
         #end if
     #end collision
     
     def mourir(self):
         self.mort = True
-        self.image = self.image_accroupi
-        #self.rect.center = [SCREEN_WIDTH-300, SCREEN_HEIGHT-300]
+        self.image, self.rect = self.image_mort
 
     def chargement_image(self,numero_sprite):
         self.image_normale = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
         self.image_sauter = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoSaut.png")
-        self.image_accroupi = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
+        self.image_accroupi = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
         self.image_attaque = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoHit.png")
         self.image_droite = self.image_normale[0]
         self.image_gauche= pygame.transform.flip(self.image_droite, True, False)
         self.image_bas = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
         self.image_haut = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
+        self.image_mort = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/mort.png")
     #end chargement image
 #end Personnage
