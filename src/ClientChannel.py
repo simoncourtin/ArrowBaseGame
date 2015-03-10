@@ -85,13 +85,6 @@ class ClientChannel(Channel):
 
         self._server.tirs.add(Tir.Tir(data['idJoueur'],id_tir,[self.personnage.rect.centerx+vitesseTir[0],self.personnage.rect.centery+vitesseTir[1]],vitesseTir, data['puissance']))
         self.sendTir(id_tir, data['puissance'], vitesseTir)
-        # if self.personnage.orientation=="gauche":
-        #     xtir= self.personnage.rect.left
-        # elif self.personnage.orientation =="droite":
-        #     xtir = self.personnage.rect.right
-        # self._server.tirs.add(Tir.Tir(self.identifiant,id_tir,[xtir,self.personnage.rect.centery],self.personnage.orientation, data['puissance']))
-        # message = {"action":"tirs", "data":([xtir,self.personnage.rect.centery],self.personnage.orientation,id_tir,data['puissance'])}
-        # self._server.SendMessageAll(message)
         
     def Network_attack(self, data):
         self.personnage.attaquer()

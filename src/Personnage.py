@@ -28,6 +28,7 @@ class Personnage(Animable.Animable):
         self.isJumping = False
         self.isAttacking = False
         self.orientation = "gauche"
+        self.score = 0
 
         self.collisionGauche = False
         self.collisionDroite = False
