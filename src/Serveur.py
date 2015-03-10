@@ -234,27 +234,31 @@ class Serveur(Server):
                 listeCollisionsJoueur = listeCollisionsJoueurs[joueur]
                 if len(listeCollisionsJoueur)>1:
                     listeCollisionsJoueur = [x for x in listeCollisionsJoueur if x != joueur]
-                    for collision in listeCollisionsJoueur:
+                    for joueurTouche in listeCollisionsJoueur:
                         #si le joueur est en phase d'attaque
                         if joueur.isAttacking:
-                            collision.mourir()
+                            #on envoie le message aux clients pour savoir qui est le tueur et qui est le tue
+                            self.SendMessageAll({"action":"kill_pers","methode":"melee","id_tuer":joueurTouche.idJoueur,"id_tueur":joueur.idJoueur})
+                            #On ajoute le score au killer
+                            joueur.score += 1
+                            #on envoie le nouveau score aux client
+                            self.SendMessageAll({"action" : "ajout_score","joueur" : joueur.idJoueur,"score" : joueur.score})
+                            joueurTouche.mourir()
                         else:
-                            if joueur.rect.centerx > collision.rect.centerx:
+                            if joueur.rect.centerx > joueurTouche.rect.centerx:
                                 self.SendMessageAll({'action':'collisionJoueur','id':channel.identifiant, 'cote':'gauche'})
-                                joueur.rect.left = collision.rect.right-5
+                                joueur.rect.left = joueurTouche.rect.right-5
                                 joueur.collision('gauche')
-                            if joueur.rect.centerx < collision.rect.centerx:
+                            #end if
+                            if joueur.rect.centerx < joueurTouche.rect.centerx:
                                 self.SendMessageAll({'action':'collisionJoueur','id':channel.identifiant, 'cote':'droite'})
-                                joueur.rect.right = collision.rect.left+5
+                                joueur.rect.right = joueurTouche.rect.left+5
                                 joueur.collision('droite')
-                            #if joueur.rect.centery < collision.rect.centery:
-                             #   self.SendMessageAll({'action':'collisionJoueur','id':channel.identifiant, 'cote':'bas'})
-                              #  joueur.rect.top = collision.rect.bottom-5
-                               # joueur.collision('bas')
-                            #if joueur.rect.centery > collision.rect.centery:
-                             #   self.SendMessageAll({'action':'collisionJoueur','id':channel.identifiant, 'cote':'haut'})
-                              #  joueur.rect.bottom = collision.rect.top+20
-                               # joueur.collision('haut')
+                            #end if
+                        #end if
+                    #end for
+                #end if
+            #end for
             
             # Envoi des nouvelles coordonnees de ce joueur
             channel.sendMove();
