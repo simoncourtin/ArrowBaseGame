@@ -45,12 +45,12 @@ class Serveur(Server):
     def Connected(self, channel, addr):
         print 'New connection'
         print 'Nouveau client'
-        if len(self.clients)<MAX_JOUEUR:
+        self.clients.append(channel)
+        if len(self.clients) <= MAX_JOUEUR:
             self.nb_joueur += 1
             print 'Client avec id : ' + str(self.nb_joueur)
             channel.set_identifiant(self.nb_joueur)
             self.ids.append(self.nb_joueur)
-            self.clients.append(channel)
             channel.Send({'action':'identification','id':self.nb_joueur})
             #envoi de la map generer par le serveur
             channel.Send({'action':'carteJeu','carte':TAB_MAP,'config':CONFIG_FILE})
@@ -61,6 +61,7 @@ class Serveur(Server):
         else:
             print "Nombre de joueurs max Atteint"
             channel.Send({'action':'refused','message':"Nombre de joueur max Atteind"})
+            channel.Close()
         #end if
         if len(self.clients)==MAX_JOUEUR:
             self.SendMessageAll({'action':'game','statut':'start'})
