@@ -62,6 +62,8 @@ class Client(ConnectionListener):
         spaceBarPressed = False
         escapePressed = False
 
+        attackKeyPressed = False
+
         while True:
             connection.Pump()
             self.monGroup.Pump()
@@ -131,6 +133,16 @@ class Client(ConnectionListener):
                         #end if
                     else:
                         escapePressed = False
+                        spaceBarPressed = False
+                    if (touches[K_q]):
+                        if not attackKeyPressed:
+                            connection.Send({"action": "attack", "touche": "a"})
+                            attackKeyPressed = True
+                    else:
+                        if self.controlable.isAttacking:
+                            self.controlable.isAttacking = False
+                            connection.Send({"action": "stopAttack"})
+                        attackKeyPressed=False
 
                 # updates
                 self.cam.update(self.controlable,self.screen)

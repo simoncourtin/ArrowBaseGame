@@ -56,8 +56,8 @@ class ClientChannel(Channel):
                 #end if
 
                 self.personnage.down()
-            elif(mouvement == "haut"):
-                if self.personnage.orientation == "bas":
+            elif(mouvement == "saut"):
+                if self.personnage.orientation == "bas" or self.personnage.orientation == "gauche" or self.personnage.orientation == "droite" :
                     self.personnage.orienter("haut")
                 #end if
 
@@ -94,6 +94,7 @@ class ClientChannel(Channel):
         #end if
         
     def Network_attack(self, data):
+        print self.personnage.orientation
         #si le personnage est mort il n'a pas le droit d'attaquer
         if self.personnage.mort == False:
             self.personnage.attaquer()
