@@ -123,7 +123,8 @@ class Serveur(Server):
                 #si le joueur touhe est deja mort
                 if joueur.mort == False :
                     #On tue le personnage
-                    joueur.mort=True
+                    joueur.mourir()
+                    print str(joueur.rect.center)
                     joueur.capture_frame_actuel = self.temp_jeu
                     #on envoie le message aux clients pour savoir qui est le tueur et qui est le tue
                     self.SendMessageAll({"action":"kill_pers","methode":"fleche","id_tuer":joueur.idJoueur,"id_tueur":tir.idJoueur})
@@ -252,7 +253,7 @@ class Serveur(Server):
                             #on regarde si le joueur est deja mot ou pas
                             if joueurTouche.mort == False :
                                 #On tue le personnage
-                                joueurTouche.mort = True
+                                joueurTouche.mourir()
                                 joueurTouche.capture_frame_actuel = self.temp_jeu
                                 #on envoie le message aux clients pour savoir qui est le tueur et qui est le tue
                                 self.SendMessageAll({"action":"kill_pers","methode":"melee","id_tuer":joueurTouche.idJoueur,"id_tueur":joueur.idJoueur})
@@ -285,7 +286,7 @@ class Serveur(Server):
                         position = [random.randint(carte.tile_width,(carte.largeur_map*carte.tile_width)-carte.tile_width),random.randint(carte.tile_height,(carte.hauteur_map*carte.tile_height)-carte.tile_height)]
                         print str(position)
                         self.SendMessageAll({"action":"resurrection","id_joueur":j.idJoueur,"position":position})
-                        j.mort = False
+                        j.resurrection(position)
                         j.rect.center=position
                         for c in self.clients:
                             if c.personnage == j:
