@@ -295,8 +295,7 @@ class Serveur(Server):
         for joueur in self.joueurs:
             if joueur.score == 2:
                 print "joueur " + str(joueur.idJoueur) + " a gagne"
-                for client in self.clients:
-                    client.sendVictoire(joueur.idJoueur)
+                self.SendMessageAll({"action":"victoire", "idGagnant":joueur.idJoueur})
 
 
         for event in pygame.event.get():

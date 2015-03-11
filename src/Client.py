@@ -7,6 +7,7 @@ import pygame
 import GroupJoueur
 import Camera
 import GroupTir
+import Button
 import Tir
 import utils
 from pygame.locals import *
@@ -35,6 +36,7 @@ class Client(ConnectionListener):
         self.carte = None
         self.controlable = None
         self.isPaused = False
+        self.fin_du_jeu = 0
 
 
         self.font_pixel_32 = pygame.font.Font(os.path.dirname(__file__)+"/../data/font/pixelmix.ttf", 32)
@@ -172,6 +174,26 @@ class Client(ConnectionListener):
             if self.isPaused == True:
                 self.pause()
 
+            #ecran de fin du jeu
+            if self.fin_du_jeu > 0:
+                if self.fin_du_jeu == 1:
+                    image_victoire = pygame.image.load(os.path.dirname(__file__)+"/../data/image/coupe_victoire.png")
+                    self.screen.blit(image_victoire,(SCREEN_WIDTH / 2-50 , SCREEN_HEIGHT / 2 -75 ))
+                    self.screen.blit(self.font_pixel_32.render("Victoire", False, (170, 170, 170)),
+                             (SCREEN_WIDTH / 2-50, SCREEN_HEIGHT / 2 ))
+                elif self.fin_du_jeu == 2:
+                    #image_victoire = pygame.image.load(os.path.dirname(__file__)+"/../data/image/coupe_victoire.png")
+                    #self.screen.blit(image_victoire,(SCREEN_WIDTH / 2-50 , SCREEN_HEIGHT / 2 -75 ))
+                    self.screen.blit(self.font_pixel_32.render("Defaite", False, (170, 170, 170)),
+                             (SCREEN_WIDTH / 2-50, SCREEN_HEIGHT / 2 ))
+
+                myButton = Button.Button((200,200,200),"Recommencer",180,40,(SCREEN_WIDTH / 2-50, SCREEN_HEIGHT / 2+100 ),10,2,(70,70,70))
+                myButton.afficher(self.screen)
+
+
+
+
+
             # screen refreshing
             pygame.display.flip()
 
@@ -224,6 +246,10 @@ class Client(ConnectionListener):
     #end Network_disconnected
     
     def Network_victoire(self, data):
+        if data["idGagnant"] ==  self.idServeur :
+            self.fin_du_jeu =1 #victoire
+        else:
+            self.fin_du_jeu = 2
         print "Le joueur " + str(data["idGagnant"]) + " a gagne"
 
 
