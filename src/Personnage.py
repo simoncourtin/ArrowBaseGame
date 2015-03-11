@@ -176,6 +176,8 @@ class Personnage(Animable.Animable):
     def mourir(self):
         self.mort = True
         self.image = self.image_mort[0]
+        self.rect.width = self.image_mort[1].width
+        self.rect.height = self.image_mort[1].height
 
 
     def resurrection(self,pos):
