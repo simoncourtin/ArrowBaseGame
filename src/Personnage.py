@@ -8,7 +8,11 @@ SCREEN_WIDTH = 1366
 SCREEN_HEIGHT = 768
 
 ACCELERATION_DEPLACEMENT = 1
+<<<<<<< HEAD
 VITESSE_DEBUT_SAUT = 30
+=======
+VITESSE_DEBUT_SAUT = 35
+>>>>>>> 8713a2cf8e681ee91a374b4cef282c1a8d5e1a8e
 ACCELERATION_GRAVITE = 1.2
 COEFF_FROTTEMENT = 0.1
 VITESSE_MAX_X = 10
@@ -62,8 +66,6 @@ class Personnage(Animable.Animable):
     def down(self):
         if self.isDown == False:
             self.isDown = True
-            self.peutAttaquer = False
-            self.image = self.image_accroupi
             self.image = self.image_accroupi[0]
             self.rect.width = self.image_accroupi[1].width
             self.rect.height = self.image_accroupi[1].height
@@ -204,6 +206,7 @@ class Personnage(Animable.Animable):
         self.image_normale = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
         self.image_sauter = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoSaut.png")
         self.image_accroupi = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
+        self.image_accroupi_gauche= pygame.transform.flip(self.image_accroupi[0], True, False)
         self.image_attaque = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoHit.png")
         self.image_droite = self.image_normale[0]
         self.image_gauche= pygame.transform.flip(self.image_droite, True, False)

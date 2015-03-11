@@ -61,7 +61,6 @@ class Client(ConnectionListener):
     def Loop(self):
         spaceBarPressed = False
         escapePressed = False
-
         attackKeyPressed = False
 
         while True:
@@ -133,6 +132,7 @@ class Client(ConnectionListener):
                         #end if
                     else:
                         escapePressed = False
+
                         #spaceBarPressed = False
                     if (touches[K_q]):
                         if not attackKeyPressed:
@@ -143,6 +143,7 @@ class Client(ConnectionListener):
                             self.controlable.isAttacking = False
                             connection.Send({"action": "stopAttack"})
                         attackKeyPressed=False
+
 
                 # updates
                 self.cam.update(self.controlable,self.screen)
