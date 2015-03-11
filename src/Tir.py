@@ -11,8 +11,8 @@ SCREEN_HEIGHT = 600
 
 ACCELERATION_GRAVITE = 1
 COEFF_FROTTEMENT = 0.003
-PUISSANCE_MIN = 20
-PUISSANCE_MAX = 100
+PUISSANCE_MIN = 10
+PUISSANCE_MAX = 50
 FACTEUR_PUISSANCE = 0.05
 
 
@@ -35,10 +35,10 @@ class Tir(Animable.Animable):
         elif self.puissance < PUISSANCE_MIN:
             self.puissance = PUISSANCE_MIN
 
-        #self.speed = [self.puissance, 0]
+        # self.speed = [self.puissance, 0]
         self.acceleration = [0, 0]
 
-        self.speed = [FACTEUR_PUISSANCE*self.puissance*vitesse[0], FACTEUR_PUISSANCE*self.puissance*vitesse[1]]
+        self.speed = [FACTEUR_PUISSANCE * self.puissance * vitesse[0], FACTEUR_PUISSANCE * self.puissance * vitesse[1]]
 
 
     def afficher(self, screen, camera):
@@ -48,7 +48,7 @@ class Tir(Animable.Animable):
         self.rect = self.rect.move(self.speed)
         Animable.Animable.update(self)
 
-        #self.acceleration[1] += -VITESSE_DEBUT_LANCER
+        # self.acceleration[1] += -VITESSE_DEBUT_LANCER
 
         self.acceleration[1] = ACCELERATION_GRAVITE
 
@@ -58,10 +58,10 @@ class Tir(Animable.Animable):
         self.speed[0] += self.acceleration[0]
         self.speed[1] += self.acceleration[1]
 
-        self.acceleration = [0,0]
+        self.acceleration = [0, 0]
 
         # Enlever le missile s'il depasse de l'ecran
         #if self.rect.left < 0 or self.rect.right > SCREEN_WIDTH or self.rect.top < 0 or self.rect.bottom > SCREEN_HEIGHT:
         #    self.kill()
 
-            # Arreter la fleche s'il y a collision
+        # Arreter la fleche s'il y a collision
