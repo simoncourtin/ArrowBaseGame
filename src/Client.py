@@ -53,6 +53,7 @@ class Client(ConnectionListener):
 
     def Loop(self):
         spaceBarPressed = False
+        attackKeyPressed = False
         while True:
             connection.Pump()
             self.monGroup.Pump()
@@ -102,11 +103,14 @@ class Client(ConnectionListener):
                     else:
                         spaceBarPressed = False
                     if (touches[K_q]):
-                        connection.Send({"action": "attack", "touche": "a"})
+                        if not attackKeyPressed:
+                            connection.Send({"action": "attack", "touche": "a"})
+                            attackKeyPressed = True
                     else:
                         if self.contolable.isAttacking:
                             self.contolable.isAttacking = False
                             connection.Send({"action": "stopAttack"})
+                        attackKeyPressed=False
 
                 # updates
                 self.cam.update(self.contolable,self.screen)
