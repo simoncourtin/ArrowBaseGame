@@ -133,7 +133,7 @@ class Client(ConnectionListener):
                         #end if
                     else:
                         escapePressed = False
-                        spaceBarPressed = False
+                        #spaceBarPressed = False
                     if (touches[K_q]):
                         if not attackKeyPressed:
                             connection.Send({"action": "attack", "touche": "a"})
