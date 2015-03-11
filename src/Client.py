@@ -61,7 +61,6 @@ class Client(ConnectionListener):
     def Loop(self):
         spaceBarPressed = False
         escapePressed = False
-
         attackKeyPressed = False
 
         while True:
