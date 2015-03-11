@@ -38,8 +38,6 @@ class Serveur(Server):
         self.screen = pygame.display.set_mode((50, 50))
         self.carte = None
         self.temp_jeu = 0
-
-
     #end __init_
 
     def Connected(self, channel, addr):
