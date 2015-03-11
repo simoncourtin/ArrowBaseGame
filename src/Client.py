@@ -171,8 +171,6 @@ class Client(ConnectionListener):
                     i+=50
             #end if
 
-            if self.isPaused == True:
-                self.pause()
 
             #ecran de fin du jeu
             if self.fin_du_jeu > 0:
@@ -190,8 +188,9 @@ class Client(ConnectionListener):
                 myButton = Button.Button((200,200,200),"Recommencer",180,40,(SCREEN_WIDTH / 2-50, SCREEN_HEIGHT / 2+100 ),10,2,(70,70,70))
                 myButton.afficher(self.screen)
 
-
-
+            #la pause
+            if self.isPaused == True:
+                self.pause()
 
 
             # screen refreshing
