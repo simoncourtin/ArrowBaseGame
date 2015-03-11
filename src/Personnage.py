@@ -181,10 +181,10 @@ class Personnage(Animable.Animable):
     
     def mourir(self):
         self.mort = True
-        self.image, self.rect = self.image_mort
+        self.image = self.image_mort[0]
+        self.rect.width = self.image_mort[1].width
+        self.rect.height = self.image_mort[1].height
 
-    def mourirClient(self):
-        self.mort = True
 
     def resurrection(self,pos):
         self.mort = False
