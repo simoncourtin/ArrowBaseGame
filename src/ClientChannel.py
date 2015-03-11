@@ -29,6 +29,9 @@ class ClientChannel(Channel):
         #print message
         self._server.SendMessageAll(message)
     #end sendMove
+    
+    def sendVictoire(self, id):
+        self._server.SendMessageAll({"action":"victoire", "idGagnant":id})
 
     def sendTir(self,id, puissance, vitesse):
         message = {"action":"tirs", "data":(self.personnage.rect.center, vitesse,id, puissance)}
