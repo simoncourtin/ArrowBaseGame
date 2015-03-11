@@ -291,6 +291,14 @@ class Serveur(Server):
                             if c.personnage == j:
                                 c.sendMove()
 
+        #condition de victoire
+        for joueur in self.joueurs:
+            if joueur.score == 2:
+                print "joueur " + str(joueur.idJoueur) + " a gagne"
+                for client in self.clients:
+                    client.sendVictoire(joueur.idJoueur)
+
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit(0)  # closing the window exits the program

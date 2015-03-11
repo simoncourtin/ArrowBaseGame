@@ -64,6 +64,9 @@ class Personnage(Animable.Animable):
             self.isDown = True
             self.peutAttaquer = False
             self.image = self.image_accroupi
+            self.image = self.image_accroupi[0]
+            self.rect.width = self.image_accroupi[1].width
+            self.rect.height = self.image_accroupi[1].height
     #end down
 
     def left(self):
@@ -83,6 +86,11 @@ class Personnage(Animable.Animable):
     #end stopHorizontal
 
     def update(self):
+        if self.orientation != "bas" and self.isDown:
+            self.isDown = False
+            self.image = self.image_normale
+            self.rect.width = self.image_normale[1].width
+            self.rect.height = self.image_normale[1].height
         # Collisions
         if      self.collisionGauche    and self.speed[0]<0:
             self.stopHorizontal()

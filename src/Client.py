@@ -220,7 +220,10 @@ class Client(ConnectionListener):
     def Network_disconnected(self, data):
         print 'Server disconnected'
         sys.exit()
-    #end Network_disconnected*
+    #end Network_disconnected
+    
+    def Network_victoire(self, data):
+        print "Le joueur " + str(data["idGagnant"]) + " a gagne"
 
 
 #end Client
