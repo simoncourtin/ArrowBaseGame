@@ -139,10 +139,11 @@ class Personnage(Animable.Animable):
             if self.orientation=="gauche":
                 self.image = self.image_attaque_gauche
         else:
-            if self.orientation == "gauche":
-                self.image = self.image_gauche
-            if self.orientation == "droite":
-                self.image = self.image_droite
+            if not self.mort:
+                if self.orientation == "gauche":
+                    self.image = self.image_gauche
+                if self.orientation == "droite":
+                    self.image = self.image_droite
 
     #end update
 
