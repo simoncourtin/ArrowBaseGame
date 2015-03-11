@@ -33,7 +33,8 @@ class Client(ConnectionListener):
         #numero d'id sur le serveur
         self.idServeur = 0
         self.carte = None
-        self.contolable = None
+        self.controlable = None
+        self.isPaused = False
 
 
         self.font_pixel_32 = pygame.font.Font(os.path.dirname(__file__)+"/../data/font/pixelmix.ttf", 32)
@@ -51,8 +52,16 @@ class Client(ConnectionListener):
         self.groupTir = GroupTir.GroupTir()
     # end __init__
 
+    def pause(self):
+        self.isPaused = True
+        self.screen.fill(0)
+        self.screen.blit(self.font_pixel_32.render("Pause", False, (255, 255, 255)),
+                     (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 50))
+
     def Loop(self):
         spaceBarPressed = False
+        escapePressed = False
+
         while True:
             connection.Pump()
             self.monGroup.Pump()
@@ -65,7 +74,7 @@ class Client(ConnectionListener):
                     return  # closing the window exits the program
                 # end if
                 #on regarde si le jeu est démarer ou si le personnage n'est pas en état mort pour activer le tir
-                if self.run and self.contolable.mort == False:
+                if self.run and self.controlable.mort == False:
                     if (event.type == pygame.MOUSEBUTTONDOWN):
                         shootStart = pygame.time.get_ticks()
                         print shootStart
@@ -78,38 +87,53 @@ class Client(ConnectionListener):
                         mousex += self.cam.state.x
                         mousey += self.cam.state.y
 
-                        connection.Send({"action": "tir","idJoueur":self.contolable.idJoueur,"origine":(self.contolable.rect.x,self.contolable.rect.y), "puissance": puissance, "clic":[mousex, mousey]})
+                        connection.Send({"action": "tir","idJoueur":self.controlable.idJoueur,"origine":(self.controlable.rect.x,self.controlable.rect.y), "puissance": puissance, "clic":[mousex, mousey]})
 
                 # end if
             # end for
 
             if self.run :
                 #on regarde si le personnage n'est pas en état mort pour activer les controles
-                if self.contolable.mort == False:
+                if self.controlable.mort == False:
                     # Gestion des événements de ce client (les touches sont celles d'un clavier anglais)
                     touches = pygame.key.get_pressed()
-                    if (touches[K_DOWN] or touches[K_s]):
-                        connection.Send({"action": "move", "touche": "bas"})
-                    if (touches[K_LEFT] or touches[K_a]):
-                        connection.Send({"action": "move", "touche": "gauche"})
-                    if (touches[K_RIGHT] or touches[K_d]):
-                        connection.Send({"action": "move", "touche": "droite"})
-                    if (touches[K_SPACE] or touches[K_UP] or touches[K_w]):
-                        if not spaceBarPressed:
-                            connection.Send({"action": "move", "touche": "saut"})
-                            spaceBarPressed = True
+
+                    if self.isPaused == False:
+                        if (touches[K_DOWN] or touches[K_s]):
+                            connection.Send({"action": "move", "touche": "bas"})
+                        if (touches[K_LEFT] or touches[K_a]):
+                            connection.Send({"action": "move", "touche": "gauche"})
+                        if (touches[K_RIGHT] or touches[K_d]):
+                            connection.Send({"action": "move", "touche": "droite"})
+                        if (touches[K_SPACE] or touches[K_UP] or touches[K_w]):
+                            if not spaceBarPressed:
+                                connection.Send({"action": "move", "touche": "saut"})
+                                spaceBarPressed = True
+                            #end if
+                        else:
+                            spaceBarPressed = False
+                        if (touches[K_q]):
+                            connection.Send({"action": "attack", "touche": "a"})
+                        else:
+                            if self.controlable.isAttacking:
+                                self.controlable.isAttacking = False
+                                connection.Send({"action": "stopAttack"})
+
+                    # Menu pause
+                    if (touches[K_ESCAPE]):
+                        if not escapePressed:
+                            print "Escape"
+                            escapePressed = True
+                            if self.isPaused == False:
+                                self.isPaused = True
+                            else:
+                                self.isPaused = False
                         #end if
                     else:
-                        spaceBarPressed = False
-                    if (touches[K_q]):
-                        connection.Send({"action": "attack", "touche": "a"})
-                    else:
-                        if self.contolable.isAttacking:
-                            self.contolable.isAttacking = False
-                            connection.Send({"action": "stopAttack"})
+                        escapePressed = False
 
                 # updates
-                self.cam.update(self.contolable,self.screen)
+                self.cam.update(self.controlable,self.screen)
                 #print len(self.groupTir)
                 self.groupTir.update()
                 self.monGroup.update()
@@ -132,8 +156,12 @@ class Client(ConnectionListener):
                     i+=50
             #end if
 
+            if self.isPaused == True:
+                self.pause()
+
             # screen refreshing
             pygame.display.flip()
+
         #end while
     #end Loop
 
@@ -161,7 +189,7 @@ class Client(ConnectionListener):
     def Network_game(self,data):
         if data['statut'] == 'start':
             self.screen.fill(0)
-            self.contolable = self.monGroup.getPlayerId(self.idServeur)
+            self.controlable = self.monGroup.getPlayerId(self.idServeur)
             self.run = True
     #end Network_startGame
 
@@ -181,7 +209,6 @@ class Client(ConnectionListener):
         print 'Server disconnected'
         sys.exit()
     #end Network_disconnected*
-
 
 
 #end Client
