@@ -245,14 +245,15 @@ class Client(ConnectionListener):
         self.cam = Camera.Camera(Camera.complex_camera, SCREEN_WIDTH, SCREEN_HEIGHT, self.carte.largeur_map*self.carte.tile_width, self.carte.hauteur_map*self.carte.tile_height)
     #end Network_carteJeu
 
-    def Network_game(self,data):
+    def chargement_musique(self):
         # chargement du fond sonore
-        pygame.mixer.music.load(os.path.dirname(__file__)+"/../data/music/fondSonore.ogg")
-        
+        pygame.mixer.music.load(os.path.dirname(__file__) + "/../data/music/fondSonore.ogg")
         # chargement des bruitages
-        self.hit = pygame.mixer.Sound(os.path.dirname(__file__)+"/../data/music/hit.ogg")
-        self.arrow = pygame.mixer.Sound(os.path.dirname(__file__)+"/../data/music/arrow.ogg")
-        
+        self.hit = pygame.mixer.Sound(os.path.dirname(__file__) + "/../data/music/hit.ogg")
+        self.arrow = pygame.mixer.Sound(os.path.dirname(__file__) + "/../data/music/arrow.ogg")
+
+    def Network_game(self,data):
+        self.chargement_musique()
         if data['statut'] == 'start':
             self.screen.fill(0)
             self.controlable = self.monGroup.getPlayerId(self.idServeur)
