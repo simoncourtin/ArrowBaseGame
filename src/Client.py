@@ -84,13 +84,14 @@ class Client(ConnectionListener):
                     if (event.type == pygame.MOUSEBUTTONUP):
                         shootEnd = pygame.time.get_ticks()
                         puissance = shootEnd - shootStart
-                        print "Puissance du tir : " + str(puissance)
+                        #print "Puissance du tir : " + str(puissance)
                         #print str(pygame.mouse.get_pos())+" origine :"+str(self.contolable.rect.x)+","+str(self.contolable.rect.y)
                         mousex, mousey = pygame.mouse.get_pos()
                         mousex += self.cam.state.x
                         mousey += self.cam.state.y
 
                         connection.Send({"action": "tir","idJoueur":self.controlable.idJoueur,"origine":(self.controlable.rect.x,self.controlable.rect.y), "puissance": puissance, "clic":[mousex, mousey]})
+                        self.arrow.play()
 
                 # end if
             # end for
@@ -116,7 +117,10 @@ class Client(ConnectionListener):
                         else:
                             spaceBarPressed = False
                         if (touches[K_q]):
-                            connection.Send({"action": "attack", "touche": "a"})
+                            if not attackKeyPressed:
+                                connection.Send({"action": "attack", "touche": "a"})
+                                self.hit.play()
+                                attackKeyPressed=True
                         else:
                             if self.controlable.isAttacking:
                                 self.controlable.isAttacking = False
@@ -224,6 +228,10 @@ class Client(ConnectionListener):
         # chargement du fond sonore
         pygame.mixer.music.load(os.path.dirname(__file__)+"/../data/music/fondSonore.ogg")
         
+        # chargement des bruitages
+        self.hit = pygame.mixer.Sound(os.path.dirname(__file__)+"/../data/music/hit.ogg")
+        self.arrow = pygame.mixer.Sound(os.path.dirname(__file__)+"/../data/music/arrow.ogg")
+        
         if data['statut'] == 'start':
             self.screen.fill(0)
             self.controlable = self.monGroup.getPlayerId(self.idServeur)
@@ -256,7 +264,7 @@ class Client(ConnectionListener):
             self.fin_du_jeu =1 #victoire
         else:
             self.fin_du_jeu = 2
-        print "Le joueur " + str(data["idGagnant"]) + " a gagne"
+        #print "Le joueur " + str(data["idGagnant"]) + " a gagne"
 
 
 #end Client
