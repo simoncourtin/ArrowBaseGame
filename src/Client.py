@@ -221,10 +221,17 @@ class Client(ConnectionListener):
     #end Network_carteJeu
 
     def Network_game(self,data):
+        # chargement du fond sonore
+        pygame.mixer.music.load(os.path.dirname(__file__)+"/../data/music/fondSonore.ogg")
+        
         if data['statut'] == 'start':
             self.screen.fill(0)
             self.controlable = self.monGroup.getPlayerId(self.idServeur)
             self.run = True
+            
+        #on demarre la musique
+        pygame.mixer.music.play()
+        
     #end Network_startGame
 
     def Network_refused(self,data):
