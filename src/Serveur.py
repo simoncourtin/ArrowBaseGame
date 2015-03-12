@@ -294,7 +294,7 @@ class Serveur(Server):
         #condition de victoire
         for joueur in self.joueurs:
             if joueur.score == 2:
-                print "joueur " + str(joueur.idJoueur) + " a gagne"
+                #print "joueur " + str(joueur.idJoueur) + " a gagne"
                 self.SendMessageAll({"action":"victoire", "idGagnant":joueur.idJoueur})
 
 

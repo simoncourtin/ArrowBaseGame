@@ -78,6 +78,7 @@ class Client(ConnectionListener):
             connection.Send({"action": "tir", "idJoueur": self.controlable.idJoueur,
                              "origine": (self.controlable.rect.x, self.controlable.rect.y), "puissance": puissance,
                              "clic": [mousex, mousey]})
+            self.arrow.play()
         return shootStart
 
     def mouvment_and_attack(self, spaceBarPressed, touches):
@@ -245,10 +246,21 @@ class Client(ConnectionListener):
     #end Network_carteJeu
 
     def Network_game(self,data):
+        # chargement du fond sonore
+        pygame.mixer.music.load(os.path.dirname(__file__)+"/../data/music/fondSonore.ogg")
+        
+        # chargement des bruitages
+        self.hit = pygame.mixer.Sound(os.path.dirname(__file__)+"/../data/music/hit.ogg")
+        self.arrow = pygame.mixer.Sound(os.path.dirname(__file__)+"/../data/music/arrow.ogg")
+        
         if data['statut'] == 'start':
             self.screen.fill(0)
             self.controlable = self.monGroup.getPlayerId(self.idServeur)
             self.run = True
+            
+        #on demarre la musique
+        pygame.mixer.music.play()
+        
     #end Network_startGame
 
     def Network_refused(self,data):
@@ -273,6 +285,7 @@ class Client(ConnectionListener):
             self.fin_du_jeu =1 #victoire
         else:
             self.fin_du_jeu = 2 #defaite
+
 
 
 #end Client
