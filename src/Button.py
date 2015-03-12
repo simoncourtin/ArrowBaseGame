@@ -11,6 +11,8 @@ class Button(pygame.sprite.Sprite):
         self.back.fill((0,0,0))
         self.image.fill(color)
         self.rect = self.image.get_rect()
+        self.rect.x=position[0]
+        self.rect.y=position[1]
         self.border = border
         self.position = position
         self.marges = marges
@@ -21,6 +23,18 @@ class Button(pygame.sprite.Sprite):
         screen.blit(self.back, (self.position[0]-self.border ,self.position[1]-self.border))
         screen.blit(self.image, self.position)
         screen.blit(self.texte, (self.position[0]+self.marges,self.position[1]+self.marges))
+
+    def pressed(self, mouse):
+        if mouse[0] > self.rect.topleft[0]:
+            if mouse[1] > self.rect.topleft[1]:
+                if mouse[0] < self.rect.bottomright[0]:
+                    if mouse[1] < self.rect.bottomright[1]:
+                        print "pressed!"
+                        return True
+                    else: return False
+                else: return False
+            else: return False
+        else: return False
 
 
 
