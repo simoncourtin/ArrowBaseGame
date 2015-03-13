@@ -21,7 +21,7 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
     def Network_players(self,data):
         for i in data['ids']:
             if not self.existPlayer(i):
-                self.add(Personnage.Personnage(1,i))
+                self.add(Personnage.Personnage(1,i,[0,0]))
 
     def Network_collisionJoueur(self, data):
         for joueur in self:

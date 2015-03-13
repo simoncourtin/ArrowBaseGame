@@ -1,8 +1,7 @@
 import os
 import pygame
-import time
 import load_png
-import Animable
+
 
 
 SCREEN_WIDTH = 1366
@@ -16,10 +15,9 @@ VITESSE_MAX_X = 10
 VITESSE_MAX_Y = 40
 
 
-class Personnage(Animable.Animable):
-    def __init__(self, numero,id):
+class Personnage(pygame.sprite.Sprite):
+    def __init__(self, numero,id,center):
         pygame.sprite.Sprite.__init__(self)
-        Animable.Animable.__init__(self, cooldown=6)
         #chargement des images pour le joueur
         self.chargement_image(1)
         self.idJoueur=id
@@ -41,7 +39,7 @@ class Personnage(Animable.Animable):
         self.acceleration = [0,0]
 
         self.image, self.rect = self.image_normale
-        self.rect.center = [SCREEN_WIDTH/2, SCREEN_HEIGHT/2]
+        self.rect.center = center
         self.startAttack=0
 
 

@@ -3,7 +3,7 @@ import os
 import pygame
 import  math
 import load_png
-import Animable
+
 
 
 SCREEN_WIDTH = 1000
@@ -16,10 +16,9 @@ PUISSANCE_MAX = 40
 FACTEUR_PUISSANCE = 0.05
 
 
-class Tir(Animable.Animable):
+class Tir(pygame.sprite.Sprite):
     def __init__(self, idJoueur, idFleche, origine, vitesse, puissance):
         pygame.sprite.Sprite.__init__(self)
-        Animable.Animable.__init__(self, cooldown=6)
 
         self.idJoueur = idJoueur
         self.idFleche = idFleche
@@ -49,7 +48,6 @@ class Tir(Animable.Animable):
         self.rect = self.rect.move(self.speed)
         if self.speed[0]!= 0 or self.speed[1]!= 0:
             self.image = pygame.transform.rotate(self.image_base,180*math.atan2(-self.speed[1],self.speed[0])/math.pi)
-        Animable.Animable.update(self)
 
         self.acceleration[1] = ACCELERATION_GRAVITE
 

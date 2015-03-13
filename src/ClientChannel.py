@@ -2,15 +2,10 @@
 # coding : utf-8
 
 from PodSixNet.Channel import Channel
-import time, sys
-import os
-import pygame
-from pygame.locals import *
-import Tir
 import Personnage
-#from posix import wait
 import Tir
 import math
+import random
 
 VITESSE_DEBUT_LANCER = 20
 
@@ -19,7 +14,10 @@ class ClientChannel(Channel):
     def __init__(self, *args, **kwargs):
         Channel.__init__(self, *args, **kwargs)
         self.identifiant = 0
-        self.personnage = Personnage.Personnage(1,self.identifiant)
+        position = [
+                random.randint(self._server.carte.tile_width, (self._server.carte.largeur_map * self._server.carte.tile_width) - self._server.carte.tile_width),
+                random.randint(self._server.carte.tile_height, (self._server.carte.hauteur_map * self._server.carte.tile_height) - self._server.carte.tile_height)]
+        self.personnage = Personnage.Personnage(1,self.identifiant,position)
         self._server.joueurs.add(self.personnage)
     # end __init__
 
