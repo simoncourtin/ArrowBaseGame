@@ -19,7 +19,7 @@ class Button(pygame.sprite.Sprite):
         self.position = position
         self.marges = marges
         self.font = pygame.font.Font(os.path.dirname(__file__)+"/../data/font/pixelmix.ttf", 20)
-        self.texte =self.font.render(texte, False, (0, 0, 0))
+        self.texte =self.font.render(texte, False, (255, 255, 255))
 
     def afficher(self, screen):
         screen.blit(self.back, (self.position[0]-self.border ,self.position[1]-self.border))

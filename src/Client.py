@@ -55,11 +55,23 @@ class Client(ConnectionListener):
         self.groupTir = GroupTir.GroupTir()
     # end __init__
 
-    def pause(self):
+    def pause(self, liste_event):
         self.isPaused = True
         self.screen.fill(0)
         self.screen.blit(self.font_pixel_32.render("Pause", False, (255, 255, 255)),
                      (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 50))
+
+        btn_reprendre_pause = Button.Button((56,142,60), "Reprendre", 160, 48, (SCREEN_WIDTH / 2 - 64, SCREEN_HEIGHT / 2 + 100 ), 12, 4, (56,142,60))
+        btn_quitter_pause = Button.Button((244,67,54), "Quitter", 160, 48, (SCREEN_WIDTH / 2 - 64, SCREEN_HEIGHT / 2 + 164 ), 12, 4, (244,67,54))
+        btn_reprendre_pause.afficher(self.screen)
+        btn_quitter_pause.afficher(self.screen)
+
+        for event in liste_event:
+            if (event.type == pygame.MOUSEBUTTONUP):
+                if (btn_reprendre_pause.pressed(pygame.mouse.get_pos())):
+                    connection.Send({"action": "pause", "idJoueur": self.idServeur})
+                if (btn_quitter_pause.pressed(pygame.mouse.get_pos())):
+                    return
 
 
     def tir_detection(self, event,shootStart):
@@ -68,8 +80,6 @@ class Client(ConnectionListener):
         if (event.type == pygame.MOUSEBUTTONUP):
             shootEnd = pygame.time.get_ticks()
             puissance = shootEnd - shootStart
-            print "Puissance du tir : " + str(puissance)
-            # print str(pygame.mouse.get_pos())+" origine :"+str(self.contolable.rect.x)+","+str(self.contolable.rect.y)
             mousex, mousey = pygame.mouse.get_pos()
             mousex += self.cam.state.x
             mousey += self.cam.state.y
@@ -141,15 +151,15 @@ class Client(ConnectionListener):
         #le joueur a gagne
         if self.fin_du_jeu == 1:
             image_victoire = pygame.image.load(os.path.dirname(__file__) + "/../data/image/coupe_victoire.png")
-            self.screen.blit(image_victoire, (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 75 ))
-            self.screen.blit(self.font_pixel_32.render("Victoire", False, (170, 170, 170)),
-                             (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 ))
+            self.screen.blit(image_victoire, (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 150 ))
+            self.screen.blit(self.font_pixel_32.render("Victoire", False, (255, 255, 255)),
+                             (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 + 20))
         #le joueur a perdu
         elif self.fin_du_jeu == 2:
             image_victoire = pygame.image.load(os.path.dirname(__file__) + "/../data/image/fleche_cassee.png")
-            self.screen.blit(image_victoire, (SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 100 ))
-            self.screen.blit(self.font_pixel_32.render("Defaite", False, (170, 170, 170)),
-                             (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 ))
+            self.screen.blit(image_victoire, (SCREEN_WIDTH / 2 - 70, SCREEN_HEIGHT / 2 - 150 ))
+            self.screen.blit(self.font_pixel_32.render("Defaite", False, (255, 255, 255)),
+                             (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 +20))
             # myButton.afficher(self.screen)
 
     def Loop(self):
@@ -209,10 +219,12 @@ class Client(ConnectionListener):
             #action a la fin du jeu
             if self.fin_du_jeu > 0:
                 self.fin_partie_message()
-                btn_recommencer = Button.Button((170,170,170),"Recommencer",180,40,(SCREEN_WIDTH / 2-50, SCREEN_HEIGHT / 2+100 ),10,2,(150,150,150))
-                btn_quitter = Button.Button((170,170,170),"Quitter",120,40,(SCREEN_WIDTH / 2-25, SCREEN_HEIGHT / 2+150 ),10,2,(150,150,150))
+
+                btn_recommencer = Button.Button((56,142,60), "Recommencer", 180, 48, (SCREEN_WIDTH / 2 - 64, SCREEN_HEIGHT / 2 + 100 ), 12, 4, (56,142,60))
+                btn_quitter = Button.Button((244,67,54), "Quitter", 180, 48, (SCREEN_WIDTH / 2 - 64, SCREEN_HEIGHT / 2 + 164 ), 12, 4, (244,67,54))
                 btn_recommencer.afficher(self.screen)
                 btn_quitter.afficher(self.screen)
+
                 for event in liste_event:
                     if (event.type == pygame.MOUSEBUTTONUP):
                         if(btn_recommencer.pressed(pygame.mouse.get_pos())):
@@ -223,7 +235,7 @@ class Client(ConnectionListener):
 
             #la pause
             if self.isPaused == True:
-                self.pause()
+                self.pause(liste_event)
 
 
             # screen refreshing
