@@ -158,7 +158,6 @@ class Serveur(Server):
                 if joueur.mort == False:
                     #On tue le personnage
                     joueur.mourir()
-                    print str(joueur.rect.center)
                     joueur.capture_frame_actuel = self.temp_jeu
                     #on envoie le message aux clients pour savoir qui est le tueur et qui est le tue
                     self.SendMessageAll({"action": "kill_pers", "methode": "fleche", "id_tuer": joueur.idJoueur,
@@ -304,11 +303,9 @@ class Serveur(Server):
         for j in self.joueurs:
             if j.mort == True:
                 if j.capture_frame_actuel + (4 * 60) <= self.temp_jeu:
-                    print "joueur " + str(j.idJoueur) + " ressucite"
                     position = [
                         random.randint(carte.tile_width, (carte.largeur_map * carte.tile_width) - carte.tile_width),
                         random.randint(carte.tile_height, (carte.hauteur_map * carte.tile_height) - carte.tile_height)]
-                    print str(position)
                     self.SendMessageAll({"action": "resurrection", "id_joueur": j.idJoueur, "position": position})
                     j.resurrection(position)
                     j.rect.center = position
@@ -320,7 +317,6 @@ class Serveur(Server):
         # condition de victoire
         for joueur in self.joueurs:
             if joueur.score >= 2:
-                #print "joueur " + str(joueur.idJoueur) + " a gagne"
                 self.SendMessageAll({"action": "victoire", "idGagnant": joueur.idJoueur})
 
     def Loop(self):
@@ -341,6 +337,13 @@ class Serveur(Server):
         self.collisions_fleches_joueurs()
 
         self.collisions_joueur_carte()
+
+        #regarde le temps d'attaque
+        for j in self.joueurs:
+            if j.isAttacking:
+                if j.startAttack+5 <= self.temp_jeu:
+                    j.isAttacking = False
+                    self.SendMessageAll({"action":"stop_attaque","idJoueur":j.idJoueur})
 
         self.resurrection_joueur()
 

@@ -10,10 +10,7 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
                 s.rect.center = data['data'][0]
                 s.speed = data['data'][1]
                 s.orienter(data['data'][2])
-                if data['data'][3]:
-                    s.attaquer()
-                else:
-                    s.isAttacking = False
+                s.isAttacking = data['data'][3]
 
     def Network_playerQuit(self, data):
         print str(data['id'])+" left the game"
@@ -25,7 +22,6 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
         for i in data['ids']:
             if not self.existPlayer(i):
                 self.add(Personnage.Personnage(1,i))
-        print len(self)
 
     def Network_collisionJoueur(self, data):
         for joueur in self:
@@ -38,7 +34,6 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
     def Network_kill_pers(self, data):
         for joueur in self:
             if joueur.idJoueur == data["id_tuer"]:
-                print "joueur "+ str(data["id_tuer"]) +" tue"
                 joueur.mourir()
             #end if
         #end for
@@ -53,6 +48,17 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
         player_killer = self.getPlayerId(data['joueur'])
         player_killer.score = data['score']
     #end Network_ajout_score
+
+    def Network_attaque(self, data):
+        personnage = self.getPlayerId(data["idJoueur"])
+        #si le personnage est mort il n'a pas le droit d'attaquer
+        if personnage.mort == False:
+            personnage.attaquer()
+
+    def Network_stop_attaque(self, data):
+        personnage = self.getPlayerId(data["idJoueur"])
+        personnage.isAttacking == False
+
 
     def getPlayerId(self,id):
         for s in self:

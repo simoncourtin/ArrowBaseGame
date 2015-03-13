@@ -62,6 +62,14 @@ class Client(ConnectionListener):
                      (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 50))
 
 
+    def chargement_musique(self):
+        # chargement du fond sonore
+        pygame.mixer.music.load(os.path.dirname(__file__) + "/../data/music/Celtic_Impulse.ogg")
+        # chargement des bruitages
+        self.hit = pygame.mixer.Sound(os.path.dirname(__file__) + "/../data/music/hit.ogg")
+        self.arrow = pygame.mixer.Sound(os.path.dirname(__file__) + "/../data/music/23185.ogg")
+
+
     def tir_detection(self, event,shootStart):
         if (event.type == pygame.MOUSEBUTTONDOWN):
             shootStart = pygame.time.get_ticks()
@@ -95,12 +103,6 @@ class Client(ConnectionListener):
                     # end if
             else:
                 spaceBarPressed = False
-            if (touches[K_q]):
-                connection.Send({"action": "attack", "touche": "a"})
-            else:
-                if self.controlable.isAttacking:
-                    self.controlable.isAttacking = False
-                    connection.Send({"action": "stopAttack"})
             return spaceBarPressed
 
     def menu_pause(self, escapePressed, touches):
@@ -112,17 +114,6 @@ class Client(ConnectionListener):
         else:
             escapePressed = False
         return escapePressed
-
-    def touches_attaques(self, attackKeyPressed, touches):
-        if (touches[K_q]):
-            if not attackKeyPressed:
-                connection.Send({"action": "attack", "touche": "a"})
-                attackKeyPressed = True
-        else:
-            if self.controlable.isAttacking:
-                self.controlable.isAttacking = False
-                connection.Send({"action": "stopAttack"})
-            attackKeyPressed = False
 
     def ecran_attente(self):
         # ecran d'attente
@@ -150,13 +141,34 @@ class Client(ConnectionListener):
             self.screen.blit(image_victoire, (SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 100 ))
             self.screen.blit(self.font_pixel_32.render("Defaite", False, (170, 170, 170)),
                              (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 ))
-            # myButton.afficher(self.screen)
+
+
+    def touche_attaque(self, attackKeyPressed, event):
+        if event.type == KEYDOWN:
+            if event.key == pygame.K_v:
+                if not attackKeyPressed:
+                    print "attaque"
+                    connection.Send({"action": "attack"})
+                    attackKeyPressed = True
+                #end if
+            #end if
+        #end if
+        elif event.type == KEYUP:
+            if event.key == pygame.K_v:
+                if attackKeyPressed:
+                    attackKeyPressed = False
+                #end if
+            #end if
+        # end if
+
+        return attackKeyPressed
 
     def Loop(self):
         spaceBarPressed = False
         escapePressed = False
         attackKeyPressed = False
         shootStart = 0
+
         while True:
             connection.Pump()
             self.monGroup.Pump()
@@ -171,6 +183,10 @@ class Client(ConnectionListener):
                 if event.type == pygame.QUIT:
                     return  # closing the window exits the program
                 # end if
+
+                #les touche pour les attaque de melle
+                attackKeyPressed = self.touche_attaque(attackKeyPressed, event)
+
                 #on regarde si le jeu est démarer ou si le personnage n'est pas en état mort pour activer le tir
                 if self.run and not self.controlable.mort and self.controles_actif:
                     #gestion des tirs
@@ -181,12 +197,13 @@ class Client(ConnectionListener):
             # Gestion des événements (les touches sont celles d'un clavier anglais)
             touches = pygame.key.get_pressed()
             #on regarde si le personnage n'est pas en état mort  et le jeu commence
-            if self.run and not self.controlable.mort:
-                if self.controles_actif:
-                    spaceBarPressed = self.mouvment_and_attack(spaceBarPressed, touches)
-                    #l action d attaque
-                    attackKeyPressed = self.touches_attaques(attackKeyPressed, touches)
-                #escape et menu pause
+            if self.run:
+                if not self.controlable.mort:
+                    if self.controles_actif:
+                        spaceBarPressed = self.mouvment_and_attack(spaceBarPressed, touches)
+                        #l action d attaque
+                        #attackKeyPressed,startAttack,lastAttack = self.touches_attaques(attackKeyPressed, touches,startAttack,lastAttack)
+                    #escape et menu pause
                 escapePressed = self.menu_pause(escapePressed, touches)
 
 
@@ -217,6 +234,7 @@ class Client(ConnectionListener):
                     if (event.type == pygame.MOUSEBUTTONUP):
                         if(btn_recommencer.pressed(pygame.mouse.get_pos())):
                             print "le joueur veux recommencer"
+                            connection.Send({"action":"load_partie"})
                         if(btn_quitter.pressed(pygame.mouse.get_pos())):
                             return
 
@@ -249,16 +267,8 @@ class Client(ConnectionListener):
         self.carte= Map.Map(self.screen,data['config'],data['carte'])
         print 'la carte à bien été recu '
         #la camera
-        #self.cam = Camera.Camera(Camera.complex_camera, (self.carte.largeur_map * self.carte.tile_width), (self.carte.hauteur_map * self.carte.tile_width))
         self.cam = Camera.Camera(Camera.complex_camera, SCREEN_WIDTH, SCREEN_HEIGHT, self.carte.largeur_map*self.carte.tile_width, self.carte.hauteur_map*self.carte.tile_height)
     #end Network_carteJeu
-
-    def chargement_musique(self):
-        # chargement du fond sonore
-        pygame.mixer.music.load(os.path.dirname(__file__) + "/../data/music/Celtic_Impulse.ogg")
-        # chargement des bruitages
-        self.hit = pygame.mixer.Sound(os.path.dirname(__file__) + "/../data/music/hit.ogg")
-        self.arrow = pygame.mixer.Sound(os.path.dirname(__file__) + "/../data/music/23185.ogg")
 
     def Network_game(self,data):
         self.chargement_musique()
@@ -267,9 +277,17 @@ class Client(ConnectionListener):
             self.controlable = self.monGroup.getPlayerId(self.idServeur)
             self.run = True
             self.controles_actif = True
+            #on demarre la musique
+            pygame.mixer.music.play()
+        else :
+            self.screen.fill(0)
+            self.run = False
+            self.controles_actif = False
+            #on arrete la musique
+            pygame.mixer.music.stop()
+
             
-        #on demarre la musique
-        pygame.mixer.music.play()
+
         
     #end Network_startGame
 

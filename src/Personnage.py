@@ -1,5 +1,6 @@
 import os
 import pygame
+import time
 import load_png
 import Animable
 
@@ -41,6 +42,7 @@ class Personnage(Animable.Animable):
 
         self.image, self.rect = self.image_normale
         self.rect.center = [SCREEN_WIDTH/2, SCREEN_HEIGHT/2]
+        self.startAttack=0
 
 
     def sauter(self):
@@ -130,12 +132,15 @@ class Personnage(Animable.Animable):
         self.collisionDroite = False
         self.collisionHaut = False
         self.collisionBas = False
-   
+
+
+
         if self.isAttacking:
-            if self.orientation=="droite":
-                self.image = self.image_attaque
-            if self.orientation=="gauche":
-                self.image = self.image_attaque_gauche
+            if not self.mort:
+                if self.orientation=="droite":
+                    self.image = self.image_attaque
+                if self.orientation=="gauche":
+                    self.image = self.image_attaque_gauche
         else:
             if not self.mort:
                 if self.orientation == "gauche":
@@ -158,17 +163,11 @@ class Personnage(Animable.Animable):
             if direction == "bas":
                 self.orientation = "bas"
                 self.image = self.image_bas
-        #if self.orientation != "haut":
-         #   if direction == "haut":
-          #      self.orientation = "haut"
-           #     self.image = self.image_haut
-            #    self.isDown = False
         #end if
     #end orienter
     
     def attaquer(self):
-        if self.isAttacking == False:
-            self.isAttacking = True
+        self.isAttacking = True
 
     def afficher(self, screen, camera):
         screen.blit(self.image, camera.apply(self))

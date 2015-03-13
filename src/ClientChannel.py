@@ -25,8 +25,7 @@ class ClientChannel(Channel):
 
 
     def sendMove(self):
-        message = {"action":"move", "data":(self.personnage.rect.center,self.personnage.speed, self.personnage.orientation, self.personnage.isAttacking),'id':self.identifiant}
-        #print message
+        message = {"action":"move", "data":(self.personnage.rect.center,self.personnage.speed, self.personnage.orientation,self.personnage.isAttacking),'id':self.identifiant}
         self._server.SendMessageAll(message)
     #end sendMove
 
@@ -95,11 +94,11 @@ class ClientChannel(Channel):
         #end if
         
     def Network_attack(self, data):
-        print self.personnage.orientation
         #si le personnage est mort il n'a pas le droit d'attaquer
         if self.personnage.mort == False:
             self.personnage.attaquer()
-            self.sendMove()
+            self.personnage.startAttack=self._server.temp_jeu
+            self._server.SendMessageAll({"action":"attaque","idJoueur": self.identifiant})
         
     def Network_stopAttack(self, data):
         self.personnage.isAttacking = False
@@ -107,7 +106,9 @@ class ClientChannel(Channel):
 
     def Network_pause(self, data):
         message = {"action": "pause", "idJoueur": self.identifiant}
-        print message
         self._server.SendMessageAll(message)
+
+    def Network_load_partie(self,data):
+        print "test"
 
 #end ClientChannel
