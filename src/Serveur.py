@@ -47,8 +47,11 @@ class Serveur(Server):
         if len(self.clients) <= MAX_JOUEUR:
             self.nb_joueur += 1
             print 'Client avec id : ' + str(self.nb_joueur)
+            #on attibut un id au channel
             channel.set_identifiant(self.nb_joueur)
+            #on ajoute l'identifants a la liste des ids
             self.ids.append(self.nb_joueur)
+            #on envoie l'identifiant au client
             channel.Send({'action':'identification','id':self.nb_joueur})
             #envoi de la map generer par le serveur
             channel.Send({'action':'carteJeu','carte':TAB_MAP,'config':CONFIG_FILE})
@@ -57,7 +60,9 @@ class Serveur(Server):
             for c in self.clients:
                 c.sendMove()
         else:
+            #nombre de joueur max atteind
             print "Nombre de joueurs max Atteint"
+            #on envoie un message de refus
             channel.Send({'action':'refused','message':"Nombre de joueur max Atteind"})
             channel.Close()
         #end if

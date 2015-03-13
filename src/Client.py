@@ -9,7 +9,6 @@ import GroupJoueur
 import Camera
 import GroupTir
 import Button
-import Tir
 import utils
 from pygame.locals import *
 import os
@@ -38,7 +37,7 @@ class Client(ConnectionListener):
         self.controlable = None
         self.isPaused = False
         self.fin_du_jeu = 0
-        self.shootStart = 0
+        self.controles_actif = False
 
 
         self.font_pixel_32 = pygame.font.Font(os.path.dirname(__file__)+"/../data/font/pixelmix.ttf", 32)
@@ -130,6 +129,34 @@ class Client(ConnectionListener):
                 connection.Send({"action": "stopAttack"})
             attackKeyPressed = False
 
+    def ecran_attente(self):
+        # ecran d'attente
+        self.screen.fill(0)
+        self.screen.blit(self.font_pixel_32.render("Veuillez patienter...", False, (255, 255, 255)),
+                         (SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 - 100))
+        i = 0
+        for p in self.monGroup:
+            texte = self.font_pixel_20.render("Player " + str(p.idJoueur), False, (255, 255, 255))
+            self.screen.blit(texte, (SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + i))
+            i += 50
+
+    def fin_partie_message(self):
+        #on desactive les controle
+        self.controles_actif = False
+        #le joueur a gagne
+        if self.fin_du_jeu == 1:
+            image_victoire = pygame.image.load(os.path.dirname(__file__) + "/../data/image/coupe_victoire.png")
+            self.screen.blit(image_victoire, (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 75 ))
+            self.screen.blit(self.font_pixel_32.render("Victoire", False, (170, 170, 170)),
+                             (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 ))
+        #le joueur a perdu
+        elif self.fin_du_jeu == 2:
+            image_victoire = pygame.image.load(os.path.dirname(__file__) + "/../data/image/fleche_cassee.png")
+            self.screen.blit(image_victoire, (SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 100 ))
+            self.screen.blit(self.font_pixel_32.render("Defaite", False, (170, 170, 170)),
+                             (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 ))
+            # myButton.afficher(self.screen)
+
     def Loop(self):
         spaceBarPressed = False
         escapePressed = False
@@ -149,29 +176,23 @@ class Client(ConnectionListener):
                     return  # closing the window exits the program
                 # end if
                 #on regarde si le jeu est démarer ou si le personnage n'est pas en état mort pour activer le tir
-                if self.run and self.controlable.mort == False:
+                if self.run and not self.controlable.mort and self.controles_actif:
+                    #gestion des tirs
                     shootStart = self.tir_detection(event, shootStart)
-
                 #end if
-                #ecran de fin du jeu
-                if self.fin_du_jeu > 0:
-                    myButton = Button.Button((200,200,200),"Recommencer",180,40,(SCREEN_WIDTH / 2-50, SCREEN_HEIGHT / 2+100 ),10,2,(70,70,70))
-                    if (event.type == pygame.MOUSEBUTTONUP):
-                        myButton.pressed(pygame.mouse.get_pos())
-                    #end if
-
-                # end if
             # end for
 
             # Gestion des événements (les touches sont celles d'un clavier anglais)
             touches = pygame.key.get_pressed()
             #on regarde si le personnage n'est pas en état mort  et le jeu commence
-            if self.run and not self.controlable.mort :
-                spaceBarPressed = self.mouvment_and_attack(spaceBarPressed, touches)
+            if self.run and not self.controlable.mort:
+                if self.controles_actif:
+                    spaceBarPressed = self.mouvment_and_attack(spaceBarPressed, touches)
+                    #l action d attaque
+                    attackKeyPressed = self.touches_attaques(attackKeyPressed, touches)
                 #escape et menu pause
                 escapePressed = self.menu_pause(escapePressed, touches)
-                #l action d attaque
-                attackKeyPressed = self.touches_attaques(attackKeyPressed, touches)
+
 
             # updates
                 self.cam.update(self.controlable,self.screen)
@@ -185,32 +206,23 @@ class Client(ConnectionListener):
                 self.monGroup.draw(self.screen,self.cam)
                 self.groupTir.draw(self.screen,self.cam)
 
-            else:
-                #ecran d'attente
-                self.screen.fill(0)
-                self.screen.blit(self.font_pixel_32.render("Veuillez patienter...", False, (255, 255, 255)),
-                         (SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 - 100))
-                i=0
-                for p in self.monGroup:
-                    texte =self.font_pixel_20.render("Player " + str(p.idJoueur) , False, (255, 255, 255))
-                    self.screen.blit(texte,(SCREEN_WIDTH / 2 - 100 , SCREEN_HEIGHT / 2 + i))
-                    i+=50
+            if not self.run:
+                self.ecran_attente()
             #end if
 
-
+            #action a la fin du jeu
             if self.fin_du_jeu > 0:
-                print self.fin_du_jeu
-                if self.fin_du_jeu == 1:
-                    image_victoire = pygame.image.load(os.path.dirname(__file__)+"/../data/image/coupe_victoire.png")
-                    self.screen.blit(image_victoire,(SCREEN_WIDTH / 2-50 , SCREEN_HEIGHT / 2 -75 ))
-                    self.screen.blit(self.font_pixel_32.render("Victoire", False, (170, 170, 170)),
-                                   (SCREEN_WIDTH / 2-50, SCREEN_HEIGHT / 2 ))
-                elif self.fin_du_jeu == 2:
-                    #image_victoire = pygame.image.load(os.path.dirname(__file__)+"/../data/image/coupe_victoire.png")
-                    #self.screen.blit(image_victoire,(SCREEN_WIDTH / 2-50 , SCREEN_HEIGHT / 2 -75 ))
-                    self.screen.blit(self.font_pixel_32.render("Defaite", False, (170, 170, 170)),
-                                     (SCREEN_WIDTH / 2-50, SCREEN_HEIGHT / 2 ))
-                myButton.afficher(self.screen)
+                self.fin_partie_message()
+                btn_recommencer = Button.Button((170,170,170),"Recommencer",180,40,(SCREEN_WIDTH / 2-50, SCREEN_HEIGHT / 2+100 ),10,2,(150,150,150))
+                btn_quitter = Button.Button((170,170,170),"Quitter",120,40,(SCREEN_WIDTH / 2-25, SCREEN_HEIGHT / 2+150 ),10,2,(150,150,150))
+                btn_recommencer.afficher(self.screen)
+                btn_quitter.afficher(self.screen)
+                for event in pygame.event.get():
+                    if (event.type == pygame.MOUSEBUTTONUP):
+                        if(btn_recommencer.pressed(pygame.mouse.get_pos())):
+                            print "le joueur veux recommencer"
+                        if(btn_quitter.pressed(pygame.mouse.get_pos())):
+                            return
 
 
             #la pause
@@ -258,6 +270,7 @@ class Client(ConnectionListener):
             self.screen.fill(0)
             self.controlable = self.monGroup.getPlayerId(self.idServeur)
             self.run = True
+            self.controles_actif = True
             
         #on demarre la musique
         pygame.mixer.music.play()
