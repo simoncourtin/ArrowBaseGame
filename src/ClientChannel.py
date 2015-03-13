@@ -105,4 +105,9 @@ class ClientChannel(Channel):
         self.personnage.isAttacking = False
         self.sendMove()
 
+    def Network_pause(self, data):
+        message = {"action": "pause", "idJoueur": self.identifiant}
+        print message
+        self._server.SendMessageAll(message)
+
 #end ClientChannel

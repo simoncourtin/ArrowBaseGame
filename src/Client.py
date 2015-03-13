@@ -107,13 +107,8 @@ class Client(ConnectionListener):
         # Menu pause et la touche escape
         if (touches[K_ESCAPE]):
             if not escapePressed:
-                print "Escape"
                 escapePressed = True
-                if self.isPaused == False:
-                    self.isPaused = True
-                else:
-                    self.isPaused = False
-                    # end if
+                connection.Send({"action": "pause", "idJoueur": self.idServeur})
         else:
             escapePressed = False
         return escapePressed
@@ -277,6 +272,14 @@ class Client(ConnectionListener):
         pygame.mixer.music.play()
         
     #end Network_startGame
+
+    def Network_pause(self, data):
+        if self.isPaused == False:
+            self.isPaused = True
+            self.controles_actif = False
+        else:
+            self.isPaused = False
+            self.controles_actif = True
 
     def Network_refused(self,data):
         print data['message']
