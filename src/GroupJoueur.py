@@ -57,7 +57,7 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
 
     def Network_stop_attaque(self, data):
         personnage = self.getPlayerId(data["idJoueur"])
-        personnage.isAttacking == False
+        personnage.isAttacking = False
 
 
     def getPlayerId(self,id):

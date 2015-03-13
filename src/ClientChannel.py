@@ -108,7 +108,7 @@ class ClientChannel(Channel):
         message = {"action": "pause", "idJoueur": self.identifiant}
         self._server.SendMessageAll(message)
 
-    def Network_load_partie(self,data):
-        print "test"
+    def Network_recommencer_partie(self,data):
+        self._server.remise_a_zero()
 
 #end ClientChannel

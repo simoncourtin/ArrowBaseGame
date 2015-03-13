@@ -71,7 +71,7 @@ class Client(ConnectionListener):
                 if (btn_reprendre_pause.pressed(pygame.mouse.get_pos())):
                     connection.Send({"action": "pause", "idJoueur": self.idServeur})
                 if (btn_quitter_pause.pressed(pygame.mouse.get_pos())):
-                    return
+                    sys.exit()
 
 
     def chargement_musique(self):
@@ -238,7 +238,6 @@ class Client(ConnectionListener):
             #action a la fin du jeu
             if self.fin_du_jeu > 0:
                 self.fin_partie_message()
-
                 btn_recommencer = Button.Button((56,142,60), "Recommencer", 180, 48, (SCREEN_WIDTH / 2 - 64, SCREEN_HEIGHT / 2 + 100 ), 12, 4, (56,142,60))
                 btn_quitter = Button.Button((244,67,54), "Quitter", 180, 48, (SCREEN_WIDTH / 2 - 64, SCREEN_HEIGHT / 2 + 164 ), 12, 4, (244,67,54))
                 btn_recommencer.afficher(self.screen)
@@ -248,7 +247,7 @@ class Client(ConnectionListener):
                     if (event.type == pygame.MOUSEBUTTONUP):
                         if(btn_recommencer.pressed(pygame.mouse.get_pos())):
                             print "le joueur veux recommencer"
-                            connection.Send({"action":"load_partie"})
+                            connection.Send({"action":"recommencer_partie"})
                         if(btn_quitter.pressed(pygame.mouse.get_pos())):
                             return
 
@@ -294,6 +293,7 @@ class Client(ConnectionListener):
             #on demarre la musique
             pygame.mixer.music.play()
         else :
+            self.fin_du_jeu = 0
             self.screen.fill(0)
             self.run = False
             self.controles_actif = False
@@ -329,12 +329,16 @@ class Client(ConnectionListener):
         print 'Server disconnected'
         sys.exit()
     #end Network_disconnected
+
+    def Network_debut_jeu(self,data):
+        self.fin_du_jeu =0
     
     def Network_victoire(self, data):
         if data["idGagnant"] ==  self.idServeur :
             self.fin_du_jeu =1 #victoire
         else:
             self.fin_du_jeu = 2 #defaite
+
 
 
 

@@ -7,19 +7,9 @@ import time,sys
 import os
 import pygame
 from pygame.locals import *
-import random
-import Personnage
-import Tir
 from  module_map import Map
 import random
 
-for x in range(20):
-  map = random.randint(1,4)
-
-listeImages = {}
-TAB_MAP = [("Image","/../../data/map/map0" + str(map) + "/background.png",True),
-            ("","/../../data/map/map0" + str(map) + "/plateforme.map","/../../data/map/map0" + str(map) + "/terre.png",32,32)]
-CONFIG_FILE = "/../../data/map/map0" + str(map) + "/config.map"
 MAX_JOUEUR = 2
 
 class Serveur(Server):
@@ -54,7 +44,7 @@ class Serveur(Server):
             #on envoie l'identifiant au client
             channel.Send({'action':'identification','id':self.nb_joueur})
             #envoi de la map generer par le serveur
-            channel.Send({'action':'carteJeu','carte':TAB_MAP,'config':CONFIG_FILE})
+            channel.Send({'action':'carteJeu','carte':self.tab_map,'config':self.config_file})
             #on envoie les position de tous les personnage a tous le monde
             self.SendMessageAll({'action':'players','ids':self.ids})
             for c in self.clients:
@@ -89,9 +79,18 @@ class Serveur(Server):
         #end for
     #end SendMessageAll
 
+    def choisir_carte(self):
+        for x in range(20):
+          map = random.randint(1,4)
+
+        self.tab_map = [("Image","/../../data/map/map0" + str(map) + "/background.png",True),
+                    ("","/../../data/map/map0" + str(map) + "/plateforme.map","/../../data/map/map0" + str(map) + "/terre.png",32,32)]
+        self.config_file = "/../../data/map/map0" + str(map) + "/config.map"
+
     def generationMap(self):
+        self.choisir_carte()
         #creation de la carte
-        carte = Map.Map(self.screen,CONFIG_FILE,TAB_MAP)
+        carte = Map.Map(self.screen,self.config_file,self.tab_map)
         self.carte=carte
         return carte
     #end generationMap
@@ -318,6 +317,32 @@ class Serveur(Server):
         for joueur in self.joueurs:
             if joueur.score >= 2:
                 self.SendMessageAll({"action": "victoire", "idGagnant": joueur.idJoueur})
+
+    def remise_a_zero(self):
+        #on reiniitalise les scores des joueurs
+        for j in self.joueurs:
+            j.score = 0
+            self.SendMessageAll({"action": "ajout_score", "joueur": j.idJoueur, "score": 0})
+        #les scores sont a zero, on fait patienter les joueurs
+        self.SendMessageAll({"action":"game","statut":"new"})
+
+        print "le reste de la generation"
+        #generation d'une nouvelle carte
+        self.generationMap()
+        self.SendMessageAll({'action':'carteJeu','carte':self.tab_map,'config':self.config_file})
+        for j in self.joueurs:
+            position = [
+                random.randint(carte.tile_width, (carte.largeur_map * carte.tile_width) - carte.tile_width),
+                random.randint(carte.tile_height, (carte.hauteur_map * carte.tile_height) - carte.tile_height)]
+            self.SendMessageAll({"action": "resurrection", "id_joueur": j.idJoueur, "position": position})
+            j.resurrection(position)
+            j.rect.center = position
+            for c in self.clients:
+                if c.personnage == j:
+                    c.sendMove()
+        self.temp_jeu =0
+        self.SendMessageAll({"action":"game","statut":"start"})
+
 
     def Loop(self):
 
