@@ -171,7 +171,8 @@ class Client(ConnectionListener):
             # Events handling
 
             #evenement pygame
-            for event in pygame.event.get():
+            liste_event =  pygame.event.get()
+            for event in liste_event:
                 if event.type == pygame.QUIT:
                     return  # closing the window exits the program
                 # end if
@@ -217,7 +218,7 @@ class Client(ConnectionListener):
                 btn_quitter = Button.Button((170,170,170),"Quitter",120,40,(SCREEN_WIDTH / 2-25, SCREEN_HEIGHT / 2+150 ),10,2,(150,150,150))
                 btn_recommencer.afficher(self.screen)
                 btn_quitter.afficher(self.screen)
-                for event in pygame.event.get():
+                for event in liste_event:
                     if (event.type == pygame.MOUSEBUTTONUP):
                         if(btn_recommencer.pressed(pygame.mouse.get_pos())):
                             print "le joueur veux recommencer"
@@ -259,10 +260,10 @@ class Client(ConnectionListener):
 
     def chargement_musique(self):
         # chargement du fond sonore
-        pygame.mixer.music.load(os.path.dirname(__file__) + "/../data/music/fondSonore.ogg")
+        pygame.mixer.music.load(os.path.dirname(__file__) + "/../data/music/Celtic_Impulse.ogg")
         # chargement des bruitages
         self.hit = pygame.mixer.Sound(os.path.dirname(__file__) + "/../data/music/hit.ogg")
-        self.arrow = pygame.mixer.Sound(os.path.dirname(__file__) + "/../data/music/arrow.ogg")
+        self.arrow = pygame.mixer.Sound(os.path.dirname(__file__) + "/../data/music/23185.ogg")
 
     def Network_game(self,data):
         self.chargement_musique()

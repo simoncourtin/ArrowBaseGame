@@ -51,8 +51,6 @@ class Tir(Animable.Animable):
             self.image = pygame.transform.rotate(self.image_base,180*math.atan2(-self.speed[1],self.speed[0])/math.pi)
         Animable.Animable.update(self)
 
-        # self.acceleration[1] += -VITESSE_DEBUT_LANCER
-
         self.acceleration[1] = ACCELERATION_GRAVITE
 
         self.speed[0] -= self.speed[0] * COEFF_FROTTEMENT
@@ -63,8 +61,3 @@ class Tir(Animable.Animable):
 
         self.acceleration = [0, 0]
 
-        # Enlever le missile s'il depasse de l'ecran
-        #if self.rect.left < 0 or self.rect.right > SCREEN_WIDTH or self.rect.top < 0 or self.rect.bottom > SCREEN_HEIGHT:
-        #    self.kill()
-
-        # Arreter la fleche s'il y a collision
