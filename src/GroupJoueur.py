@@ -19,9 +19,11 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
                self.remove(s)
 
     def Network_players(self,data):
-        for i in data['ids']:
+        for i in data['ids'].keys():
             if not self.existPlayer(i):
-                self.add(Personnage.Personnage(1,i,[0,0]))
+                personnage = Personnage.Personnage(1,i,[0,0])
+                personnage.pseudo = data['ids'][i]
+                self.add(personnage)
 
     def Network_collisionJoueur(self, data):
         for joueur in self:
@@ -58,6 +60,11 @@ class GroupJoueur(pygame.sprite.Group,ConnectionListener):
     def Network_stop_attaque(self, data):
         personnage = self.getPlayerId(data["idJoueur"])
         personnage.isAttacking = False
+
+    def Network_pseudo(self, data):
+        personnaage = self.getPlayerId(data["identifiant"])
+        personnaage.pseudo = data["pseudo"]
+
 
 
     def getPlayerId(self,id):

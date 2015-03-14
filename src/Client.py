@@ -21,7 +21,7 @@ listeImages = {}
 
 
 class Client(ConnectionListener):
-    def __init__(self, host, port):
+    def __init__(self, host, port,pseudo=None):
         self.run = False  # Booléen déterminant si ce client est connecté au serveur ou non
         #connexion au serveur
         self.Connect((host, port))
@@ -33,6 +33,7 @@ class Client(ConnectionListener):
         pygame.key.set_repeat(1, 1)
         #numero d'id sur le serveur
         self.idServeur = 0
+        self.pseudo = pseudo
         self.carte = None
         self.controlable = None
         self.isPaused = False
@@ -132,7 +133,7 @@ class Client(ConnectionListener):
                          (SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 - 100))
         i = 0
         for p in self.monGroup:
-            texte = self.font_pixel_20.render("Player " + str(p.idJoueur), False, (255, 255, 255))
+            texte = self.font_pixel_20.render(str(p.pseudo), False, (255, 255, 255))
             self.screen.blit(texte, (SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + i))
             i += 50
 
@@ -156,7 +157,7 @@ class Client(ConnectionListener):
 
     def touche_attaque(self, attackKeyPressed, event):
         if event.type == KEYDOWN:
-            if event.key == pygame.K_v:
+            if event.key == pygame.K_q:
                 if not attackKeyPressed:
                     print "attaque"
                     connection.Send({"action": "attack"})
@@ -165,7 +166,7 @@ class Client(ConnectionListener):
             #end if
         #end if
         elif event.type == KEYUP:
-            if event.key == pygame.K_v:
+            if event.key == pygame.K_q:
                 if attackKeyPressed:
                     attackKeyPressed = False
                 #end if
@@ -246,6 +247,7 @@ class Client(ConnectionListener):
                 for event in liste_event:
                     if (event.type == pygame.MOUSEBUTTONUP):
                         if(btn_recommencer.pressed(pygame.mouse.get_pos())):
+                            self.screen.fill(0)
                             print "le joueur veux recommencer"
                             connection.Send({"action":"recommencer_partie"})
                         if(btn_quitter.pressed(pygame.mouse.get_pos())):
@@ -272,6 +274,11 @@ class Client(ConnectionListener):
     def Network_identification(self,data):
         print 'attribution id sur le serveur. Id : '+ str(data['id'])
         self.idServeur = data['id']
+        #on a recu une identification on envoie le pseudo
+        if self.pseudo != None:
+            connection.Send({"action":"pseudo","pseudo":self.pseudo})
+        else:
+            connection.Send({"action":"pseudo","pseudo": "Player " + str(self.idServeur)})
 
     #end Network_identifiaction
 
@@ -288,6 +295,7 @@ class Client(ConnectionListener):
         if data['statut'] == 'start':
             self.screen.fill(0)
             self.controlable = self.monGroup.getPlayerId(self.idServeur)
+            self.controlable.chargement_image(2)
             self.run = True
             self.controles_actif = True
             #on demarre la musique
@@ -345,7 +353,11 @@ class Client(ConnectionListener):
 #end Client
 
 if __name__ == '__main__':
-    client = Client(sys.argv[1], int(sys.argv[2]))
+    pseudo = None
+    if len(sys.argv) >= 4 :
+        pseudo = sys.argv[3]
+
+    client = Client(sys.argv[1], int(sys.argv[2]),pseudo)
     client.Loop()
 
     sys.exit(0)

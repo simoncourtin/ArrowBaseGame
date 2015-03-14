@@ -16,3 +16,8 @@ def load_png(name):
         raise SystemExit, message
     return image,image.get_rect()
 #end load_png
+
+def removekey(d, key):
+        r = dict(d)
+        del r[key]
+        return r

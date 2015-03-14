@@ -9,8 +9,9 @@ import pygame
 from pygame.locals import *
 from  module_map import Map
 import random
+import utils
 
-MAX_JOUEUR = 2
+MAX_JOUEUR = 3
 
 class Serveur(Server):
     channelClass = ClientChannel.ClientChannel
@@ -18,7 +19,7 @@ class Serveur(Server):
     def __init__(self, *args, **kwargs):
         Server.__init__(self, *args, **kwargs)
         self.nb_joueur = 0
-        self.ids=[]
+        self.ids={}
         self.clients = []
         self.joueurs = pygame.sprite.Group()
         self.tirs = pygame.sprite.Group()
@@ -40,7 +41,7 @@ class Serveur(Server):
             #on attibut un id au channel
             channel.set_identifiant(self.nb_joueur)
             #on ajoute l'identifants a la liste des ids
-            self.ids.append(self.nb_joueur)
+            self.ids[self.nb_joueur]=" "
             #on envoie l'identifiant au client
             channel.Send({'action':'identification','id':self.nb_joueur})
             #envoi de la map generer par le serveur
@@ -67,7 +68,7 @@ class Serveur(Server):
         print('client deconnecte')
         if channel.identifiant !=0:
             #le client a ete identifie
-            self.ids.remove(channel.identifiant)
+            self.ids = utils.removekey(self.ids,channel.identifiant)
             self.joueurs.remove(channel.personnage)
             self.SendMessageAll({'action':'playerQuit','id':channel.identifiant})
             self.clients.remove(channel)

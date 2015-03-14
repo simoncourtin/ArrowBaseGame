@@ -14,6 +14,7 @@ class ClientChannel(Channel):
     def __init__(self, *args, **kwargs):
         Channel.__init__(self, *args, **kwargs)
         self.identifiant = 0
+        self.pseudo = ""
         position = [
                 random.randint(self._server.carte.tile_width, (self._server.carte.largeur_map * self._server.carte.tile_width) - self._server.carte.tile_width),
                 random.randint(self._server.carte.tile_height, (self._server.carte.hauteur_map * self._server.carte.tile_height) - self._server.carte.tile_height)]
@@ -98,9 +99,11 @@ class ClientChannel(Channel):
             self.personnage.startAttack=self._server.temp_jeu
             self._server.SendMessageAll({"action":"attaque","idJoueur": self.identifiant})
         
-    def Network_stopAttack(self, data):
-        self.personnage.isAttacking = False
-        self.sendMove()
+    def Network_pseudo(self, data):
+        self._server.ids[self.identifiant] = data["pseudo"]
+        self.pseudo = data["pseudo"]
+        self.personnage.pseudo = data["pseudo"]
+        self._server.SendMessageAll({"action":"pseudo","pseudo":self.pseudo,"identifiant":self.identifiant})
 
     def Network_pause(self, data):
         message = {"action": "pause", "idJoueur": self.identifiant}
