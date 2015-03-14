@@ -153,6 +153,12 @@ class Client(ConnectionListener):
             self.screen.blit(image_victoire, (SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 100 ))
             self.screen.blit(self.font_pixel_32.render("Defaite", False, (170, 170, 170)),
                              (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 ))
+        i=0
+        for j in self.monGroup:
+            self.screen.blit(self.font_pixel_20.render(j.pseudo +" : "+ str(j.score), False, (100, 100, 100)),
+                            (20, 20 +i ))
+            i += 30
+
 
 
     def touche_attaque(self, attackKeyPressed, event):
