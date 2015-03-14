@@ -58,6 +58,7 @@ class Serveur(Server):
             channel.Close()
         #end if
         if len(self.clients)==MAX_JOUEUR:
+            print "Debut de la partie"
             self.SendMessageAll({'action':'game','statut':'start'})
             #on remet le temp de jeu a 0
             self.temp_jeu = 0
@@ -327,7 +328,7 @@ class Serveur(Server):
         #les scores sont a zero, on fait patienter les joueurs
         self.SendMessageAll({"action":"game","statut":"new"})
 
-        print "le reste de la generation"
+        print "Nouvelle Partie"
         #generation d'une nouvelle carte
         self.generationMap()
         self.SendMessageAll({'action':'carteJeu','carte':self.tab_map,'config':self.config_file})
@@ -341,6 +342,8 @@ class Serveur(Server):
             for c in self.clients:
                 if c.personnage == j:
                     c.sendMove()
+                    
+        print "Debut de la partie"
         self.temp_jeu =0
         self.SendMessageAll({"action":"game","statut":"start"})
 
