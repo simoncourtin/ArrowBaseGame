@@ -268,25 +268,25 @@ class Serveur(Server):
                 #end if
 
                 if rightCol:
-                    self.SendMessageAll({'action': 'collision', 'id': channel.identifiant, 'cote': 'droite'})
+                    #self.SendMessageAll({'action': 'collision', 'id': channel.identifiant, 'cote': 'droite'})
                     joueur.rect.right = tile.rect.left + 5
                     joueur.collision('droite')
                 #end if
 
                 if leftCol:
-                    self.SendMessageAll({'action': 'collision', 'id': channel.identifiant, 'cote': 'gauche'})
+                    #self.SendMessageAll({'action': 'collision', 'id': channel.identifiant, 'cote': 'gauche'})
                     joueur.rect.left = tile.rect.right - 5
                     joueur.collision('gauche')
                 #end if
 
                 if topCol:
-                    self.SendMessageAll({'action': 'collision', 'id': channel.identifiant, 'cote': 'haut'})
+                    #self.SendMessageAll({'action': 'collision', 'id': channel.identifiant, 'cote': 'haut'})
                     joueur.rect.top = tile.rect.bottom - 5
                     joueur.collision('haut')
                 #end if
 
                 if bottomCol:
-                    self.SendMessageAll({'action': 'collision', 'id': channel.identifiant, 'cote': 'bas'})
+                    #self.SendMessageAll({'action': 'collision', 'id': channel.identifiant, 'cote': 'bas'})
                     joueur.rect.bottom = tile.rect.top + 5
                     joueur.collision('bas')
                     #end if

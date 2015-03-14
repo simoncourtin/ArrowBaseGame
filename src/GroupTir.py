@@ -5,6 +5,7 @@ import Tir
 
 
 class GroupTir(pygame.sprite.Group, ConnectionListener):
+
     def Network_move(self, data):
         for s in self:
             if s.idFleche == data['id']:

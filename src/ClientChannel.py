@@ -18,7 +18,7 @@ class ClientChannel(Channel):
         position = [
                 random.randint(self._server.carte.tile_width, (self._server.carte.largeur_map * self._server.carte.tile_width) - self._server.carte.tile_width),
                 random.randint(self._server.carte.tile_height, (self._server.carte.hauteur_map * self._server.carte.tile_height) - self._server.carte.tile_height)]
-        self.personnage = Personnage.Personnage(1,self.identifiant,position)
+        self.personnage = Personnage.Personnage(2,self.identifiant,position)
         self._server.joueurs.add(self.personnage)
     # end __init__
 
@@ -79,7 +79,6 @@ class ClientChannel(Channel):
         #si le personnage est mort il n'a pas le droit de tirer
         if self.personnage.mort == False:
             id_tir= len(self._server.tirs)
-
             #Calcul de la vitesse du projectile
             vitesseTir = [data["clic"][0]-self.personnage.rect.centerx, data["clic"][1]-self.personnage.rect.centery]
             normeVitesse = math.sqrt(vitesseTir[0]*vitesseTir[0] + vitesseTir[1]*vitesseTir[1])

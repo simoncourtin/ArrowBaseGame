@@ -92,11 +92,11 @@ class Client(ConnectionListener):
             mousex, mousey = pygame.mouse.get_pos()
             mousex += self.cam.state.x
             mousey += self.cam.state.y
-
+            self.arrow.play()
             connection.Send({"action": "tir", "idJoueur": self.controlable.idJoueur,
                              "origine": (self.controlable.rect.x, self.controlable.rect.y), "puissance": puissance,
                              "clic": [mousex, mousey]})
-            self.arrow.play()
+
         return shootStart
 
     def mouvment_and_attack(self, spaceBarPressed, touches):

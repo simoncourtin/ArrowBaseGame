@@ -16,12 +16,11 @@ VITESSE_MAX_Y = 40
 
 
 class Personnage(pygame.sprite.Sprite):
-    def __init__(self, numero,id,center):
+    def __init__(self, numero_sprite,id,center):
         pygame.sprite.Sprite.__init__(self)
         #chargement des images pour le joueur
-        self.chargement_image(1)
+        self.chargement_image(numero_sprite)
         self.idJoueur=id
-        self.numero = numero
         self.isAnimated = False
         self.isDown = False
         self.isJumping = False
@@ -210,13 +209,13 @@ class Personnage(pygame.sprite.Sprite):
             self.image_haut = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoSaut.png")
             self.image_mort = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/mort.png")
         elif numero_sprite == 2 :
-            self.image_normale = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
+            self.image_normale = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_vert_gauche.png")
             self.image_sauter = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoSaut.png")
             self.image_accroupi = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
             self.image_accroupi_gauche= pygame.transform.flip(self.image_accroupi[0], True, False)
             self.image_attaque = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoHit.png")
-            self.image_droite = self.image_normale[0]
-            self.image_gauche= pygame.transform.flip(self.image_droite, True, False)
+            self.image_gauche= self.image_normale[0]
+            self.image_droite = pygame.transform.flip(self.image_gauche, True, False)
             self.image_attaque_gauche= pygame.transform.flip(self.image_attaque, True, False)
             self.image_bas = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
             self.image_haut = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoSaut.png")
