@@ -165,7 +165,6 @@ class Client(ConnectionListener):
         if event.type == KEYDOWN:
             if event.key == pygame.K_q:
                 if not attackKeyPressed:
-                    print "attaque"
                     connection.Send({"action": "attack"})
                     attackKeyPressed = True
                 #end if
