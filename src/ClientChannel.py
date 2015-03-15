@@ -18,7 +18,7 @@ class ClientChannel(Channel):
         position = [
                 random.randint(self._server.carte.tile_width, (self._server.carte.largeur_map * self._server.carte.tile_width) - self._server.carte.tile_width),
                 random.randint(self._server.carte.tile_height, (self._server.carte.hauteur_map * self._server.carte.tile_height) - self._server.carte.tile_height)]
-        self.personnage = Personnage.Personnage(2,self.identifiant,position)
+        self.personnage = Personnage.Personnage(1,self.identifiant,position)
         self._server.joueurs.add(self.personnage)
     # end __init__
 

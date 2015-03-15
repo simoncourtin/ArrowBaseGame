@@ -142,7 +142,7 @@ class Client(ConnectionListener):
         self.controles_actif = False
         #le joueur a gagne
         if self.fin_du_jeu == 1:
-            image_victoire = pygame.image.load(os.path.dirname(__file__) + "/../data/image/coupe_victoire.png")
+            image_victoire = pygame.image.load(os.path.dirname(__file__) + "/../data/image/fleche_victoire.png")
             self.screen.blit(image_victoire, (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 - 150 ))
             self.screen.blit(self.font_pixel_32.render("Victoire", False, (255, 255, 255)),
                              (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 + 20))

@@ -44,8 +44,6 @@ class Personnage(pygame.sprite.Sprite):
 
 
     def sauter(self):
-        #changement de l'image sauter
-        self.image = self.image_sauter
         #le saut
         if not self.isJumping:
             self.acceleration[1] += -VITESSE_DEBUT_SAUT
@@ -59,12 +57,15 @@ class Personnage(pygame.sprite.Sprite):
         #end if
     #end sauter
 
+    def changer_image(self,image):
+        self.image = image[0]
+        self.rect.width = image[1].width
+        self.rect.height = image[1].height
+
     def down(self):
         if self.isDown == False:
             self.isDown = True
-            self.image = self.image_accroupi[0]
-            self.rect.width = self.image_accroupi[1].width
-            self.rect.height = self.image_accroupi[1].height
+            self.changer_image(self.image_accroupi_droite)
     #end down
 
     def left(self):
@@ -136,15 +137,15 @@ class Personnage(pygame.sprite.Sprite):
         if self.isAttacking:
             if not self.mort:
                 if self.orientation=="droite":
-                    self.image = self.image_attaque
+                    self.changer_image(self.image_attaque_droite)
                 if self.orientation=="gauche":
-                    self.image = self.image_attaque_gauche
+                    self.changer_image(self.image_attaque_gauche)
         else:
             if not self.mort:
                 if self.orientation == "gauche":
-                    self.image = self.image_gauche
+                    self.changer_image(self.image_gauche)
                 if self.orientation == "droite":
-                    self.image = self.image_droite
+                    self.changer_image(self.image_droite)
 
     #end update
 
@@ -152,15 +153,15 @@ class Personnage(pygame.sprite.Sprite):
         if self.orientation != "gauche":
             if direction == "gauche":
                 self.orientation = "gauche"
-                self.image = self.image_gauche
+                self.changer_image(self.image_gauche)
         if self.orientation != "droite":
             if direction == "droite":
                 self.orientation = "droite"
-                self.image = self.image_droite
+                self.changer_image(self.image_gauche)
         if self.orientation != "bas":
             if direction == "bas":
                 self.orientation = "bas"
-                self.image = self.image_bas
+                self.down()
         #end if
     #end orienter
     
@@ -197,29 +198,31 @@ class Personnage(pygame.sprite.Sprite):
 
     def chargement_image(self,numero_sprite):
         if numero_sprite == 1 :
-            self.image_normale = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeo.png")
-            self.image_sauter = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoSaut.png")
-            self.image_accroupi = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
-            self.image_accroupi_gauche= pygame.transform.flip(self.image_accroupi[0], True, False)
-            self.image_attaque = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoHit.png")
-            self.image_droite = self.image_normale[0]
-            self.image_gauche= pygame.transform.flip(self.image_droite, True, False)
-            self.image_attaque_gauche= pygame.transform.flip(self.image_attaque, True, False)
-            self.image_bas = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
-            self.image_haut = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoSaut.png")
-            self.image_mort = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/mort.png")
+             #les images de deplacements
+            self.image_normale = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_bleu_gauche.png")
+            self.image_gauche= self.image_normale
+            self.image_droite = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_bleu_droite.png")
+            self.image_haut = self.image_normale
+            #image accroupi
+            self.image_accroupi_droite = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_vert_acroupi_droite.png")
+            self.image_accroupi_gauche = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_vert_acroupi_gauche.png")
+            #image d'attaque
+            self.image_attaque_gauche= load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_bleu_attaque_gauche.png")
+            self.image_attaque_droite = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_bleu_attaque_droite.png")
         elif numero_sprite == 2 :
+            #les images de deplacements
             self.image_normale = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_vert_gauche.png")
-            self.image_sauter = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoSaut.png")
-            self.image_accroupi = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
-            self.image_accroupi_gauche= pygame.transform.flip(self.image_accroupi[0], True, False)
-            self.image_attaque = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoHit.png")
-            self.image_gauche= self.image_normale[0]
-            self.image_droite = pygame.transform.flip(self.image_gauche, True, False)
-            self.image_attaque_gauche= pygame.transform.flip(self.image_attaque, True, False)
-            self.image_bas = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoAccroupi.png")
-            self.image_haut = pygame.image.load(os.path.dirname(__file__)+"/../data/sprite/SpriteNeoSaut.png")
-            self.image_mort = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/mort.png")
+            self.image_gauche= self.image_normale
+            self.image_droite = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_vert_droite.png")
+            self.image_haut = self.image_normale
+            #image accroupi
+            self.image_accroupi_droite = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_vert_acroupi_droite.png")
+            self.image_accroupi_gauche = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_vert_acroupi_gauche.png")
+            #image d'attaque
+            self.image_attaque_gauche= load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_vert_attaque_gauche.png")
+            self.image_attaque_droite = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_vert_attaque_droite.png")
+
+        self.image_mort = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/mort.png")
 
     #end chargement image
 #end Personnage

@@ -342,7 +342,7 @@ class Serveur(Server):
             for c in self.clients:
                 if c.personnage == j:
                     c.sendMove()
-                    
+
         print "Debut de la partie"
         self.temp_jeu =0
         self.SendMessageAll({"action":"game","statut":"start"})
@@ -361,9 +361,10 @@ class Serveur(Server):
 
 
         # Collisions
-        self.collisions_fleche_carte()
 
         self.collisions_fleches_joueurs()
+
+        self.collisions_fleche_carte()
 
         self.collisions_joueur_carte()
 
