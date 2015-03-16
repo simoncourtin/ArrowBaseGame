@@ -155,7 +155,7 @@ class Client(ConnectionListener):
                              (SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 ))
         i=0
         for j in self.monGroup:
-            self.screen.blit(self.font_pixel_20.render(j.pseudo +" : "+ str(j.score), False, (100, 100, 100)),
+            self.screen.blit(self.font_pixel_20.render(j.pseudo +" : "+ str(j.score), False, (255, 255, 255)),
                             (20, 20 +i ))
             i += 30
 
@@ -245,19 +245,21 @@ class Client(ConnectionListener):
             #action a la fin du jeu
             if self.fin_du_jeu > 0:
                 self.fin_partie_message()
-                btn_recommencer = Button.Button((56,142,60), "Recommencer", 180, 48, (SCREEN_WIDTH / 2 - 64, SCREEN_HEIGHT / 2 + 100 ), 12, 4, (56,142,60))
-                btn_quitter = Button.Button((244,67,54), "Quitter", 180, 48, (SCREEN_WIDTH / 2 - 64, SCREEN_HEIGHT / 2 + 164 ), 12, 4, (244,67,54))
-                btn_recommencer.afficher(self.screen)
-                btn_quitter.afficher(self.screen)
+                if not self.isPaused :
+                    btn_recommencer = Button.Button((56,142,60), "Recommencer", 180, 48, (SCREEN_WIDTH / 2 - 64, SCREEN_HEIGHT / 2 + 100 ), 12, 4, (56,142,60))
+                    btn_quitter = Button.Button((244,67,54), "Quitter", 180, 48, (SCREEN_WIDTH / 2 - 64, SCREEN_HEIGHT / 2 + 164 ), 12, 4, (244,67,54))
+                    btn_recommencer.afficher(self.screen)
+                    btn_quitter.afficher(self.screen)
 
-                for event in liste_event:
-                    if (event.type == pygame.MOUSEBUTTONUP):
-                        if(btn_recommencer.pressed(pygame.mouse.get_pos())):
-                            self.screen.fill(0)
-                            print "le joueur veux recommencer"
-                            connection.Send({"action":"recommencer_partie"})
-                        if(btn_quitter.pressed(pygame.mouse.get_pos())):
-                            return
+
+                    for event in liste_event:
+                        if (event.type == pygame.MOUSEBUTTONUP):
+                            if(btn_recommencer.pressed(pygame.mouse.get_pos())):
+                                self.screen.fill(0)
+                                print "le joueur veux recommencer"
+                                connection.Send({"action":"recommencer_partie"})
+                            if(btn_quitter.pressed(pygame.mouse.get_pos())):
+                                return
 
 
             #la pause
@@ -306,7 +308,7 @@ class Client(ConnectionListener):
             self.controles_actif = True
             #on demarre la musique
             pygame.mixer.music.play()
-        else :
+        elif data['statut'] == 'new' :
             self.fin_du_jeu = 0
             self.screen.fill(0)
             self.run = False
@@ -314,9 +316,6 @@ class Client(ConnectionListener):
             #on arrete la musique
             pygame.mixer.music.stop()
 
-            
-
-        
     #end Network_startGame
 
     def Network_pause(self, data):
