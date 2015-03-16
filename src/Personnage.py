@@ -204,7 +204,7 @@ class Personnage(pygame.sprite.Sprite):
             self.image_droite = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_bleu_droite.png")
             self.image_haut = self.image_normale
             #image accroupi
-            self.image_accroupi_droite = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_vert_acroupi_droite.png")
+            self.image_accroupi_droite = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_bleu_accroupi.png")
             self.image_accroupi_gauche = load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_vert_acroupi_gauche.png")
             #image d'attaque
             self.image_attaque_gauche= load_png.load_png(os.path.dirname(__file__)+"/../data/sprite/archers/archer_bleu_attaque_gauche.png")

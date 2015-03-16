@@ -12,6 +12,7 @@ import random
 import utils
 
 MAX_JOUEUR = 3
+MAX_SCORE = 5
 
 class Serveur(Server):
     channelClass = ClientChannel.ClientChannel
@@ -317,7 +318,7 @@ class Serveur(Server):
     def victoire_defaite_joueur(self):
         # condition de victoire
         for joueur in self.joueurs:
-            if joueur.score >= 2:
+            if joueur.score >= MAX_SCORE:
                 self.SendMessageAll({"action": "victoire", "idGagnant": joueur.idJoueur})
 
     def remise_a_zero(self):
@@ -379,7 +380,6 @@ class Serveur(Server):
 
         #la victoire ou defaite
         self.victoire_defaite_joueur()
-
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

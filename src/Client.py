@@ -180,6 +180,11 @@ class Client(ConnectionListener):
 
         return attackKeyPressed
 
+    def print_message_graphique(self,screen,message):
+        texte = self.font_pixel_20.render(message, False, (255, 255, 255))
+        screen.blit(texte, (SCREEN_WIDTH / 2 - 100,50))
+
+
 
     def Loop(self):
         spaceBarPressed = False
@@ -234,8 +239,8 @@ class Client(ConnectionListener):
                 # drawings
                 self.screen.fill(0)
                 self.carte.afficherCarteCamera(self.cam)
-                self.monGroup.draw(self.screen,self.cam)
                 self.groupTir.draw(self.screen,self.cam)
+                self.monGroup.draw(self.screen,self.cam)
 
             if not self.run:
                 self.ecran_attente()
@@ -350,8 +355,6 @@ class Client(ConnectionListener):
             self.fin_du_jeu =1 #victoire
         else:
             self.fin_du_jeu = 2 #defaite
-
-
 
 
 #end Client
